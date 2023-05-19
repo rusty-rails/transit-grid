@@ -11,7 +11,7 @@ use petgraph::Undirected;
 ///
 /// The graph is implemented using `petgraph`'s `Csr` structure.
 pub struct PhysicalGraph<R, T: CoordNum> {
-    graph: Csr<TransitNode<R>, TransitEdge<T>, Undirected, IdType>,
+    pub graph: Csr<TransitNode<R>, TransitEdge<T>, Undirected, IdType>,
 }
 
 impl<R, T: CoordNum> PhysicalGraph<R, T> {
