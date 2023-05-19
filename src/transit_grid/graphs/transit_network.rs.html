@@ -88,21 +88,75 @@
 <a href="#88" id="88">88</a>
 <a href="#89" id="89">89</a>
 <a href="#90" id="90">90</a>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::PhysicalGraph;
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+</pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
-    core::{NodeId, TransitEdge, TransitNode},
+    core::{NodeId, TopoEdge, TopoNode, TransitEdge, TransitNode},
     operations::TransitNetworkModifier,
 };
 <span class="kw">use </span>geo::CoordNum;
 
 <span class="doccomment">/// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.
 ///
-/// The struct holds a physical graph which is a lower-level representation of the network.
-/// The `TransitNetwork` provides a higher-level interface to the physical graph.
+/// The struct holds a physical graph and a topological graph which are lower-level representations of the network.
+/// The `TransitNetwork` provides a higher-level interface to the physical graph and topological graph.
 ///
 /// The struct implements `TransitNetworkModifier` trait for modifying the underlying physical graph.
 </span><span class="kw">pub struct </span>TransitNetwork&lt;R, T: CoordNum&gt; {
     <span class="kw">pub </span>physical_graph: PhysicalGraph&lt;R, T&gt;,
+    <span class="kw">pub </span>topology_graph: TopologyGraph,
+}
+
+<span class="kw">impl</span>&lt;R, T: CoordNum&gt; TransitNetwork&lt;R, T&gt; {
+    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        TransitNetwork {
+            physical_graph: PhysicalGraph::new(),
+            topology_graph: TopologyGraph::new(),
+        }
+    }
 }
 
 <span class="doccomment">/// Implementation of `TransitNetworkModifier` trait for `TransitNetwork`.
@@ -119,7 +173,22 @@
     ///
     /// * `NodeId` - The ID of the added node.
     </span><span class="kw">fn </span>add_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: TransitNode&lt;R&gt;) -&gt; NodeId {
-        <span class="self">self</span>.physical_graph.add_transit_node(node)
+        <span class="kw">let </span>node_id = <span class="self">self</span>.physical_graph.add_transit_node(node);
+
+        <span class="comment">// Add two corresponding topo nodes
+        </span><span class="kw">let </span>topo_node1 = TopoNode {
+            id: node_id * <span class="number">2</span>,
+            node_id: node_id,
+        };
+        <span class="kw">let </span>topo_node2 = TopoNode {
+            id: node_id * <span class="number">2 </span>+ <span class="number">1</span>,
+            node_id: node_id,
+        };
+
+        <span class="self">self</span>.topology_graph.add_node(topo_node1);
+        <span class="self">self</span>.topology_graph.add_node(topo_node2);
+
+        node_id
     }
 
     <span class="doccomment">/// Adds a `TransitEdge` to the physical graph of the network.
@@ -128,7 +197,24 @@
     ///
     /// * `edge` - The `TransitEdge` to be added to the network.
     </span><span class="kw">fn </span>add_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) {
-        <span class="self">self</span>.physical_graph.add_transit_edge(edge);
+        <span class="self">self</span>.physical_graph.add_transit_edge(edge.clone());
+
+        <span class="comment">// Add two corresponding topo edges
+        </span><span class="kw">let </span>topo_edge1 = TopoEdge {
+            id: edge.id * <span class="number">2</span>,
+            from: edge.from * <span class="number">2</span>,
+            to: edge.to * <span class="number">2 </span>+ <span class="number">1</span>,
+            edge_id: edge.id,
+        };
+        <span class="kw">let </span>topo_edge2 = TopoEdge {
+            id: edge.id * <span class="number">2 </span>+ <span class="number">1</span>,
+            from: edge.to * <span class="number">2</span>,
+            to: edge.from * <span class="number">2 </span>+ <span class="number">1</span>,
+            edge_id: edge.id,
+        };
+
+        <span class="self">self</span>.topology_graph.add_edge(topo_edge1);
+        <span class="self">self</span>.topology_graph.add_edge(topo_edge2);
     }
 }
 
@@ -140,9 +226,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_transit_network() {
         <span class="comment">// Create a new TransitNetwork
-        </span><span class="kw">let </span><span class="kw-2">mut </span>network = TransitNetwork {
-            physical_graph: PhysicalGraph::new(),
-        };
+        </span><span class="kw">let </span><span class="kw-2">mut </span>network = TransitNetwork::new();
 
         <span class="comment">// Define some nodes
         </span><span class="kw">let </span>node1 = TransitNode {
@@ -176,6 +260,10 @@
 
         <span class="comment">// Check that the edge was added successfully
         </span><span class="macro">assert_eq!</span>(network.physical_graph.graph.edge_count(), <span class="number">1</span>);
+
+        <span class="comment">// Check that the topology graph was populated correctly
+        </span><span class="macro">assert_eq!</span>(network.topology_graph.graph.node_count(), <span class="number">4</span>);
+        <span class="macro">assert_eq!</span>(network.topology_graph.graph.edge_count(), <span class="number">2</span>);
     }
 }
 </code></pre></div>
