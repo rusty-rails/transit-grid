@@ -1,5 +1,9 @@
 # TransitGrid
-[![Status](https://img.shields.io/badge/status-ideation-blue.svg)](https://github.com/yourusername/TransitGrid)
+[![Status](https://img.shields.io/badge/status-ideation-blue.svg)](https://github.com/rusty-rails/transit-grid)
+[![Github Repo](https://img.shields.io/badge/github-repo-green)](https://github.com/rusty-rails/transit-grid/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/rusty-rails/transit-grid/branch/main/graph/badge.svg?token=TFJ8UT9W1J)](https://codecov.io/gh/rusty-rails/transit-grid)
+[![Doc](https://img.shields.io/badge/Docs-online-green.svg)](https://rusty-rails.github.io/transit-grid/transit_grid/)
 
 TransitGrid is a Rust library for simulating transportation networks. It's designed to be flexible and general-purpose, able to simulate trains on tracks, planes in the air, or ships at sea.
 
