@@ -5,6 +5,9 @@ pub type IdType = usize;
 pub type NodeId = IdType;
 pub type EdgeId = IdType;
 
+pub type TopoNodeId = IdType;
+pub type TopoEdgeId = IdType;
+
 /// `TransitNode` represents a node in the transit network.
 ///
 /// Each node is identified by a unique ID and has a location.
@@ -53,6 +56,20 @@ pub struct TransitEdge<T: CoordNum> {
     pub from: NodeId,
     pub to: NodeId,
     pub path: LineString<T>,
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct TopoNode {
+    pub id: TopoNodeId,
+    pub node_id: NodeId,
+}
+
+#[derive(Clone, Eq, PartialEq)]
+pub struct TopoEdge {
+    pub id: TopoEdgeId,
+    pub from: TopoNodeId,
+    pub to: TopoNodeId,
+    pub edge_id: EdgeId,
 }
 
 #[cfg(test)]
