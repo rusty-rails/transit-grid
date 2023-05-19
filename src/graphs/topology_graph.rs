@@ -1,22 +1,21 @@
-use petgraph::{
-    csr::{Csr, IndexType, NodeIndex},
-    Directed,
-};
+use petgraph::stable_graph::{NodeIndex, StableDiGraph};
 
-use crate::core::{IdType, TopoEdge, TopoNode, TopoNodeId};
+use crate::core::{TopoEdge, TopoNode, TopoNodeId};
 
 /// Represents the topological graph of the transit network.
 ///
 /// Topological graph is directed and each node in the topological graph maps to a node in the physical graph.
 /// This is particularly useful for scenarios such as rail switches where the directionality of edges matters.
 pub struct TopologyGraph {
-    pub graph: Csr<TopoNode, TopoEdge, Directed, IdType>,
+    pub graph: StableDiGraph<TopoNode, TopoEdge, u32>,
 }
 
 impl TopologyGraph {
     /// Creates a new instance of `TopologyGraph`.
     pub fn new() -> Self {
-        TopologyGraph { graph: Csr::new() }
+        TopologyGraph {
+            graph: StableDiGraph::<TopoNode, TopoEdge, u32>::new(),
+        }
     }
 
     /// Adds a `TopoNode` to the topological graph.
@@ -29,7 +28,7 @@ impl TopologyGraph {
     ///
     /// * `TopoNodeId` - The ID of the added node.
     pub fn add_node(&mut self, node: TopoNode) -> TopoNodeId {
-        self.graph.add_node(node)
+        self.graph.add_node(node).index() as TopoNodeId
     }
 
     /// Adds a `TopoEdge` to the topological graph.
@@ -38,11 +37,24 @@ impl TopologyGraph {
     ///
     /// * `edge` - The `TopoEdge` to be added to the graph.
     pub fn add_edge(&mut self, edge: TopoEdge) {
-        self.graph.add_edge(
-            NodeIndex::new(edge.from as usize),
-            NodeIndex::new(edge.to as usize),
-            edge,
-        );
+        self.graph
+            .add_edge(NodeIndex::new(edge.from), NodeIndex::new(edge.to), edge);
+    }
+
+    /// Checks if a node has an incoming edge in the topological graph.
+    ///
+    /// # Arguments
+    ///
+    /// * `node` - The ID of the node to check.
+    ///
+    /// # Returns
+    ///
+    /// * `bool` - `true` if the node has at least one incoming edge, `false` otherwise.
+    pub fn has_incoming(&self, node: TopoNodeId) -> bool {
+        self.graph
+            .neighbors_directed(NodeIndex::new(node), petgraph::Incoming)
+            .next()
+            .is_some()
     }
 }
 

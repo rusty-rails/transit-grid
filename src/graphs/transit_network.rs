@@ -63,24 +63,37 @@ impl<R, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T> {
     ///
     /// * `edge` - The `TransitEdge` to be added to the network.
     fn add_edge(&mut self, edge: TransitEdge<T>) {
+        // Add the edge to the physical graph
         self.physical_graph.add_transit_edge(edge.clone());
 
-        // Add two corresponding topo edges
-        let topo_edge1 = TopoEdge {
-            id: edge.id * 2,
-            from: edge.from * 2,
-            to: edge.to * 2 + 1,
-            edge_id: edge.id,
+        // Check if the "from" node already has an incoming edge in the topology graph
+        let from_has_incoming = self.topology_graph.has_incoming(edge.from);
+
+        // If the "from" node has an incoming edge, switch the "from" and "to" nodes for the topology graph
+        let (from_node, to_node) = if from_has_incoming {
+            (edge.to * 2 + 1, edge.from * 2)
+        } else {
+            (edge.from * 2, edge.to * 2 + 1)
         };
-        let topo_edge2 = TopoEdge {
-            id: edge.id * 2 + 1,
-            from: edge.to * 2,
-            to: edge.from * 2 + 1,
+
+        // Create topology edges
+        let topo_edge_in = TopoEdge {
+            id: edge.id * 2,
+            from: from_node,
+            to: to_node,
             edge_id: edge.id,
         };
 
-        self.topology_graph.add_edge(topo_edge1);
-        self.topology_graph.add_edge(topo_edge2);
+        let topo_edge_out = TopoEdge {
+            id: edge.id * 2 + 1,
+            from: to_node,
+            to: from_node,
+            edge_id: edge.id,
+        };
+
+        // Add the topological edges to the topological graph
+        self.topology_graph.add_edge(topo_edge_in);
+        self.topology_graph.add_edge(topo_edge_out);
     }
 }
 
@@ -88,6 +101,7 @@ impl<R, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T> {
 mod tests {
     use super::*;
     use geo::{coord, point, LineString};
+    use petgraph::visit::IntoEdgeReferences;
 
     #[test]
     fn test_transit_network() {
@@ -130,5 +144,67 @@ mod tests {
         // Check that the topology graph was populated correctly
         assert_eq!(network.topology_graph.graph.node_count(), 4);
         assert_eq!(network.topology_graph.graph.edge_count(), 2);
+    }
+
+    #[test]
+    fn test_transit_network_edge_addition() {
+        // Create a new TransitNetwork
+        let mut network = TransitNetwork::new();
+
+        // Define some nodes
+        let node1 = TransitNode {
+            id: 1,
+            location: point!(x: 0.0, y: 0.0),
+        };
+
+        let node2 = TransitNode {
+            id: 2,
+            location: point!(x: 1.0, y: 1.0),
+        };
+
+        let node3 = TransitNode {
+            id: 3,
+            location: point!(x: 2.0, y: 2.0),
+        };
+
+        // Add nodes to the network
+        network.add_node(node1);
+        network.add_node(node2);
+        network.add_node(node3);
+
+        // Define edges
+        let edge1 = TransitEdge {
+            id: 1,
+            from: 0,
+            to: 1,
+            path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
+        };
+
+        let edge2 = TransitEdge {
+            id: 2,
+            from: 0,
+            to: 2,
+            path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 2.0, y: 2.0}]),
+        };
+
+        // Add edges to the network
+        network.add_edge(edge1);
+        network.add_edge(edge2);
+
+        // Check that the edges were added successfully
+        assert_eq!(network.physical_graph.graph.edge_count(), 2);
+
+        // Check that the topology graph was populated correctly
+        assert_eq!(network.topology_graph.graph.node_count(), 6);
+        assert_eq!(network.topology_graph.graph.edge_count(), 4);
+
+        // Check that the topology edges were computed correctly
+        let edge_ids: Vec<_> = network
+            .topology_graph
+            .graph
+            .edge_references()
+            .map(|edge| edge.weight().edge_id)
+            .collect();
+        assert_eq!(edge_ids, vec![1, 1, 2, 2]);
     }
 }
