@@ -1,0 +1,11 @@
+[package]
+name = "transit-grid"
+version = "0.1.0"
+edition = "2021"
+description = "A flexible, general-purpose transport network library written in Rust, capable of simulating various transit systems like rail, air, and sea."
+authors = ["Christian <chriamue@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/rusty-rails/transit-grid"
+
+[dependencies]
