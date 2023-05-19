@@ -1,17 +1,19 @@
-use geo::{LineString, CoordNum};
+use geo::{CoordNum, LineString};
 
-type NodeId = u64;
-type EdgeId = u64;
+pub type IdType = usize;
 
-/// `TransitNode` represents a node in the transit network. 
-/// 
+pub type NodeId = IdType;
+pub type EdgeId = IdType;
+
+/// `TransitNode` represents a node in the transit network.
+///
 /// Each node is identified by a unique ID and has a location.
-/// 
+///
 /// # Example
 /// ```
 /// use geo::coord;
 /// use transit_grid::core::TransitNode;
-/// 
+///
 /// let node = TransitNode {
 ///     id: 1,
 ///     location: coord! { x: 0.0, y: 0.0 },
@@ -19,20 +21,21 @@ type EdgeId = u64;
 /// assert_eq!(node.id, 1);
 /// assert_eq!(node.location, coord! { x: 0.0, y: 0.0 });
 /// ```
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct TransitNode<T> {
     pub id: NodeId,
     pub location: T,
 }
 
 /// `TransitEdge` represents a connection between two `TransitNode` instances.
-/// 
+///
 /// Each edge is identified by a unique ID and has a path which is a `LineString`.
-/// 
+///
 /// # Example
 /// ```
 /// use geo::{coord, LineString};
 /// use transit_grid::core::TransitEdge;
-/// 
+///
 /// let edge = TransitEdge {
 ///     id: 1,
 ///     from: 1,
@@ -44,6 +47,7 @@ pub struct TransitNode<T> {
 /// assert_eq!(edge.to, 2);
 /// assert_eq!(edge.path, LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]));
 /// ```
+#[derive(Clone, Eq, PartialEq)]
 pub struct TransitEdge<T: CoordNum> {
     pub id: EdgeId,
     pub from: NodeId,
@@ -53,8 +57,8 @@ pub struct TransitEdge<T: CoordNum> {
 
 #[cfg(test)]
 mod tests {
-    use geo::coord;
     use super::*;
+    use geo::coord;
 
     #[test]
     fn test_node() {
@@ -77,6 +81,9 @@ mod tests {
         assert_eq!(edge.id, 1);
         assert_eq!(edge.from, 1);
         assert_eq!(edge.to, 2);
-        assert_eq!(edge.path, LineString(vec![coord! { x:0.0, y:0.0}, coord! { x:1.0, y:1.0}]));
+        assert_eq!(
+            edge.path,
+            LineString(vec![coord! { x:0.0, y:0.0}, coord! { x:1.0, y:1.0}])
+        );
     }
 }

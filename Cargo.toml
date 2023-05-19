@@ -11,3 +11,4 @@ repository = "https://github.com/rusty-rails/transit-grid"
 [dependencies]
 geo = "0.25.0"
 num-traits = "0.2.15"
+petgraph = "0.6.3"
