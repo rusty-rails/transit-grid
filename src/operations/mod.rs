@@ -1,4 +1,4 @@
-use crate::core::{NodeId, TransitEdge, TransitNode};
+use crate::core::{NodeAccessability, NodeId, TransitEdge, TransitNode};
 use geo::CoordNum;
 
 /// `TransitNetworkModifier` is a trait for modifying a transit network.
@@ -27,4 +27,16 @@ pub trait TransitNetworkModifier<R, T: CoordNum> {
     ///
     /// * `edge` - The `TransitEdge` to be added to the network.
     fn add_edge(&mut self, edge: TransitEdge<T>);
+
+    /// Adds a `TransitEdge` to the network with a given accessibility.
+    ///
+    /// # Arguments
+    ///
+    /// * `edge` - The `TransitEdge` to be added to the network.
+    /// * `accessibility` - The accessibility of the edge.
+    fn add_edge_with_accessibility(
+        &mut self,
+        edge: TransitEdge<T>,
+        accessibility: NodeAccessability,
+    );
 }

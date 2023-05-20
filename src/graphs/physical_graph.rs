@@ -1,7 +1,6 @@
-use crate::core::{IdType, NodeId, TransitEdge, TransitNode};
+use crate::core::{EdgeId, NodeId, TransitEdge, TransitNode};
 use geo::CoordNum;
-use petgraph::csr::{Csr, IndexType, NodeIndex};
-use petgraph::Undirected;
+use petgraph::graph::{NodeIndex, UnGraph};
 
 /// `PhysicalGraph` represents the physical layout of the transit network.
 ///
@@ -11,13 +10,15 @@ use petgraph::Undirected;
 ///
 /// The graph is implemented using `petgraph`'s `Csr` structure.
 pub struct PhysicalGraph<R, T: CoordNum> {
-    pub graph: Csr<TransitNode<R>, TransitEdge<T>, Undirected, IdType>,
+    pub graph: UnGraph<TransitNode<R>, TransitEdge<T>, u32>,
 }
 
 impl<R, T: CoordNum> PhysicalGraph<R, T> {
     /// Creates a new, empty `PhysicalGraph`.
     pub fn new() -> Self {
-        PhysicalGraph { graph: Csr::new() }
+        PhysicalGraph {
+            graph: UnGraph::<TransitNode<R>, TransitEdge<T>, u32>::new_undirected(),
+        }
     }
 
     /// Adds a `TransitNode` to the `PhysicalGraph`.
@@ -33,7 +34,7 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     /// graph.add_transit_node(node);
     /// ```
     pub fn add_transit_node(&mut self, node: TransitNode<R>) -> NodeId {
-        self.graph.add_node(node)
+        self.graph.add_node(node).index()
     }
 
     /// Adds a `TransitEdge` to the `PhysicalGraph`.
@@ -61,12 +62,10 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     ///
     /// graph.add_transit_edge(edge);
     /// ```
-    pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) {
-        self.graph.add_edge(
-            NodeIndex::new(edge.from as usize),
-            NodeIndex::new(edge.to as usize),
-            edge,
-        );
+    pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) -> EdgeId {
+        self.graph
+            .add_edge(NodeIndex::new(edge.from), NodeIndex::new(edge.to), edge)
+            .index()
     }
 }
 
@@ -74,6 +73,7 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
 mod tests {
     use super::*;
     use geo::{coord, LineString};
+    use petgraph::stable_graph::IndexType;
 
     #[test]
     fn test_graph() {

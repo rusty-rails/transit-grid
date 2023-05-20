@@ -1,6 +1,6 @@
 use super::{PhysicalGraph, TopologyGraph};
 use crate::{
-    core::{NodeId, TopoEdge, TopoNode, TransitEdge, TransitNode},
+    core::{NodeAccessability, NodeId, TransitEdge, TransitNode},
     operations::TransitNetworkModifier,
 };
 use geo::CoordNum;
@@ -40,19 +40,7 @@ impl<R, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T> {
     /// * `NodeId` - The ID of the added node.
     fn add_node(&mut self, node: TransitNode<R>) -> NodeId {
         let node_id = self.physical_graph.add_transit_node(node);
-
-        // Add two corresponding topo nodes
-        let topo_node1 = TopoNode {
-            id: node_id * 2,
-            node_id: node_id,
-        };
-        let topo_node2 = TopoNode {
-            id: node_id * 2 + 1,
-            node_id: node_id,
-        };
-
-        self.topology_graph.add_node(topo_node1);
-        self.topology_graph.add_node(topo_node2);
+        self.topology_graph.add_node(node_id);
 
         node_id
     }
@@ -63,37 +51,16 @@ impl<R, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T> {
     ///
     /// * `edge` - The `TransitEdge` to be added to the network.
     fn add_edge(&mut self, edge: TransitEdge<T>) {
-        // Add the edge to the physical graph
         self.physical_graph.add_transit_edge(edge.clone());
+        self.topology_graph.add_edge(edge.id, edge.from, edge.to);
+    }
 
-        // Check if the "from" node already has an incoming edge in the topology graph
-        let from_has_incoming = self.topology_graph.has_incoming(edge.from);
-
-        // If the "from" node has an incoming edge, switch the "from" and "to" nodes for the topology graph
-        let (from_node, to_node) = if from_has_incoming {
-            (edge.to * 2 + 1, edge.from * 2)
-        } else {
-            (edge.from * 2, edge.to * 2 + 1)
-        };
-
-        // Create topology edges
-        let topo_edge_in = TopoEdge {
-            id: edge.id * 2,
-            from: from_node,
-            to: to_node,
-            edge_id: edge.id,
-        };
-
-        let topo_edge_out = TopoEdge {
-            id: edge.id * 2 + 1,
-            from: to_node,
-            to: from_node,
-            edge_id: edge.id,
-        };
-
-        // Add the topological edges to the topological graph
-        self.topology_graph.add_edge(topo_edge_in);
-        self.topology_graph.add_edge(topo_edge_out);
+    fn add_edge_with_accessibility(
+        &mut self,
+        edge: TransitEdge<T>,
+        accessibility: NodeAccessability,
+    ) {
+        self.add_edge(edge);
     }
 }
 
