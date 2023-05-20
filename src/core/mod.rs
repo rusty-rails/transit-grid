@@ -1,7 +1,7 @@
 use geo::{CoordNum, LineString};
 
-mod node_accessability;
-pub use node_accessability::NodeAccessability;
+mod accessability;
+pub use accessability::Accessability;
 
 pub type IdType = usize;
 
