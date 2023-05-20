@@ -18,25 +18,67 @@
 <a href="#18" id="18">18</a>
 <a href="#19" id="19">19</a>
 <a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
+<a href="#24" id="24">24</a>
+<a href="#25" id="25">25</a>
+<a href="#26" id="26">26</a>
+<a href="#27" id="27">27</a>
+<a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
+<a href="#31" id="31">31</a>
+<a href="#32" id="32">32</a>
+<a href="#33" id="33">33</a>
+<a href="#34" id="34">34</a>
+<a href="#35" id="35">35</a>
+<a href="#36" id="36">36</a>
+<a href="#37" id="37">37</a>
+<a href="#38" id="38">38</a>
+<a href="#39" id="39">39</a>
+<a href="#40" id="40">40</a>
+<a href="#41" id="41">41</a>
 </pre><pre class="rust"><code><span class="kw">mod </span>topology_graph;
 
 <span class="kw">use </span>petgraph::stable_graph::{EdgeIndex, NodeIndex};
+<span class="kw">use </span>std::fmt;
 <span class="kw">pub use </span>topology_graph::TopologyGraph;
 
 <span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId};
 
-<span class="attr">#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+<span class="attr">#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 </span><span class="kw">pub struct </span>TopoNode {
     <span class="kw">pub </span>id: NodeIndex,
     <span class="kw">pub </span>node_id: NodeId,
 }
 
-<span class="attr">#[derive(Clone, Eq, PartialEq)]
+<span class="attr">#[derive(Debug, Clone, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>TopoEdge {
     <span class="kw">pub </span>id: EdgeIndex,
     <span class="kw">pub </span>from: NodeId,
     <span class="kw">pub </span>to: NodeId,
     <span class="kw">pub </span>edge_id: EdgeId,
+}
+
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>TopoNode {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="macro">write!</span>(
+            f,
+            <span class="string">&quot;TopoNode: {{ id: {:?}, node_id: {:?} }}&quot;</span>,
+            <span class="self">self</span>.id, <span class="self">self</span>.node_id
+        )
+    }
+}
+
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>TopoEdge {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="macro">write!</span>(
+            f,
+            <span class="string">&quot;TopoEdge: {{ id: {:?}, from: {:?}, to: {:?}, edge_id: {:?} }}&quot;</span>,
+            <span class="self">self</span>.id, <span class="self">self</span>.from, <span class="self">self</span>.to, <span class="self">self</span>.edge_id
+        )
+    }
 }
 </code></pre></div>
 </section></main><div id="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="transit_grid" data-themes="" data-resource-suffix="" data-rustdoc-version="1.69.0 (84c898d65 2023-04-16)" data-search-js="search-8a59a8356673ec1f.js" data-settings-js="settings-f0c5c39777a9a2f6.js" data-settings-css="settings-0bcba95ff279c1db.css" ></div></body></html>
