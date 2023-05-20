@@ -105,10 +105,9 @@
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
 <a href="#107" id="107">107</a>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::core::{IdType, NodeId, TransitEdge, TransitNode};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId, TransitEdge, TransitNode};
 <span class="kw">use </span>geo::CoordNum;
-<span class="kw">use </span>petgraph::csr::{Csr, IndexType, NodeIndex};
-<span class="kw">use </span>petgraph::Undirected;
+<span class="kw">use </span>petgraph::graph::{NodeIndex, UnGraph};
 
 <span class="doccomment">/// `PhysicalGraph` represents the physical layout of the transit network.
 ///
@@ -118,13 +117,15 @@
 ///
 /// The graph is implemented using `petgraph`&#39;s `Csr` structure.
 </span><span class="kw">pub struct </span>PhysicalGraph&lt;R, T: CoordNum&gt; {
-    <span class="kw">pub </span>graph: Csr&lt;TransitNode&lt;R&gt;, TransitEdge&lt;T&gt;, Undirected, IdType&gt;,
+    <span class="kw">pub </span>graph: UnGraph&lt;TransitNode&lt;R&gt;, TransitEdge&lt;T&gt;, u32&gt;,
 }
 
 <span class="kw">impl</span>&lt;R, T: CoordNum&gt; PhysicalGraph&lt;R, T&gt; {
     <span class="doccomment">/// Creates a new, empty `PhysicalGraph`.
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
-        PhysicalGraph { graph: Csr::new() }
+        PhysicalGraph {
+            graph: UnGraph::&lt;TransitNode&lt;R&gt;, TransitEdge&lt;T&gt;, u32&gt;::new_undirected(),
+        }
     }
 
     <span class="doccomment">/// Adds a `TransitNode` to the `PhysicalGraph`.
@@ -140,7 +141,7 @@
     /// graph.add_transit_node(node);
     /// ```
     </span><span class="kw">pub fn </span>add_transit_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: TransitNode&lt;R&gt;) -&gt; NodeId {
-        <span class="self">self</span>.graph.add_node(node)
+        <span class="self">self</span>.graph.add_node(node).index()
     }
 
     <span class="doccomment">/// Adds a `TransitEdge` to the `PhysicalGraph`.
@@ -168,12 +169,10 @@
     ///
     /// graph.add_transit_edge(edge);
     /// ```
-    </span><span class="kw">pub fn </span>add_transit_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) {
-        <span class="self">self</span>.graph.add_edge(
-            NodeIndex::new(edge.from <span class="kw">as </span>usize),
-            NodeIndex::new(edge.to <span class="kw">as </span>usize),
-            edge,
-        );
+    </span><span class="kw">pub fn </span>add_transit_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) -&gt; EdgeId {
+        <span class="self">self</span>.graph
+            .add_edge(NodeIndex::new(edge.from), NodeIndex::new(edge.to), edge)
+            .index()
     }
 }
 
@@ -181,6 +180,7 @@
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span>geo::{coord, LineString};
+    <span class="kw">use </span>petgraph::stable_graph::IndexType;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_graph() {

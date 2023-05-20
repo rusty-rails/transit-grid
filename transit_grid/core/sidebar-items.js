@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["TopoEdge","TopoNode","TransitEdge","TransitNode"],"type":["EdgeId","IdType","NodeId","TopoEdgeId","TopoNodeId"]};
+window.SIDEBAR_ITEMS = {"enum":["NodeAccessability"],"struct":["TransitEdge","TransitNode"],"type":["EdgeId","IdType","NodeId"]};
