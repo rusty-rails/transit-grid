@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["PhysicalGraph","TopologyGraph","TransitNetwork"]};
+window.SIDEBAR_ITEMS = {"struct":["PhysicalGraph","TopoEdge","TopoNode","TopologyGraph","TransitNetwork"]};
