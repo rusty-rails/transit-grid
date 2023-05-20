@@ -4,19 +4,7 @@ use petgraph::stable_graph::{EdgeIndex, NodeIndex, StableDiGraph};
 
 use crate::core::{EdgeId, NodeId};
 
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct TopoNode {
-    pub id: NodeIndex,
-    pub node_id: NodeId,
-}
-
-#[derive(Clone, Eq, PartialEq)]
-pub struct TopoEdge {
-    pub id: EdgeIndex,
-    pub from: NodeId,
-    pub to: NodeId,
-    pub edge_id: EdgeId,
-}
+use super::{TopoEdge, TopoNode};
 
 /// Represents the topological graph of the transit network.
 ///
