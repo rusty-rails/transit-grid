@@ -176,12 +176,6 @@ mod tests {
     #[test]
     fn test_add_edge_with_accessibility() {
         // Create a new TransitNetwork
-        /*
-          4 --> 0 --> 1 --> 2
-                 ^     |
-                 |     v
-                 -------3
-        */
 
         let mut network = TransitNetwork::new();
 

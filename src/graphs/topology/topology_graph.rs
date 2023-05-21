@@ -113,6 +113,9 @@ impl TopologyGraph {
             .add_edge(from_topo_node_id, to_topo_node_id, topo_edge1);
         self.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
 
+        let from_topo_node_id = self.get_other_toponode(from_topo_node_id).unwrap();
+        let to_topo_node_id = self.get_other_toponode(to_topo_node_id).unwrap();
+
         let topo_edge2 = TopoEdge {
             id: EdgeIndex::new(0), // Temporary value; will be updated
             from: to_node_id,
@@ -207,25 +210,22 @@ impl TopologyGraph {
         }
     }
 
-    /// Adds an edge with given accessibility to the `TopologyGraph`.
+    /// Adds an edge with a certain accessibility into the graph.
     ///
     /// # Arguments
     ///
-    /// * `edge_id` - The `EdgeId` of the edge to add.
-    /// * `from_node_id` - The `NodeId` of the node where the edge starts.
-    /// * `to_node_id` - The `NodeId` of the node where the edge ends.
-    /// * `accessability` - The `Accessability` of the edge, which is either `ReachableNodes` or `UnreachableNodes`.
+    /// * `edge_id` - The identifier of the edge that should be added.
+    /// * `from_node_id` - The identifier of the node where the edge should start.
+    /// * `to_node_id` - The identifier of the node where the edge should end.
+    /// * `accessability` - The type of accessability of the edge. This can be either `ReachableNodes` or `UnreachableNodes`.
     ///
     /// # Returns
     ///
-    /// * `(EdgeIndex, EdgeIndex)` - A tuple of `EdgeIndex` which represents the two edges added to the `TopologyGraph`. If it fails to add the edge due to invalid nodes or accessibility, the program will panic.
+    /// A tuple of `EdgeIndex` values that were assigned to the newly created edges.
     ///
     /// # Panics
     ///
-    /// The function will panic if:
-    /// * It fails to find `TopoNode` for given `NodeId`.
-    /// * It fails to add the edge with given `Accessability`.
-    /// * The `Accessability` is `UnreachableNodes`, which is not implemented yet.
+    /// The function will panic if it's unable to add an edge with the provided accessibility.
     pub fn add_edge_with_accessibility(
         &mut self,
         edge_id: EdgeId,
@@ -233,48 +233,48 @@ impl TopologyGraph {
         to_node_id: NodeId,
         accessability: Accessability,
     ) -> (EdgeIndex, EdgeIndex) {
-        match accessability {
-            Accessability::ReachableNodes(nodes) => {
-                let u1 = self.find_node_index_with_edges(
-                    from_node_id,
-                    nodes.clone(),
-                    Direction::Incoming,
-                );
-                let v1 = self.find_node_index_with_edges(to_node_id, nodes, Direction::Outgoing);
+        let direction = match &accessability {
+            Accessability::ReachableNodes(_) => (Direction::Incoming, Direction::Outgoing),
+            Accessability::UnreachableNodes(_) => (Direction::Outgoing, Direction::Incoming),
+        };
 
-                if let (Some(u1), Some(v1)) = (u1, v1) {
-                    let u2 = self.get_other_toponode(u1);
-                    let v2 = self.get_other_toponode(v1);
+        let nodes = match &accessability {
+            Accessability::ReachableNodes(nodes) => nodes,
+            Accessability::UnreachableNodes(nodes) => nodes,
+        };
 
-                    if let (Some(u2), Some(v2)) = (u2, v2) {
-                        let from_node_id = self.toponode_to_node.get(&u1).unwrap().clone();
-                        let to_node_id = self.toponode_to_node.get(&v1).unwrap().clone();
+        let u1 = self.find_node_index_with_edges(from_node_id, nodes.clone(), direction.0);
+        let v1 = self.find_node_index_with_edges(to_node_id, nodes.clone(), direction.1);
 
-                        let topo_edge1 = TopoEdge {
-                            id: EdgeIndex::new(0), // Temporary value; will be updated
-                            from: from_node_id,
-                            to: to_node_id,
-                            edge_id: edge_id,
-                        };
-                        let topo_edge1_id = self.graph.add_edge(u1, v1, topo_edge1);
-                        self.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
+        if let (Some(u1), Some(v1)) = (u1, v1) {
+            let u2 = self.get_other_toponode(u1);
+            let v2 = self.get_other_toponode(v1);
 
-                        let topo_edge2 = TopoEdge {
-                            id: EdgeIndex::new(0), // Temporary value; will be updated
-                            from: to_node_id,
-                            to: from_node_id,
-                            edge_id: edge_id,
-                        };
-                        let topo_edge2_id = self.graph.add_edge(v2, u2, topo_edge2);
-                        self.graph.edge_weight_mut(topo_edge2_id).unwrap().id = topo_edge2_id;
-                        return (topo_edge1_id, topo_edge2_id);
-                    }
-                }
-            }
-            Accessability::UnreachableNodes(_nodes) => {
-                unimplemented!("UnreachableNodes not implemented yet");
+            if let (Some(u2), Some(v2)) = (u2, v2) {
+                let from_node_id = self.toponode_to_node.get(&u1).unwrap().clone();
+                let to_node_id = self.toponode_to_node.get(&v1).unwrap().clone();
+
+                let topo_edge1 = TopoEdge {
+                    id: EdgeIndex::new(0), // Temporary value; will be updated
+                    from: from_node_id,
+                    to: to_node_id,
+                    edge_id: edge_id,
+                };
+                let topo_edge1_id = self.graph.add_edge(u1, v1, topo_edge1);
+                self.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
+
+                let topo_edge2 = TopoEdge {
+                    id: EdgeIndex::new(0), // Temporary value; will be updated
+                    from: to_node_id,
+                    to: from_node_id,
+                    edge_id: edge_id,
+                };
+                let topo_edge2_id = self.graph.add_edge(v2, u2, topo_edge2);
+                self.graph.edge_weight_mut(topo_edge2_id).unwrap().id = topo_edge2_id;
+                return (topo_edge1_id, topo_edge2_id);
             }
         }
+
         unreachable!("Could not add edge with accessibility");
     }
 
@@ -297,6 +297,8 @@ impl TopologyGraph {
 
 #[cfg(test)]
 mod tests {
+    use petgraph::dot::Dot;
+
     use super::*;
 
     #[test]
@@ -313,15 +315,28 @@ mod tests {
         assert_eq!(topo_graph.graph.node_count(), 4);
 
         let edge_id1 = 1;
-        topo_graph.add_edge(edge_id1, node_id1, node_id2);
+
+        let topo_edge = TopoEdge {
+            id: EdgeIndex::new(0),
+            from: node_id1,
+            to: node_id2,
+            edge_id: edge_id1,
+        };
+
+        topo_graph
+            .graph
+            .add_edge(added_node_id1_1, added_node_id2_1, topo_edge.clone());
+        topo_graph
+            .graph
+            .add_edge(added_node_id2_2, added_node_id1_2, topo_edge);
 
         assert_eq!(topo_graph.graph.edge_count(), 2);
 
         // Test if has_incoming works as expected
-        assert_eq!(topo_graph.has_incoming(added_node_id1_1), true);
-        assert_eq!(topo_graph.has_incoming(added_node_id1_2), false);
-
         assert_eq!(topo_graph.has_incoming(added_node_id2_1), true);
+        assert_eq!(topo_graph.has_incoming(added_node_id1_1), false);
+
+        assert_eq!(topo_graph.has_incoming(added_node_id1_2), true);
         assert_eq!(topo_graph.has_incoming(added_node_id2_2), false);
     }
 
@@ -360,7 +375,7 @@ mod tests {
 
         // Check that there are no outgoing edges from node2_id.1 to node1
         assert_eq!(
-            graph.no_edges_in_direction(node2_id.1, vec![node1], Direction::Outgoing),
+            graph.no_edges_in_direction(node2_id.0, vec![node1], Direction::Outgoing),
             true
         );
     }
@@ -378,7 +393,7 @@ mod tests {
 
         // Add nodes and edges to the graph
         let topo_node1 = graph.add_node(node1);
-        let _topo_node2 = graph.add_node(node2);
+        let topo_node2 = graph.add_node(node2);
         let topo_node3 = graph.add_node(node3);
         let topo_node4 = graph.add_node(node4);
 
@@ -394,7 +409,7 @@ mod tests {
         );
         assert_eq!(
             graph.find_node_index_with_edges(node2, vec![node1, node3], Direction::Incoming),
-            None
+            Some(topo_node2.0)
         );
         assert_eq!(
             graph.find_node_index_with_edges(node3, vec![node2, node4], Direction::Outgoing),
@@ -402,7 +417,7 @@ mod tests {
         );
         assert_eq!(
             graph.find_node_index_with_edges(node4, vec![node3], Direction::Incoming),
-            Some(topo_node4.1)
+            Some(topo_node4.0)
         );
     }
 
@@ -462,7 +477,7 @@ mod tests {
     }
 
     #[test]
-    fn test_add_edge_with_accessibility_scenario() {
+    fn test_add_edge_with_accessibility_scenario_reachable() {
         let mut topo_graph = TopologyGraph::new();
 
         // Add nodes to the graph
@@ -497,6 +512,99 @@ mod tests {
 
         // Assert that all edges have been added correctly
         for i in 1..=4 {
+            let edge_index1 = EdgeIndex::new(i * 2 - 2);
+            let edge_index2 = EdgeIndex::new(i * 2 - 1);
+            assert!(topo_graph.graph.edge_weight(edge_index1).is_some());
+            assert!(topo_graph.graph.edge_weight(edge_index2).is_some());
+        }
+    }
+
+    #[test]
+    fn test_add_edge_with_accessibility_scenario_unreachable() {
+        let mut topo_graph = TopologyGraph::new();
+
+        // Add nodes to the graph
+        let node_ids: Vec<NodeId> = (0..4).collect();
+        for node_id in &node_ids {
+            topo_graph.add_node(*node_id);
+        }
+
+        let node_idx0 = topo_graph
+            .node_to_toponode
+            .get(&node_ids[0])
+            .unwrap()
+            .clone();
+        let node_idx1 = topo_graph
+            .node_to_toponode
+            .get(&node_ids[1])
+            .unwrap()
+            .clone();
+        let node_idx2 = topo_graph
+            .node_to_toponode
+            .get(&node_ids[2])
+            .unwrap()
+            .clone();
+        let node_idx3 = topo_graph
+            .node_to_toponode
+            .get(&node_ids[3])
+            .unwrap()
+            .clone();
+
+        let topo_edge = TopoEdge {
+            id: EdgeIndex::new(0),
+            from: node_ids[0],
+            to: node_ids[1],
+            edge_id: 1,
+        };
+
+        // Add edge from 0 to 1
+        topo_graph
+            .graph
+            .add_edge(node_idx0.0, node_idx1.0, topo_edge.clone());
+        topo_graph
+            .graph
+            .add_edge(node_idx1.1, node_idx0.1, topo_edge.clone());
+
+        let topo_edge = TopoEdge {
+            id: EdgeIndex::new(0),
+            from: node_ids[1],
+            to: node_ids[2],
+            edge_id: 2,
+        };
+
+        topo_graph
+            .graph
+            .add_edge(node_idx1.0, node_idx2.0, topo_edge.clone());
+        topo_graph
+            .graph
+            .add_edge(node_idx2.1, node_idx1.1, topo_edge.clone());
+
+        // Add edge from 1 to 3
+        let edge_id = 3;
+        let accessability = Accessability::UnreachableNodes(vec![node_ids[2]]);
+
+        topo_graph.add_edge_with_accessibility(
+            edge_id,
+            node_ids[1].clone(),
+            node_ids[3].clone(),
+            accessability,
+        );
+
+        println!("{}", Dot::new(&topo_graph.graph));
+
+        assert!(
+            topo_graph
+                .graph
+                .find_edge(node_idx1.0, node_idx3.0)
+                .is_some()
+                || topo_graph
+                    .graph
+                    .find_edge(node_idx1.0, node_idx3.1)
+                    .is_some()
+        );
+
+        // Assert that all edges have been added correctly
+        for i in 1..=3 {
             let edge_index1 = EdgeIndex::new(i * 2 - 2);
             let edge_index2 = EdgeIndex::new(i * 2 - 1);
             assert!(topo_graph.graph.edge_weight(edge_index1).is_some());
