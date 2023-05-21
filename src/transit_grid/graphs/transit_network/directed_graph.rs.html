@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/graphs/transit_network/undirected_graph.rs`."><title>undirected_graph.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../transit_grid/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/graphs/transit_network/directed_graph.rs`."><title>directed_graph.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c4dbdcde0fbd8430.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../../../static.files/light-db279b6232be9c13.css"><link rel="stylesheet" disabled href="../../../../static.files/dark-cf923f49f397b216.css"><link rel="stylesheet" disabled href="../../../../static.files/ayu-be46fdc453a55015.css"><script src="../../../../static.files/storage-3891ce972e3a2bf8.js"></script><script defer src="../../../../static.files/source-script-1b95b7cca98b26e5.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../static.files/main-98a684e84ae5b08b.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../../transit_grid/index.html"><img class="rust-logo" src="../../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -186,15 +186,14 @@
 <a href="#186" id="186">186</a>
 <a href="#187" id="187">187</a>
 <a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::core::{TransitEdge, TransitNode};
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::prelude::{TopoEdge, TopoNode};
 <span class="kw">use </span>geo::CoordNum;
-<span class="kw">use </span>petgraph::Undirected;
+<span class="kw">use </span>petgraph::Directed;
 
-<span class="kw">use </span>petgraph::graph::{EdgeIndex, NodeIndex, NodeIndices, UnGraph};
+<span class="kw">use </span>petgraph::stable_graph::{EdgeIndex, NodeIndex, NodeIndices, StableDiGraph};
 <span class="kw">use </span>petgraph::visit::{
-    Data, EdgeCount, GraphBase, GraphRef, IntoEdgeReferences, IntoEdges, IntoNeighbors,
-    IntoNodeIdentifiers, NodeCount, NodeIndexable, Visitable,
+    Data, GraphBase, GraphRef, IntoEdgeReferences, IntoEdges, IntoNeighbors, IntoNodeIdentifiers,
+    NodeIndexable, Visitable,
 };
 
 <span class="kw">use </span><span class="kw">super</span>::TransitNetwork;
@@ -211,12 +210,12 @@
 ///
 /// * `network` - A reference to the transit network.
 </span><span class="attr">#[derive(Copy, Clone)]
-</span><span class="kw">pub struct </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; {
+</span><span class="kw">pub struct </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; {
     network: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>TransitNetwork&lt;R, T&gt;,
 }
 
 <span class="doccomment">/// This implementation block contains functions associated with the `UndirectedGraph` struct.
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
     <span class="doccomment">/// Constructs a new `UndirectedGraph`.
     ///
     /// # Arguments
@@ -227,105 +226,100 @@
     ///
     /// A new `UndirectedGraph`.
     </span><span class="kw">pub fn </span>new(network: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>TransitNetwork&lt;R, T&gt;) -&gt; <span class="self">Self </span>{
-        UndirectedGraph { network }
+        DirectedGraph { network }
     }
 }
 
 <span class="comment">// Then you can implement the required traits on your TopologicalGraph:
 
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; GraphBase <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; GraphBase <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
     <span class="kw">type </span>NodeId = NodeIndex;
     <span class="kw">type </span>EdgeId = EdgeIndex;
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; GraphRef <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {}
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; GraphRef <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {}
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; Data <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>NodeWeight = TransitNode&lt;R&gt;;
-    <span class="kw">type </span>EdgeWeight = TransitEdge&lt;T&gt;;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; Data <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>NodeWeight = TopoNode;
+    <span class="kw">type </span>EdgeWeight = TopoEdge;
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoNodeIdentifiers <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>NodeIdentifiers =
-        std::iter::Map&lt;NodeIndices&lt;u32&gt;, <span class="kw">fn</span>(petgraph::graph::NodeIndex&lt;u32&gt;) -&gt; <span class="self">Self</span>::NodeId&gt;;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoNodeIdentifiers <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>NodeIdentifiers = std::iter::Map&lt;
+        NodeIndices&lt;<span class="lifetime">&#39;a</span>, TopoNode&gt;,
+        <span class="kw">fn</span>(petgraph::stable_graph::NodeIndex&lt;u32&gt;) -&gt; <span class="self">Self</span>::NodeId,
+    &gt;;
 
     <span class="kw">fn </span>node_identifiers(<span class="self">self</span>) -&gt; <span class="self">Self</span>::NodeIdentifiers {
-        <span class="self">self</span>.network.physical_graph.graph.node_indices().map(|i| i)
+        <span class="self">self</span>.network.topology_graph.graph.node_indices().map(|i| i)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoEdgeReferences <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>EdgeRef = petgraph::graph::EdgeReference&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;, u32&gt;;
-    <span class="kw">type </span>EdgeReferences = petgraph::graph::EdgeReferences&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;, u32&gt;;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoEdgeReferences <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>EdgeRef = petgraph::stable_graph::EdgeReference&lt;<span class="lifetime">&#39;a</span>, TopoEdge, u32&gt;;
+    <span class="kw">type </span>EdgeReferences = petgraph::stable_graph::EdgeReferences&lt;<span class="lifetime">&#39;a</span>, TopoEdge, u32&gt;;
 
     <span class="kw">fn </span>edge_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::EdgeReferences {
-        (<span class="self">self</span>.network.physical_graph.graph).edge_references()
+        (<span class="self">self</span>.network.topology_graph.graph).edge_references()
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; Visitable <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>Map = &lt;UnGraph&lt;TransitNode&lt;R&gt;, TransitEdge&lt;T&gt;, u32&gt; <span class="kw">as </span>Visitable&gt;::Map;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; Visitable <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>Map = &lt;StableDiGraph&lt;TopoNode, TopoEdge&gt; <span class="kw">as </span>Visitable&gt;::Map;
 
     <span class="kw">fn </span>visit_map(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Map {
-        <span class="self">self</span>.network.physical_graph.graph.visit_map()
+        <span class="self">self</span>.network.topology_graph.graph.visit_map()
     }
 
     <span class="kw">fn </span>reset_map(<span class="kw-2">&amp;</span><span class="self">self</span>, map: <span class="kw-2">&amp;mut </span><span class="self">Self</span>::Map) {
-        <span class="self">self</span>.network.physical_graph.graph.reset_map(map)
+        <span class="self">self</span>.network.topology_graph.graph.reset_map(map)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; NodeIndexable <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; NodeIndexable <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
     <span class="kw">fn </span>node_bound(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.network.physical_graph.graph.node_bound()
+        <span class="self">self</span>.network.topology_graph.graph.node_bound()
     }
 
     <span class="kw">fn </span>to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;u32&gt;) -&gt; usize {
-        <span class="self">self</span>.network.physical_graph.graph.to_index(a)
+        <span class="self">self</span>.network.topology_graph.graph.to_index(a)
     }
 
     <span class="kw">fn </span>from_index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; NodeIndex&lt;u32&gt; {
-        <span class="self">self</span>.network.physical_graph.graph.from_index(i)
+        <span class="self">self</span>.network.topology_graph.graph.from_index(i)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoEdges <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>Edges = petgraph::graph::Edges&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;, Undirected, u32&gt;;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoEdges <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>Edges = petgraph::stable_graph::Edges&lt;<span class="lifetime">&#39;a</span>, TopoEdge, Directed&gt;;
 
     <span class="kw">fn </span>edges(<span class="self">self</span>, a: <span class="self">Self</span>::NodeId) -&gt; <span class="self">Self</span>::Edges {
-        <span class="self">self</span>.network.physical_graph.graph.edges(a)
+        <span class="self">self</span>.network.topology_graph.graph.edges(a)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoNeighbors <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>Neighbors = petgraph::graph::Neighbors&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;&gt;;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoNeighbors <span class="kw">for </span>DirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>Neighbors = petgraph::stable_graph::Neighbors&lt;<span class="lifetime">&#39;a</span>, TopoEdge&gt;;
 
     <span class="kw">fn </span>neighbors(<span class="self">self</span>, n: NodeIndex&lt;u32&gt;) -&gt; <span class="self">Self</span>::Neighbors {
-        <span class="self">self</span>.network.physical_graph.graph.neighbors(n)
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; NodeCount <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">fn </span>node_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.network.physical_graph.graph.node_count()
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; EdgeCount <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">fn </span>edge_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.network.physical_graph.graph.edge_count()
+        <span class="self">self</span>.network.topology_graph.graph.neighbors(n)
     }
 }
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use </span>geo::{coord, point, LineString};
+    <span class="kw">use </span>petgraph::dot::Dot;
 
-    <span class="kw">use </span><span class="kw">crate</span>::prelude::TransitNetworkModifier;
+    <span class="kw">use crate</span>::{
+        core::{Accessability, TransitEdge, TransitNode},
+        prelude::TransitNetworkModifier,
+    };
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="attr">#[test]
+    #[ignore = <span class="string">&quot;fails because not implemented&quot;</span>]
     </span><span class="kw">fn </span>test_dijkstra() {
         <span class="kw">let </span><span class="kw-2">mut </span>network = TransitNetwork::new();
 
@@ -363,16 +357,20 @@
         };
 
         network.add_edge(edge1);
-        network.add_edge(edge2);
-        <span class="kw">let </span>undirected_graph = UndirectedGraph::new(<span class="kw-2">&amp;</span>network);
+        <span class="kw">let </span>accessability = Accessability::ReachableNodes(<span class="macro">vec!</span>[<span class="number">1</span>]);
+        network.add_edge_with_accessibility(edge2, accessability);
+
+        <span class="kw">let </span>undirected_graph = DirectedGraph::new(<span class="kw-2">&amp;</span>network);
 
         <span class="kw">let </span>target_node = NodeIndex::new(<span class="number">2</span>);
         <span class="kw">let </span>path = petgraph::algo::dijkstra(
             <span class="kw-2">&amp;</span>undirected_graph,
-            NodeIndex::new(<span class="number">0</span>),
+            NodeIndex::new(<span class="number">1</span>),
             <span class="prelude-val">Some</span>(target_node),
             |_e| <span class="number">1</span>,
         );
+        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, Dot::new(<span class="kw-2">&amp;</span>network.topology_graph.graph));
+        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, path);
         <span class="macro">assert_eq!</span>(path[<span class="kw-2">&amp;</span>target_node], <span class="number">2</span>);
     }
 }

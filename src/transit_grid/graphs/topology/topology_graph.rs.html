@@ -614,6 +614,10 @@
 <a href="#614" id="614">614</a>
 <a href="#615" id="615">615</a>
 <a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::{HashMap, HashSet};
 
 <span class="kw">use </span>petgraph::{
@@ -644,6 +648,10 @@
             node_to_toponode: HashMap::new(),
             toponode_to_node: HashMap::new(),
         }
+    }
+
+    <span class="kw">pub fn </span>topo_node_id_to_node_id(<span class="kw-2">&amp;</span><span class="self">self</span>, topo_node_id: NodeIndex) -&gt; NodeId {
+        <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>topo_node_id).unwrap().clone()
     }
 
     <span class="doccomment">/// Adds a Node with a `NodeId` to the topological graph. This internally adds two `TopoNode`s to the graph.

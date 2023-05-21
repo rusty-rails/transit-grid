@@ -127,7 +127,7 @@
 /// assert_eq!(node.id, 1);
 /// assert_eq!(node.location, coord! { x: 0.0, y: 0.0 });
 /// ```
-</span><span class="attr">#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+</span><span class="attr">#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 </span><span class="kw">pub struct </span>TransitNode&lt;T&gt; {
     <span class="kw">pub </span>id: NodeId,
     <span class="kw">pub </span>location: T,
