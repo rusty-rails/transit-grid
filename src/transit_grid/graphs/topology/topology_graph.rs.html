@@ -504,6 +504,114 @@
 <a href="#504" id="504">504</a>
 <a href="#505" id="505">505</a>
 <a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
+<a href="#530" id="530">530</a>
+<a href="#531" id="531">531</a>
+<a href="#532" id="532">532</a>
+<a href="#533" id="533">533</a>
+<a href="#534" id="534">534</a>
+<a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
+<a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
+<a href="#543" id="543">543</a>
+<a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
+<a href="#548" id="548">548</a>
+<a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
+<a href="#558" id="558">558</a>
+<a href="#559" id="559">559</a>
+<a href="#560" id="560">560</a>
+<a href="#561" id="561">561</a>
+<a href="#562" id="562">562</a>
+<a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+<a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
+<a href="#571" id="571">571</a>
+<a href="#572" id="572">572</a>
+<a href="#573" id="573">573</a>
+<a href="#574" id="574">574</a>
+<a href="#575" id="575">575</a>
+<a href="#576" id="576">576</a>
+<a href="#577" id="577">577</a>
+<a href="#578" id="578">578</a>
+<a href="#579" id="579">579</a>
+<a href="#580" id="580">580</a>
+<a href="#581" id="581">581</a>
+<a href="#582" id="582">582</a>
+<a href="#583" id="583">583</a>
+<a href="#584" id="584">584</a>
+<a href="#585" id="585">585</a>
+<a href="#586" id="586">586</a>
+<a href="#587" id="587">587</a>
+<a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::{HashMap, HashSet};
 
 <span class="kw">use </span>petgraph::{
@@ -619,6 +727,9 @@
             .add_edge(from_topo_node_id, to_topo_node_id, topo_edge1);
         <span class="self">self</span>.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
 
+        <span class="kw">let </span>from_topo_node_id = <span class="self">self</span>.get_other_toponode(from_topo_node_id).unwrap();
+        <span class="kw">let </span>to_topo_node_id = <span class="self">self</span>.get_other_toponode(to_topo_node_id).unwrap();
+
         <span class="kw">let </span>topo_edge2 = TopoEdge {
             id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
             </span>from: to_node_id,
@@ -713,25 +824,22 @@
         </span>}
     }
 
-    <span class="doccomment">/// Adds an edge with given accessibility to the `TopologyGraph`.
+    <span class="doccomment">/// Adds an edge with a certain accessibility into the graph.
     ///
     /// # Arguments
     ///
-    /// * `edge_id` - The `EdgeId` of the edge to add.
-    /// * `from_node_id` - The `NodeId` of the node where the edge starts.
-    /// * `to_node_id` - The `NodeId` of the node where the edge ends.
-    /// * `accessability` - The `Accessability` of the edge, which is either `ReachableNodes` or `UnreachableNodes`.
+    /// * `edge_id` - The identifier of the edge that should be added.
+    /// * `from_node_id` - The identifier of the node where the edge should start.
+    /// * `to_node_id` - The identifier of the node where the edge should end.
+    /// * `accessability` - The type of accessability of the edge. This can be either `ReachableNodes` or `UnreachableNodes`.
     ///
     /// # Returns
     ///
-    /// * `(EdgeIndex, EdgeIndex)` - A tuple of `EdgeIndex` which represents the two edges added to the `TopologyGraph`. If it fails to add the edge due to invalid nodes or accessibility, the program will panic.
+    /// A tuple of `EdgeIndex` values that were assigned to the newly created edges.
     ///
     /// # Panics
     ///
-    /// The function will panic if:
-    /// * It fails to find `TopoNode` for given `NodeId`.
-    /// * It fails to add the edge with given `Accessability`.
-    /// * The `Accessability` is `UnreachableNodes`, which is not implemented yet.
+    /// The function will panic if it&#39;s unable to add an edge with the provided accessibility.
     </span><span class="kw">pub fn </span>add_edge_with_accessibility(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         edge_id: EdgeId,
@@ -739,48 +847,48 @@
         to_node_id: NodeId,
         accessability: Accessability,
     ) -&gt; (EdgeIndex, EdgeIndex) {
-        <span class="kw">match </span>accessability {
-            Accessability::ReachableNodes(nodes) =&gt; {
-                <span class="kw">let </span>u1 = <span class="self">self</span>.find_node_index_with_edges(
-                    from_node_id,
-                    nodes.clone(),
-                    Direction::Incoming,
-                );
-                <span class="kw">let </span>v1 = <span class="self">self</span>.find_node_index_with_edges(to_node_id, nodes, Direction::Outgoing);
+        <span class="kw">let </span>direction = <span class="kw">match </span><span class="kw-2">&amp;</span>accessability {
+            Accessability::ReachableNodes(<span class="kw">_</span>) =&gt; (Direction::Incoming, Direction::Outgoing),
+            Accessability::UnreachableNodes(<span class="kw">_</span>) =&gt; (Direction::Outgoing, Direction::Incoming),
+        };
 
-                <span class="kw">if let </span>(<span class="prelude-val">Some</span>(u1), <span class="prelude-val">Some</span>(v1)) = (u1, v1) {
-                    <span class="kw">let </span>u2 = <span class="self">self</span>.get_other_toponode(u1);
-                    <span class="kw">let </span>v2 = <span class="self">self</span>.get_other_toponode(v1);
+        <span class="kw">let </span>nodes = <span class="kw">match </span><span class="kw-2">&amp;</span>accessability {
+            Accessability::ReachableNodes(nodes) =&gt; nodes,
+            Accessability::UnreachableNodes(nodes) =&gt; nodes,
+        };
 
-                    <span class="kw">if let </span>(<span class="prelude-val">Some</span>(u2), <span class="prelude-val">Some</span>(v2)) = (u2, v2) {
-                        <span class="kw">let </span>from_node_id = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>u1).unwrap().clone();
-                        <span class="kw">let </span>to_node_id = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>v1).unwrap().clone();
+        <span class="kw">let </span>u1 = <span class="self">self</span>.find_node_index_with_edges(from_node_id, nodes.clone(), direction.<span class="number">0</span>);
+        <span class="kw">let </span>v1 = <span class="self">self</span>.find_node_index_with_edges(to_node_id, nodes.clone(), direction.<span class="number">1</span>);
 
-                        <span class="kw">let </span>topo_edge1 = TopoEdge {
-                            id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
-                            </span>from: from_node_id,
-                            to: to_node_id,
-                            edge_id: edge_id,
-                        };
-                        <span class="kw">let </span>topo_edge1_id = <span class="self">self</span>.graph.add_edge(u1, v1, topo_edge1);
-                        <span class="self">self</span>.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
+        <span class="kw">if let </span>(<span class="prelude-val">Some</span>(u1), <span class="prelude-val">Some</span>(v1)) = (u1, v1) {
+            <span class="kw">let </span>u2 = <span class="self">self</span>.get_other_toponode(u1);
+            <span class="kw">let </span>v2 = <span class="self">self</span>.get_other_toponode(v1);
 
-                        <span class="kw">let </span>topo_edge2 = TopoEdge {
-                            id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
-                            </span>from: to_node_id,
-                            to: from_node_id,
-                            edge_id: edge_id,
-                        };
-                        <span class="kw">let </span>topo_edge2_id = <span class="self">self</span>.graph.add_edge(v2, u2, topo_edge2);
-                        <span class="self">self</span>.graph.edge_weight_mut(topo_edge2_id).unwrap().id = topo_edge2_id;
-                        <span class="kw">return </span>(topo_edge1_id, topo_edge2_id);
-                    }
-                }
-            }
-            Accessability::UnreachableNodes(_nodes) =&gt; {
-                <span class="macro">unimplemented!</span>(<span class="string">&quot;UnreachableNodes not implemented yet&quot;</span>);
+            <span class="kw">if let </span>(<span class="prelude-val">Some</span>(u2), <span class="prelude-val">Some</span>(v2)) = (u2, v2) {
+                <span class="kw">let </span>from_node_id = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>u1).unwrap().clone();
+                <span class="kw">let </span>to_node_id = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>v1).unwrap().clone();
+
+                <span class="kw">let </span>topo_edge1 = TopoEdge {
+                    id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
+                    </span>from: from_node_id,
+                    to: to_node_id,
+                    edge_id: edge_id,
+                };
+                <span class="kw">let </span>topo_edge1_id = <span class="self">self</span>.graph.add_edge(u1, v1, topo_edge1);
+                <span class="self">self</span>.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
+
+                <span class="kw">let </span>topo_edge2 = TopoEdge {
+                    id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
+                    </span>from: to_node_id,
+                    to: from_node_id,
+                    edge_id: edge_id,
+                };
+                <span class="kw">let </span>topo_edge2_id = <span class="self">self</span>.graph.add_edge(v2, u2, topo_edge2);
+                <span class="self">self</span>.graph.edge_weight_mut(topo_edge2_id).unwrap().id = topo_edge2_id;
+                <span class="kw">return </span>(topo_edge1_id, topo_edge2_id);
             }
         }
+
         <span class="macro">unreachable!</span>(<span class="string">&quot;Could not add edge with accessibility&quot;</span>);
     }
 
@@ -803,6 +911,8 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
+    <span class="kw">use </span>petgraph::dot::Dot;
+
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="attr">#[test]
@@ -819,15 +929,28 @@
         </span><span class="macro">assert_eq!</span>(topo_graph.graph.node_count(), <span class="number">4</span>);
 
         <span class="kw">let </span>edge_id1 = <span class="number">1</span>;
-        topo_graph.add_edge(edge_id1, node_id1, node_id2);
+
+        <span class="kw">let </span>topo_edge = TopoEdge {
+            id: EdgeIndex::new(<span class="number">0</span>),
+            from: node_id1,
+            to: node_id2,
+            edge_id: edge_id1,
+        };
+
+        topo_graph
+            .graph
+            .add_edge(added_node_id1_1, added_node_id2_1, topo_edge.clone());
+        topo_graph
+            .graph
+            .add_edge(added_node_id2_2, added_node_id1_2, topo_edge);
 
         <span class="macro">assert_eq!</span>(topo_graph.graph.edge_count(), <span class="number">2</span>);
 
         <span class="comment">// Test if has_incoming works as expected
-        </span><span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_1), <span class="bool-val">true</span>);
-        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_2), <span class="bool-val">false</span>);
+        </span><span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_1), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_1), <span class="bool-val">false</span>);
 
-        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_1), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_2), <span class="bool-val">true</span>);
         <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_2), <span class="bool-val">false</span>);
     }
 
@@ -866,7 +989,7 @@
 
         <span class="comment">// Check that there are no outgoing edges from node2_id.1 to node1
         </span><span class="macro">assert_eq!</span>(
-            graph.no_edges_in_direction(node2_id.<span class="number">1</span>, <span class="macro">vec!</span>[node1], Direction::Outgoing),
+            graph.no_edges_in_direction(node2_id.<span class="number">0</span>, <span class="macro">vec!</span>[node1], Direction::Outgoing),
             <span class="bool-val">true
         </span>);
     }
@@ -884,7 +1007,7 @@
 
         <span class="comment">// Add nodes and edges to the graph
         </span><span class="kw">let </span>topo_node1 = graph.add_node(node1);
-        <span class="kw">let </span>_topo_node2 = graph.add_node(node2);
+        <span class="kw">let </span>topo_node2 = graph.add_node(node2);
         <span class="kw">let </span>topo_node3 = graph.add_node(node3);
         <span class="kw">let </span>topo_node4 = graph.add_node(node4);
 
@@ -900,15 +1023,15 @@
         );
         <span class="macro">assert_eq!</span>(
             graph.find_node_index_with_edges(node2, <span class="macro">vec!</span>[node1, node3], Direction::Incoming),
-            <span class="prelude-val">None
-        </span>);
+            <span class="prelude-val">Some</span>(topo_node2.<span class="number">0</span>)
+        );
         <span class="macro">assert_eq!</span>(
             graph.find_node_index_with_edges(node3, <span class="macro">vec!</span>[node2, node4], Direction::Outgoing),
             <span class="prelude-val">Some</span>(topo_node3.<span class="number">0</span>)
         );
         <span class="macro">assert_eq!</span>(
             graph.find_node_index_with_edges(node4, <span class="macro">vec!</span>[node3], Direction::Incoming),
-            <span class="prelude-val">Some</span>(topo_node4.<span class="number">1</span>)
+            <span class="prelude-val">Some</span>(topo_node4.<span class="number">0</span>)
         );
     }
 
@@ -968,7 +1091,7 @@
     }
 
     <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_add_edge_with_accessibility_scenario() {
+    </span><span class="kw">fn </span>test_add_edge_with_accessibility_scenario_reachable() {
         <span class="kw">let </span><span class="kw-2">mut </span>topo_graph = TopologyGraph::new();
 
         <span class="comment">// Add nodes to the graph
@@ -1003,6 +1126,99 @@
 
         <span class="comment">// Assert that all edges have been added correctly
         </span><span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=<span class="number">4 </span>{
+            <span class="kw">let </span>edge_index1 = EdgeIndex::new(i * <span class="number">2 </span>- <span class="number">2</span>);
+            <span class="kw">let </span>edge_index2 = EdgeIndex::new(i * <span class="number">2 </span>- <span class="number">1</span>);
+            <span class="macro">assert!</span>(topo_graph.graph.edge_weight(edge_index1).is_some());
+            <span class="macro">assert!</span>(topo_graph.graph.edge_weight(edge_index2).is_some());
+        }
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_add_edge_with_accessibility_scenario_unreachable() {
+        <span class="kw">let </span><span class="kw-2">mut </span>topo_graph = TopologyGraph::new();
+
+        <span class="comment">// Add nodes to the graph
+        </span><span class="kw">let </span>node_ids: Vec&lt;NodeId&gt; = (<span class="number">0</span>..<span class="number">4</span>).collect();
+        <span class="kw">for </span>node_id <span class="kw">in </span><span class="kw-2">&amp;</span>node_ids {
+            topo_graph.add_node(<span class="kw-2">*</span>node_id);
+        }
+
+        <span class="kw">let </span>node_idx0 = topo_graph
+            .node_to_toponode
+            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">0</span>])
+            .unwrap()
+            .clone();
+        <span class="kw">let </span>node_idx1 = topo_graph
+            .node_to_toponode
+            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">1</span>])
+            .unwrap()
+            .clone();
+        <span class="kw">let </span>node_idx2 = topo_graph
+            .node_to_toponode
+            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">2</span>])
+            .unwrap()
+            .clone();
+        <span class="kw">let </span>node_idx3 = topo_graph
+            .node_to_toponode
+            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">3</span>])
+            .unwrap()
+            .clone();
+
+        <span class="kw">let </span>topo_edge = TopoEdge {
+            id: EdgeIndex::new(<span class="number">0</span>),
+            from: node_ids[<span class="number">0</span>],
+            to: node_ids[<span class="number">1</span>],
+            edge_id: <span class="number">1</span>,
+        };
+
+        <span class="comment">// Add edge from 0 to 1
+        </span>topo_graph
+            .graph
+            .add_edge(node_idx0.<span class="number">0</span>, node_idx1.<span class="number">0</span>, topo_edge.clone());
+        topo_graph
+            .graph
+            .add_edge(node_idx1.<span class="number">1</span>, node_idx0.<span class="number">1</span>, topo_edge.clone());
+
+        <span class="kw">let </span>topo_edge = TopoEdge {
+            id: EdgeIndex::new(<span class="number">0</span>),
+            from: node_ids[<span class="number">1</span>],
+            to: node_ids[<span class="number">2</span>],
+            edge_id: <span class="number">2</span>,
+        };
+
+        topo_graph
+            .graph
+            .add_edge(node_idx1.<span class="number">0</span>, node_idx2.<span class="number">0</span>, topo_edge.clone());
+        topo_graph
+            .graph
+            .add_edge(node_idx2.<span class="number">1</span>, node_idx1.<span class="number">1</span>, topo_edge.clone());
+
+        <span class="comment">// Add edge from 1 to 3
+        </span><span class="kw">let </span>edge_id = <span class="number">3</span>;
+        <span class="kw">let </span>accessability = Accessability::UnreachableNodes(<span class="macro">vec!</span>[node_ids[<span class="number">2</span>]]);
+
+        topo_graph.add_edge_with_accessibility(
+            edge_id,
+            node_ids[<span class="number">1</span>].clone(),
+            node_ids[<span class="number">3</span>].clone(),
+            accessability,
+        );
+
+        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, Dot::new(<span class="kw-2">&amp;</span>topo_graph.graph));
+
+        <span class="macro">assert!</span>(
+            topo_graph
+                .graph
+                .find_edge(node_idx1.<span class="number">0</span>, node_idx3.<span class="number">0</span>)
+                .is_some()
+                || topo_graph
+                    .graph
+                    .find_edge(node_idx1.<span class="number">0</span>, node_idx3.<span class="number">1</span>)
+                    .is_some()
+        );
+
+        <span class="comment">// Assert that all edges have been added correctly
+        </span><span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=<span class="number">3 </span>{
             <span class="kw">let </span>edge_index1 = EdgeIndex::new(i * <span class="number">2 </span>- <span class="number">2</span>);
             <span class="kw">let </span>edge_index2 = EdgeIndex::new(i * <span class="number">2 </span>- <span class="number">1</span>);
             <span class="macro">assert!</span>(topo_graph.graph.edge_weight(edge_index1).is_some());

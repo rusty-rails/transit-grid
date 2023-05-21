@@ -14,7 +14,7 @@ This is particularly useful for scenarios such as rail switches where the direct
 <ul>
 <li>A tuple of two <code>TopoNodeId</code>s corresponding to the two <code>TopoNode</code>s added for the input <code>NodeId</code>.</li>
 </ul>
-</div></details><details class="toggle method-toggle" open><summary><section id="method.add_edge" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#76-128">source</a><h4 class="code-header">pub fn <a href="#method.add_edge" class="fn">add_edge</a>(
+</div></details><details class="toggle method-toggle" open><summary><section id="method.add_edge" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#76-131">source</a><h4 class="code-header">pub fn <a href="#method.add_edge" class="fn">add_edge</a>(
     &amp;mut self,
     edge_id: <a class="type" href="../core/type.EdgeId.html" title="type transit_grid::core::EdgeId">EdgeId</a>,
     from_node_id: <a class="type" href="../core/type.NodeId.html" title="type transit_grid::core::NodeId">NodeId</a>,
@@ -30,7 +30,7 @@ This is particularly useful for scenarios such as rail switches where the direct
 <ul>
 <li><code>TopoEdgeId</code> - The ID of the added edge.</li>
 </ul>
-</div></details><details class="toggle method-toggle" open><summary><section id="method.no_edges_in_direction" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#141-160">source</a><h4 class="code-header">pub fn <a href="#method.no_edges_in_direction" class="fn">no_edges_in_direction</a>(
+</div></details><details class="toggle method-toggle" open><summary><section id="method.no_edges_in_direction" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#144-163">source</a><h4 class="code-header">pub fn <a href="#method.no_edges_in_direction" class="fn">no_edges_in_direction</a>(
     &amp;self,
     topo_node_id: <a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.NodeIndex.html" title="struct petgraph::graph_impl::NodeIndex">NodeIndex</a>,
     neighbors: <a class="struct" href="https://doc.rust-lang.org/1.69.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="type" href="../core/type.NodeId.html" title="type transit_grid::core::NodeId">NodeId</a>&gt;,
@@ -46,7 +46,7 @@ This is particularly useful for scenarios such as rail switches where the direct
 <ul>
 <li><code>bool</code> - True if none of the neighbors have an edge in the given direction to the node, otherwise false.</li>
 </ul>
-</div></details><details class="toggle method-toggle" open><summary><section id="method.find_node_index_with_edges" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#173-187">source</a><h4 class="code-header">pub fn <a href="#method.find_node_index_with_edges" class="fn">find_node_index_with_edges</a>(
+</div></details><details class="toggle method-toggle" open><summary><section id="method.find_node_index_with_edges" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#176-190">source</a><h4 class="code-header">pub fn <a href="#method.find_node_index_with_edges" class="fn">find_node_index_with_edges</a>(
     &amp;self,
     node_id: <a class="type" href="../core/type.NodeId.html" title="type transit_grid::core::NodeId">NodeId</a>,
     neighbors: <a class="struct" href="https://doc.rust-lang.org/1.69.0/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="type" href="../core/type.NodeId.html" title="type transit_grid::core::NodeId">NodeId</a>&gt;,
@@ -62,7 +62,7 @@ This is particularly useful for scenarios such as rail switches where the direct
 <ul>
 <li><code>Option&lt;NodeIndex&gt;</code> - The <code>NodeIndex</code> of the <code>NodeId</code> if it does not have any edge in the opposite direction leading to nodes in <code>neighbors</code>, otherwise <code>None</code>.</li>
 </ul>
-</div></details><details class="toggle method-toggle" open><summary><section id="method.get_other_toponode" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#198-208">source</a><h4 class="code-header">pub fn <a href="#method.get_other_toponode" class="fn">get_other_toponode</a>(&amp;self, topo_node_id: <a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.NodeIndex.html" title="struct petgraph::graph_impl::NodeIndex">NodeIndex</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.69.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.NodeIndex.html" title="struct petgraph::graph_impl::NodeIndex">NodeIndex</a>&gt;</h4></section></summary><div class="docblock"><p>Returns the <code>NodeIndex</code> of the other <code>TopoNode</code> for a given <code>TopoNode</code>.</p>
+</div></details><details class="toggle method-toggle" open><summary><section id="method.get_other_toponode" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#201-211">source</a><h4 class="code-header">pub fn <a href="#method.get_other_toponode" class="fn">get_other_toponode</a>(&amp;self, topo_node_id: <a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.NodeIndex.html" title="struct petgraph::graph_impl::NodeIndex">NodeIndex</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.69.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.NodeIndex.html" title="struct petgraph::graph_impl::NodeIndex">NodeIndex</a>&gt;</h4></section></summary><div class="docblock"><p>Returns the <code>NodeIndex</code> of the other <code>TopoNode</code> for a given <code>TopoNode</code>.</p>
 <h5 id="arguments-4"><a href="#arguments-4">Arguments</a></h5>
 <ul>
 <li><code>topo_node_id</code> - The <code>NodeIndex</code> of the <code>TopoNode</code>.</li>
@@ -77,25 +77,18 @@ This is particularly useful for scenarios such as rail switches where the direct
     from_node_id: <a class="type" href="../core/type.NodeId.html" title="type transit_grid::core::NodeId">NodeId</a>,
     to_node_id: <a class="type" href="../core/type.NodeId.html" title="type transit_grid::core::NodeId">NodeId</a>,
     accessability: <a class="enum" href="../core/enum.Accessability.html" title="enum transit_grid::core::Accessability">Accessability</a>
-) -&gt; (<a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.EdgeIndex.html" title="struct petgraph::graph_impl::EdgeIndex">EdgeIndex</a>, <a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.EdgeIndex.html" title="struct petgraph::graph_impl::EdgeIndex">EdgeIndex</a>)</h4></section></summary><div class="docblock"><p>Adds an edge with given accessibility to the <code>TopologyGraph</code>.</p>
+) -&gt; (<a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.EdgeIndex.html" title="struct petgraph::graph_impl::EdgeIndex">EdgeIndex</a>, <a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.EdgeIndex.html" title="struct petgraph::graph_impl::EdgeIndex">EdgeIndex</a>)</h4></section></summary><div class="docblock"><p>Adds an edge with a certain accessibility into the graph.</p>
 <h5 id="arguments-5"><a href="#arguments-5">Arguments</a></h5>
 <ul>
-<li><code>edge_id</code> - The <code>EdgeId</code> of the edge to add.</li>
-<li><code>from_node_id</code> - The <code>NodeId</code> of the node where the edge starts.</li>
-<li><code>to_node_id</code> - The <code>NodeId</code> of the node where the edge ends.</li>
-<li><code>accessability</code> - The <code>Accessability</code> of the edge, which is either <code>ReachableNodes</code> or <code>UnreachableNodes</code>.</li>
+<li><code>edge_id</code> - The identifier of the edge that should be added.</li>
+<li><code>from_node_id</code> - The identifier of the node where the edge should start.</li>
+<li><code>to_node_id</code> - The identifier of the node where the edge should end.</li>
+<li><code>accessability</code> - The type of accessability of the edge. This can be either <code>ReachableNodes</code> or <code>UnreachableNodes</code>.</li>
 </ul>
 <h5 id="returns-5"><a href="#returns-5">Returns</a></h5>
-<ul>
-<li><code>(EdgeIndex, EdgeIndex)</code> - A tuple of <code>EdgeIndex</code> which represents the two edges added to the <code>TopologyGraph</code>. If it fails to add the edge due to invalid nodes or accessibility, the program will panic.</li>
-</ul>
+<p>A tuple of <code>EdgeIndex</code> values that were assigned to the newly created edges.</p>
 <h5 id="panics"><a href="#panics">Panics</a></h5>
-<p>The function will panic if:</p>
-<ul>
-<li>It fails to find <code>TopoNode</code> for given <code>NodeId</code>.</li>
-<li>It fails to add the edge with given <code>Accessability</code>.</li>
-<li>The <code>Accessability</code> is <code>UnreachableNodes</code>, which is not implemented yet.</li>
-</ul>
+<p>The function will panic if it’s unable to add an edge with the provided accessibility.</p>
 </div></details><details class="toggle method-toggle" open><summary><section id="method.has_incoming" class="method"><a class="srclink rightside" href="../../src/transit_grid/graphs/topology/topology_graph.rs.html#290-295">source</a><h4 class="code-header">pub fn <a href="#method.has_incoming" class="fn">has_incoming</a>(&amp;self, node: <a class="struct" href="https://docs.rs/petgraph/0.4/petgraph/graph_impl/struct.NodeIndex.html" title="struct petgraph::graph_impl::NodeIndex">NodeIndex</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/1.69.0/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Checks if a node has an incoming edge in the topological graph.</p>
 <h5 id="arguments-6"><a href="#arguments-6">Arguments</a></h5>
 <ul>

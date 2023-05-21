@@ -274,12 +274,6 @@
 <a href="#274" id="274">274</a>
 <a href="#275" id="275">275</a>
 <a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
-<a href="#278" id="278">278</a>
-<a href="#279" id="279">279</a>
-<a href="#280" id="280">280</a>
-<a href="#281" id="281">281</a>
-<a href="#282" id="282">282</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, NodeId, TransitEdge, TransitNode},
@@ -458,12 +452,6 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_add_edge_with_accessibility() {
         <span class="comment">// Create a new TransitNetwork
-        /*
-          4 --&gt; 0 --&gt; 1 --&gt; 2
-                 ^     |
-                 |     v
-                 -------3
-        */
 
         </span><span class="kw">let </span><span class="kw-2">mut </span>network = TransitNetwork::new();
 
