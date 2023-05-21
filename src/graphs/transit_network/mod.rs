@@ -5,6 +5,7 @@ use crate::{
 };
 use geo::CoordNum;
 
+pub mod directed_graph;
 pub mod undirected_graph;
 
 /// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.

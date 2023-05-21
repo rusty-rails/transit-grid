@@ -24,7 +24,7 @@ pub type EdgeId = IdType;
 /// assert_eq!(node.id, 1);
 /// assert_eq!(node.location, coord! { x: 0.0, y: 0.0 });
 /// ```
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct TransitNode<T> {
     pub id: NodeId,
     pub location: T,

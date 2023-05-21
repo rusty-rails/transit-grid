@@ -30,6 +30,10 @@ impl TopologyGraph {
         }
     }
 
+    pub fn topo_node_id_to_node_id(&self, topo_node_id: NodeIndex) -> NodeId {
+        self.toponode_to_node.get(&topo_node_id).unwrap().clone()
+    }
+
     /// Adds a Node with a `NodeId` to the topological graph. This internally adds two `TopoNode`s to the graph.
     ///
     /// # Arguments

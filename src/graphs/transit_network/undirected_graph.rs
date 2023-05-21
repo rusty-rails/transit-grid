@@ -138,10 +138,8 @@ mod tests {
 
     #[test]
     fn test_dijkstra() {
-        // Create a TransitNetwork and add nodes and edges.
         let mut network = TransitNetwork::new();
 
-        // Define some nodes
         let node1 = TransitNode {
             id: 1,
             location: point!(x: 0.0, y: 0.0),
@@ -157,12 +155,10 @@ mod tests {
             location: point!(x: 2.0, y: 2.0),
         };
 
-        // Add nodes to the network
         network.add_node(node1);
         network.add_node(node2);
         network.add_node(node3);
 
-        // Define edges
         let edge1 = TransitEdge {
             id: 1,
             from: 0,
@@ -172,32 +168,22 @@ mod tests {
 
         let edge2 = TransitEdge {
             id: 2,
-            from: 0,
+            from: 1,
             to: 2,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 2.0, y: 2.0}]),
         };
 
-        // Add edges to the network
         network.add_edge(edge1);
         network.add_edge(edge2);
-        // add nodes and edges
-
-        // Create an UndirectedGraph.
         let undirected_graph = UndirectedGraph::new(&network);
 
         let target_node = NodeIndex::new(2);
-        // Apply Dijkstra's algorithm.
-        // Replace `source_node` and `target_node` with your actual nodes.
         let path = petgraph::algo::dijkstra(
             &undirected_graph,
-            NodeIndex::new(1),
+            NodeIndex::new(0),
             Some(target_node),
             |_e| 1,
         );
-
-        // Test assertions.
-        // Replace these with your expected results.
-        println!("{:?}", path);
         assert_eq!(path[&target_node], 2);
     }
 }
