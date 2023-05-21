@@ -50,12 +50,23 @@ pub struct TransitNode<T> {
 /// assert_eq!(edge.to, 2);
 /// assert_eq!(edge.path, LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]));
 /// ```
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct TransitEdge<T: CoordNum> {
     pub id: EdgeId,
     pub from: NodeId,
     pub to: NodeId,
     pub path: LineString<T>,
+}
+
+impl<T: CoordNum> Default for TransitEdge<T> {
+    fn default() -> Self {
+        Self {
+            id: 0,
+            from: 0,
+            to: 0,
+            path: LineString(vec![]),
+        }
+    }
 }
 
 #[cfg(test)]

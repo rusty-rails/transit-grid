@@ -69,6 +69,12 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     }
 }
 
+impl<R, T: CoordNum> Default for PhysicalGraph<R, T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

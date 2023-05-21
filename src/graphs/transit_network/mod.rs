@@ -5,6 +5,8 @@ use crate::{
 };
 use geo::CoordNum;
 
+pub mod undirected_graph;
+
 /// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.
 ///
 /// The struct holds a physical graph and a topological graph which are lower-level representations of the network.
@@ -22,6 +24,12 @@ impl<R, T: CoordNum> TransitNetwork<R, T> {
             physical_graph: PhysicalGraph::new(),
             topology_graph: TopologyGraph::new(),
         }
+    }
+}
+
+impl<R, T: CoordNum> Default for TransitNetwork<R, T> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

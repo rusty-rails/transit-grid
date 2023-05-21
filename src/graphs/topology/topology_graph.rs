@@ -42,14 +42,14 @@ impl TopologyGraph {
     pub fn add_node(&mut self, node_id: NodeId) -> (NodeIndex, NodeIndex) {
         let topo_node1 = TopoNode {
             id: NodeIndex::default(), // Temporary value; will be updated
-            node_id: node_id,
+            node_id,
         };
         let topo_node1_id = self.graph.add_node(topo_node1);
         self.graph.node_weight_mut(topo_node1_id).unwrap().id = topo_node1_id;
 
         let topo_node2 = TopoNode {
             id: NodeIndex::default(), // Temporary value; will be updated
-            node_id: node_id,
+            node_id,
         };
         let topo_node2_id = self.graph.add_node(topo_node2);
         self.graph.node_weight_mut(topo_node2_id).unwrap().id = topo_node2_id;
@@ -95,18 +95,14 @@ impl TopologyGraph {
             to_topo_node_id1
         };
 
-        let from_node_id: NodeId = self
-            .toponode_to_node
-            .get(&from_topo_node_id)
-            .unwrap()
-            .clone();
-        let to_node_id: NodeId = self.toponode_to_node.get(&to_topo_node_id).unwrap().clone();
+        let from_node_id: NodeId = *self.toponode_to_node.get(&from_topo_node_id).unwrap();
+        let to_node_id: NodeId = *self.toponode_to_node.get(&to_topo_node_id).unwrap();
 
         let topo_edge1 = TopoEdge {
             id: EdgeIndex::new(0), // Temporary value; will be updated
             from: from_node_id,
             to: to_node_id,
-            edge_id: edge_id,
+            edge_id,
         };
         let topo_edge1_id = self
             .graph
@@ -120,7 +116,7 @@ impl TopologyGraph {
             id: EdgeIndex::new(0), // Temporary value; will be updated
             from: to_node_id,
             to: from_node_id,
-            edge_id: edge_id,
+            edge_id,
         };
         let topo_edge2_id = self
             .graph
@@ -183,7 +179,7 @@ impl TopologyGraph {
         if self.no_edges_in_direction(topo_node_ids.0, neighbors.clone(), dir.opposite()) {
             return Some(topo_node_ids.0);
         }
-        if self.no_edges_in_direction(topo_node_ids.1, neighbors.clone(), dir.opposite()) {
+        if self.no_edges_in_direction(topo_node_ids.1, neighbors, dir.opposite()) {
             return Some(topo_node_ids.1);
         }
         None
@@ -251,14 +247,14 @@ impl TopologyGraph {
             let v2 = self.get_other_toponode(v1);
 
             if let (Some(u2), Some(v2)) = (u2, v2) {
-                let from_node_id = self.toponode_to_node.get(&u1).unwrap().clone();
-                let to_node_id = self.toponode_to_node.get(&v1).unwrap().clone();
+                let from_node_id = *self.toponode_to_node.get(&u1).unwrap();
+                let to_node_id = *self.toponode_to_node.get(&v1).unwrap();
 
                 let topo_edge1 = TopoEdge {
                     id: EdgeIndex::new(0), // Temporary value; will be updated
                     from: from_node_id,
                     to: to_node_id,
-                    edge_id: edge_id,
+                    edge_id,
                 };
                 let topo_edge1_id = self.graph.add_edge(u1, v1, topo_edge1);
                 self.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
@@ -267,7 +263,7 @@ impl TopologyGraph {
                     id: EdgeIndex::new(0), // Temporary value; will be updated
                     from: to_node_id,
                     to: from_node_id,
-                    edge_id: edge_id,
+                    edge_id,
                 };
                 let topo_edge2_id = self.graph.add_edge(v2, u2, topo_edge2);
                 self.graph.edge_weight_mut(topo_edge2_id).unwrap().id = topo_edge2_id;
@@ -292,6 +288,12 @@ impl TopologyGraph {
             .neighbors_directed(node, petgraph::Incoming)
             .next()
             .is_some()
+    }
+}
+
+impl Default for TopologyGraph {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
