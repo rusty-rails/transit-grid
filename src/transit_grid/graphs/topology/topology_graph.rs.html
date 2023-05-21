@@ -612,6 +612,8 @@
 <a href="#612" id="612">612</a>
 <a href="#613" id="613">613</a>
 <a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::{HashMap, HashSet};
 
 <span class="kw">use </span>petgraph::{
@@ -656,14 +658,14 @@
     </span><span class="kw">pub fn </span>add_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node_id: NodeId) -&gt; (NodeIndex, NodeIndex) {
         <span class="kw">let </span>topo_node1 = TopoNode {
             id: NodeIndex::default(), <span class="comment">// Temporary value; will be updated
-            </span>node_id: node_id,
+            </span>node_id,
         };
         <span class="kw">let </span>topo_node1_id = <span class="self">self</span>.graph.add_node(topo_node1);
         <span class="self">self</span>.graph.node_weight_mut(topo_node1_id).unwrap().id = topo_node1_id;
 
         <span class="kw">let </span>topo_node2 = TopoNode {
             id: NodeIndex::default(), <span class="comment">// Temporary value; will be updated
-            </span>node_id: node_id,
+            </span>node_id,
         };
         <span class="kw">let </span>topo_node2_id = <span class="self">self</span>.graph.add_node(topo_node2);
         <span class="self">self</span>.graph.node_weight_mut(topo_node2_id).unwrap().id = topo_node2_id;
@@ -709,18 +711,14 @@
             to_topo_node_id1
         };
 
-        <span class="kw">let </span>from_node_id: NodeId = <span class="self">self
-            </span>.toponode_to_node
-            .get(<span class="kw-2">&amp;</span>from_topo_node_id)
-            .unwrap()
-            .clone();
-        <span class="kw">let </span>to_node_id: NodeId = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>to_topo_node_id).unwrap().clone();
+        <span class="kw">let </span>from_node_id: NodeId = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>from_topo_node_id).unwrap();
+        <span class="kw">let </span>to_node_id: NodeId = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>to_topo_node_id).unwrap();
 
         <span class="kw">let </span>topo_edge1 = TopoEdge {
             id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
             </span>from: from_node_id,
             to: to_node_id,
-            edge_id: edge_id,
+            edge_id,
         };
         <span class="kw">let </span>topo_edge1_id = <span class="self">self
             </span>.graph
@@ -734,7 +732,7 @@
             id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
             </span>from: to_node_id,
             to: from_node_id,
-            edge_id: edge_id,
+            edge_id,
         };
         <span class="kw">let </span>topo_edge2_id = <span class="self">self
             </span>.graph
@@ -797,7 +795,7 @@
         <span class="kw">if </span><span class="self">self</span>.no_edges_in_direction(topo_node_ids.<span class="number">0</span>, neighbors.clone(), dir.opposite()) {
             <span class="kw">return </span><span class="prelude-val">Some</span>(topo_node_ids.<span class="number">0</span>);
         }
-        <span class="kw">if </span><span class="self">self</span>.no_edges_in_direction(topo_node_ids.<span class="number">1</span>, neighbors.clone(), dir.opposite()) {
+        <span class="kw">if </span><span class="self">self</span>.no_edges_in_direction(topo_node_ids.<span class="number">1</span>, neighbors, dir.opposite()) {
             <span class="kw">return </span><span class="prelude-val">Some</span>(topo_node_ids.<span class="number">1</span>);
         }
         <span class="prelude-val">None
@@ -865,14 +863,14 @@
             <span class="kw">let </span>v2 = <span class="self">self</span>.get_other_toponode(v1);
 
             <span class="kw">if let </span>(<span class="prelude-val">Some</span>(u2), <span class="prelude-val">Some</span>(v2)) = (u2, v2) {
-                <span class="kw">let </span>from_node_id = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>u1).unwrap().clone();
-                <span class="kw">let </span>to_node_id = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>v1).unwrap().clone();
+                <span class="kw">let </span>from_node_id = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>u1).unwrap();
+                <span class="kw">let </span>to_node_id = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>v1).unwrap();
 
                 <span class="kw">let </span>topo_edge1 = TopoEdge {
                     id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
                     </span>from: from_node_id,
                     to: to_node_id,
-                    edge_id: edge_id,
+                    edge_id,
                 };
                 <span class="kw">let </span>topo_edge1_id = <span class="self">self</span>.graph.add_edge(u1, v1, topo_edge1);
                 <span class="self">self</span>.graph.edge_weight_mut(topo_edge1_id).unwrap().id = topo_edge1_id;
@@ -881,7 +879,7 @@
                     id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
                     </span>from: to_node_id,
                     to: from_node_id,
-                    edge_id: edge_id,
+                    edge_id,
                 };
                 <span class="kw">let </span>topo_edge2_id = <span class="self">self</span>.graph.add_edge(v2, u2, topo_edge2);
                 <span class="self">self</span>.graph.edge_weight_mut(topo_edge2_id).unwrap().id = topo_edge2_id;
@@ -906,6 +904,12 @@
             .neighbors_directed(node, petgraph::Incoming)
             .next()
             .is_some()
+    }
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>TopologyGraph {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new()
     }
 }
 
