@@ -3,7 +3,7 @@ use geo::{CoordNum, LineString};
 mod accessability;
 pub use accessability::Accessability;
 
-pub type IdType = usize;
+pub type IdType = u32;
 
 pub type NodeId = IdType;
 pub type EdgeId = IdType;

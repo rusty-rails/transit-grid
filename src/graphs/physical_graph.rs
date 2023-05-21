@@ -34,7 +34,7 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     /// graph.add_transit_node(node);
     /// ```
     pub fn add_transit_node(&mut self, node: TransitNode<R>) -> NodeId {
-        self.graph.add_node(node).index()
+        self.graph.add_node(node).index().try_into().unwrap()
     }
 
     /// Adds a `TransitEdge` to the `PhysicalGraph`.
@@ -55,8 +55,8 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     ///
     /// let edge = TransitEdge {
     ///     id: 1,
-    ///     from: node1_id.index(),
-    ///     to: node2_id.index(),
+    ///     from: node1_id.index().try_into().unwrap(),
+    ///     to: node2_id.index().try_into().unwrap(),
     ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
     /// };
     ///
@@ -64,8 +64,14 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     /// ```
     pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) -> EdgeId {
         self.graph
-            .add_edge(NodeIndex::new(edge.from), NodeIndex::new(edge.to), edge)
+            .add_edge(
+                NodeIndex::new(edge.from.try_into().unwrap()),
+                NodeIndex::new(edge.to.try_into().unwrap()),
+                edge,
+            )
             .index()
+            .try_into()
+            .unwrap()
     }
 }
 
@@ -100,8 +106,8 @@ mod tests {
 
         let edge = TransitEdge {
             id: 1,
-            from: node1_id.index(),
-            to: node2_id.index(),
+            from: node1_id.index().try_into().unwrap(),
+            to: node2_id.index().try_into().unwrap(),
             path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
         };
 
