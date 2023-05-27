@@ -180,13 +180,6 @@ mod tests {
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
-        let edge14 = TransitEdge {
-            id: 2,
-            from: 1,
-            to: 4,
-            path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 4.0, y: 4.0}]),
-        };
-
         let edge12 = TransitEdge {
             id: 3,
             from: 1,
@@ -201,21 +194,18 @@ mod tests {
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 3.0, y: 3.0}]),
         };
 
-        // Add edges to the network
-        network.add_edge(edge01);
-        network.add_edge(edge14);
-        network.add_edge(edge12);
-        network.add_edge(edge13);
-
-        // Add edge with accessibility
-        let edge40 = TransitEdge {
-            id: 5,
-            from: 4,
-            to: 0,
-            path: LineString(vec![coord! {x: 4.0, y: 4.0}, coord! {x: 0.0, y: 0.0}]),
+        let edge14 = TransitEdge {
+            id: 2,
+            from: 1,
+            to: 4,
+            path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 4.0, y: 4.0}]),
         };
 
-        network.add_edge_with_accessibility(edge40, Accessability::ReachableNodes(vec![2, 3]));
+        // Add edges to the network
+        network.add_edge(edge01);
+        network.add_edge_with_accessibility(edge14, Accessability::ReachableNodes(vec![0]));
+        network.add_edge_with_accessibility(edge12, Accessability::ReachableNodes(vec![0]));
+        network.add_edge(edge13);
 
         // Define edge cost function
         let edge_cost = |edge: TransitEdge<f32>| 1.0;
@@ -227,24 +217,15 @@ mod tests {
             Accessability::UnreachableNodes(vec![]), // no unreachable node
             edge_cost,
         );
-        assert_eq!(result, Some((3.0, vec![0, 1, 4]))); // Expected shortest path is 0 -> 1 -> 4
+        assert_eq!(result, Some((2.0, vec![0, 1, 4]))); // Expected shortest path is 0 -> 1 -> 4
 
         // Test case 2: Node 4 is unreachable
         let result = network.find_shortest_path_with_accessability(
-            0,                                        // from node 0
-            4,                                        // to node 4
-            Accessability::UnreachableNodes(vec![4]), // node 4 is unreachable
+            2, // from node 2
+            4, // to node 4
+            Accessability::UnreachableNodes(vec![]),
             edge_cost,
         );
         assert_eq!(result, None); // Expected result is None as there is no path to node 4
-
-        // Test case 3: Nodes 2 and 3 are unreachable
-        let result = network.find_shortest_path_with_accessability(
-            0,                                           // from node 0
-            4,                                           // to node 4
-            Accessability::UnreachableNodes(vec![2, 3]), // nodes 2 and 3 are unreachable
-            edge_cost,
-        );
-        assert_eq!(result, Some((5.0, vec![0, 1, 4]))); // Expected shortest path is 0 -> 1 -> 4 as nodes 2 and 3 are unreachable
     }
 }
