@@ -6,7 +6,6 @@ use crate::{
 use geo::CoordNum;
 
 pub mod directed_graph;
-pub mod undirected_graph;
 
 /// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.
 ///
@@ -48,9 +47,9 @@ impl<R: Copy, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T>
     ///
     /// * `NodeId` - The ID of the added node.
     fn add_node(&mut self, node: TransitNode<R>) -> NodeId {
-        let node_id = self.physical_graph.add_transit_node(node);
+        let node_id = node.id;
+        self.physical_graph.add_transit_node(node);
         self.topology_graph.add_node(node_id);
-
         node_id
     }
 
@@ -98,14 +97,14 @@ mod tests {
         let node2_id = network.add_node(node2);
 
         // Check that the nodes were added successfully
-        assert_eq!(node1_id, 0);
-        assert_eq!(node2_id, 1);
+        assert_eq!(node1_id, 1);
+        assert_eq!(node2_id, 2);
 
         // Define an edge
         let edge = TransitEdge {
             id: 1,
-            from: node1_id,
-            to: node2_id,
+            from: 1,
+            to: 2,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
@@ -149,15 +148,15 @@ mod tests {
         // Define edges
         let edge1 = TransitEdge {
             id: 1,
-            from: 0,
-            to: 1,
+            from: 1,
+            to: 2,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
         let edge2 = TransitEdge {
             id: 2,
-            from: 0,
-            to: 2,
+            from: 2,
+            to: 3,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 2.0, y: 2.0}]),
         };
 

@@ -1,8 +1,11 @@
 use std::collections::HashMap;
 
-use crate::core::{EdgeId, NodeId, TransitEdge, TransitNode};
+use crate::core::{NodeId, TransitEdge, TransitNode};
 use geo::CoordNum;
-use petgraph::graph::{NodeIndex, UnGraph};
+use petgraph::{
+    graph::EdgeIndex,
+    graph::{NodeIndex, UnGraph},
+};
 
 /// `PhysicalGraph` represents the physical layout of the transit network.
 ///
@@ -47,11 +50,11 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
     /// graph.add_transit_node(node);
     /// ```
-    pub fn add_transit_node(&mut self, node: TransitNode<R>) -> NodeId {
+    pub fn add_transit_node(&mut self, node: TransitNode<R>) -> NodeIndex {
         let index = self.graph.add_node(node);
         self.id_to_index.insert(node.id, index);
         self.index_to_id.insert(index, node.id);
-        index.index().try_into().unwrap()
+        index
     }
 
     /// Adds a `TransitEdge` to the `PhysicalGraph`.
@@ -72,21 +75,17 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///
     /// let edge = TransitEdge {
     ///     id: 1,
-    ///     from: node1_id.index().try_into().unwrap(),
-    ///     to: node2_id.index().try_into().unwrap(),
+    ///     from: 1,
+    ///     to: 2,
     ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
     /// };
     ///
     /// graph.add_transit_edge(edge);
     /// ```
-    pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) -> EdgeId {
+    pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) -> EdgeIndex {
         let from = self.id_to_index(edge.from);
         let to = self.id_to_index(edge.to);
-        self.graph
-            .add_edge(from, to, edge)
-            .index()
-            .try_into()
-            .unwrap()
+        self.graph.add_edge(from, to, edge)
     }
 }
 
