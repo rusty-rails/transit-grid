@@ -282,7 +282,6 @@
 <a href="#282" id="282">282</a>
 <a href="#283" id="283">283</a>
 <a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, NodeId, TransitEdge, TransitNode},
@@ -291,7 +290,6 @@
 <span class="kw">use </span>geo::CoordNum;
 
 <span class="kw">pub mod </span>directed_graph;
-<span class="kw">pub mod </span>undirected_graph;
 
 <span class="doccomment">/// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.
 ///
@@ -333,9 +331,9 @@
     ///
     /// * `NodeId` - The ID of the added node.
     </span><span class="kw">fn </span>add_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: TransitNode&lt;R&gt;) -&gt; NodeId {
-        <span class="kw">let </span>node_id = <span class="self">self</span>.physical_graph.add_transit_node(node);
+        <span class="kw">let </span>node_id = node.id;
+        <span class="self">self</span>.physical_graph.add_transit_node(node);
         <span class="self">self</span>.topology_graph.add_node(node_id);
-
         node_id
     }
 
@@ -383,14 +381,14 @@
         <span class="kw">let </span>node2_id = network.add_node(node2);
 
         <span class="comment">// Check that the nodes were added successfully
-        </span><span class="macro">assert_eq!</span>(node1_id, <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(node2_id, <span class="number">1</span>);
+        </span><span class="macro">assert_eq!</span>(node1_id, <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(node2_id, <span class="number">2</span>);
 
         <span class="comment">// Define an edge
         </span><span class="kw">let </span>edge = TransitEdge {
             id: <span class="number">1</span>,
-            from: node1_id,
-            to: node2_id,
+            from: <span class="number">1</span>,
+            to: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
@@ -434,15 +432,15 @@
         <span class="comment">// Define edges
         </span><span class="kw">let </span>edge1 = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">0</span>,
-            to: <span class="number">1</span>,
+            from: <span class="number">1</span>,
+            to: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
         <span class="kw">let </span>edge2 = TransitEdge {
             id: <span class="number">2</span>,
-            from: <span class="number">0</span>,
-            to: <span class="number">2</span>,
+            from: <span class="number">2</span>,
+            to: <span class="number">3</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
 

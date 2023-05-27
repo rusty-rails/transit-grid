@@ -130,12 +130,14 @@
 <a href="#130" id="130">130</a>
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId, TransitEdge, TransitNode};
+<span class="kw">use </span><span class="kw">crate</span>::core::{NodeId, TransitEdge, TransitNode};
 <span class="kw">use </span>geo::CoordNum;
-<span class="kw">use </span>petgraph::graph::{NodeIndex, UnGraph};
+<span class="kw">use </span>petgraph::{
+    graph::EdgeIndex,
+    graph::{NodeIndex, UnGraph},
+};
 
 <span class="doccomment">/// `PhysicalGraph` represents the physical layout of the transit network.
 ///
@@ -180,11 +182,11 @@
     /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
     /// graph.add_transit_node(node);
     /// ```
-    </span><span class="kw">pub fn </span>add_transit_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: TransitNode&lt;R&gt;) -&gt; NodeId {
+    </span><span class="kw">pub fn </span>add_transit_node(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: TransitNode&lt;R&gt;) -&gt; NodeIndex {
         <span class="kw">let </span>index = <span class="self">self</span>.graph.add_node(node);
         <span class="self">self</span>.id_to_index.insert(node.id, index);
         <span class="self">self</span>.index_to_id.insert(index, node.id);
-        index.index().try_into().unwrap()
+        index
     }
 
     <span class="doccomment">/// Adds a `TransitEdge` to the `PhysicalGraph`.
@@ -205,21 +207,17 @@
     ///
     /// let edge = TransitEdge {
     ///     id: 1,
-    ///     from: node1_id.index().try_into().unwrap(),
-    ///     to: node2_id.index().try_into().unwrap(),
+    ///     from: 1,
+    ///     to: 2,
     ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
     /// };
     ///
     /// graph.add_transit_edge(edge);
     /// ```
-    </span><span class="kw">pub fn </span>add_transit_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) -&gt; EdgeId {
+    </span><span class="kw">pub fn </span>add_transit_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) -&gt; EdgeIndex {
         <span class="kw">let </span>from = <span class="self">self</span>.id_to_index(edge.from);
         <span class="kw">let </span>to = <span class="self">self</span>.id_to_index(edge.to);
-        <span class="self">self</span>.graph
-            .add_edge(from, to, edge)
-            .index()
-            .try_into()
-            .unwrap()
+        <span class="self">self</span>.graph.add_edge(from, to, edge)
     }
 }
 
