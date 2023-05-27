@@ -187,7 +187,48 @@
 <a href="#187" id="187">187</a>
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
-</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::core::{TransitEdge, TransitNode};
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+</pre><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId, TransitEdge, TransitNode};
+<span class="kw">use </span><span class="kw">crate</span>::prelude::PhysicalGraph;
 <span class="kw">use </span>geo::CoordNum;
 <span class="kw">use </span>petgraph::Undirected;
 
@@ -231,11 +272,9 @@
     }
 }
 
-<span class="comment">// Then you can implement the required traits on your TopologicalGraph:
-
-</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; GraphBase <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>NodeId = NodeIndex;
-    <span class="kw">type </span>EdgeId = EdgeIndex;
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; GraphBase <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>NodeId = NodeIndex&lt;NodeId&gt;;
+    <span class="kw">type </span>EdgeId = EdgeIndex&lt;EdgeId&gt;;
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; GraphRef <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {}
@@ -245,18 +284,38 @@
     <span class="kw">type </span>EdgeWeight = TransitEdge&lt;T&gt;;
 }
 
+<span class="kw">pub struct </span>NodeIdentifierIterator&lt;<span class="lifetime">&#39;a</span>, R: Copy, T: CoordNum&gt; {
+    inner: NodeIndices&lt;u32&gt;,
+    graph: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>PhysicalGraph&lt;R, T&gt;,
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: Copy, T: CoordNum&gt; Iterator <span class="kw">for </span>NodeIdentifierIterator&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
+    <span class="kw">type </span>Item = NodeIndex&lt;NodeId&gt;;
+
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">match </span><span class="self">self</span>.inner.next() {
+            <span class="prelude-val">Some</span>(node_index) =&gt; <span class="prelude-val">Some</span>(NodeIndex::new(
+                <span class="self">self</span>.graph.index_to_id(node_index).try_into().unwrap(),
+            )),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+        }
+    }
+}
+
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoNodeIdentifiers <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>NodeIdentifiers =
-        std::iter::Map&lt;NodeIndices&lt;u32&gt;, <span class="kw">fn</span>(petgraph::graph::NodeIndex&lt;u32&gt;) -&gt; <span class="self">Self</span>::NodeId&gt;;
+    <span class="kw">type </span>NodeIdentifiers = NodeIdentifierIterator&lt;<span class="lifetime">&#39;a</span>, R, T&gt;;
 
     <span class="kw">fn </span>node_identifiers(<span class="self">self</span>) -&gt; <span class="self">Self</span>::NodeIdentifiers {
-        <span class="self">self</span>.network.physical_graph.graph.node_indices().map(|i| i)
+        NodeIdentifierIterator {
+            inner: <span class="self">self</span>.network.physical_graph.graph.node_indices(),
+            graph: <span class="kw-2">&amp;</span><span class="self">self</span>.network.physical_graph,
+        }
     }
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoEdgeReferences <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
-    <span class="kw">type </span>EdgeRef = petgraph::graph::EdgeReference&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;, u32&gt;;
-    <span class="kw">type </span>EdgeReferences = petgraph::graph::EdgeReferences&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;, u32&gt;;
+    <span class="kw">type </span>EdgeRef = petgraph::graph::EdgeReference&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;&gt;;
+    <span class="kw">type </span>EdgeReferences = petgraph::graph::EdgeReferences&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;&gt;;
 
     <span class="kw">fn </span>edge_references(<span class="self">self</span>) -&gt; <span class="self">Self</span>::EdgeReferences {
         (<span class="self">self</span>.network.physical_graph.graph).edge_references()
@@ -280,12 +339,23 @@
         <span class="self">self</span>.network.physical_graph.graph.node_bound()
     }
 
-    <span class="kw">fn </span>to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, a: NodeIndex&lt;u32&gt;) -&gt; usize {
-        <span class="self">self</span>.network.physical_graph.graph.to_index(a)
+    <span class="kw">fn </span>to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, a: <span class="self">Self</span>::NodeId) -&gt; usize {
+        <span class="kw">let </span>index = <span class="self">self
+            </span>.network
+            .physical_graph
+            .id_to_index(a.index().try_into().unwrap());
+        <span class="self">self</span>.network.physical_graph.graph.to_index(index)
     }
 
-    <span class="kw">fn </span>from_index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; NodeIndex&lt;u32&gt; {
-        <span class="self">self</span>.network.physical_graph.graph.from_index(i)
+    <span class="kw">fn </span>from_index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="self">Self</span>::NodeId {
+        <span class="kw">let </span>index = <span class="self">self</span>.network.physical_graph.graph.from_index(i);
+        NodeIndex::new(
+            <span class="self">self</span>.network
+                .physical_graph
+                .index_to_id(index)
+                .try_into()
+                .unwrap(),
+        )
     }
 }
 
@@ -293,15 +363,24 @@
     <span class="kw">type </span>Edges = petgraph::graph::Edges&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;, Undirected, u32&gt;;
 
     <span class="kw">fn </span>edges(<span class="self">self</span>, a: <span class="self">Self</span>::NodeId) -&gt; <span class="self">Self</span>::Edges {
-        <span class="self">self</span>.network.physical_graph.graph.edges(a)
+        <span class="kw">let </span>index = <span class="self">self
+            </span>.network
+            .physical_graph
+            .id_to_index(a.index().try_into().unwrap());
+        <span class="self">self</span>.network.physical_graph.graph.edges(index)
     }
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, R: std::marker::Copy, T: CoordNum&gt; IntoNeighbors <span class="kw">for </span>UndirectedGraph&lt;<span class="lifetime">&#39;a</span>, R, T&gt; {
     <span class="kw">type </span>Neighbors = petgraph::graph::Neighbors&lt;<span class="lifetime">&#39;a</span>, TransitEdge&lt;T&gt;&gt;;
+    <span class="comment">//type Neighbors = petgraph::graph::Neighbors&lt;&#39;a, TopoEdge&gt;;
 
-    <span class="kw">fn </span>neighbors(<span class="self">self</span>, n: NodeIndex&lt;u32&gt;) -&gt; <span class="self">Self</span>::Neighbors {
-        <span class="self">self</span>.network.physical_graph.graph.neighbors(n)
+    </span><span class="kw">fn </span>neighbors(<span class="self">self</span>, n: <span class="self">Self</span>::NodeId) -&gt; <span class="self">Self</span>::Neighbors {
+        <span class="kw">let </span>index = <span class="self">self
+            </span>.network
+            .physical_graph
+            .id_to_index(n.index().try_into().unwrap());
+        <span class="self">self</span>.network.physical_graph.graph.neighbors(index)
     }
 }
 
@@ -373,7 +452,8 @@
             <span class="prelude-val">Some</span>(target_node),
             |_e| <span class="number">1</span>,
         );
-        <span class="macro">assert_eq!</span>(path[<span class="kw-2">&amp;</span>target_node], <span class="number">2</span>);
+        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, path);
+        <span class="macro">assert_eq!</span>(path[<span class="kw-2">&amp;</span>target_node], <span class="number">3</span>);
     }
 }
 </code></pre></div>

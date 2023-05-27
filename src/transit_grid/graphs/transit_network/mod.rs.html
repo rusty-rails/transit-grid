@@ -299,12 +299,12 @@
 /// The `TransitNetwork` provides a higher-level interface to the physical graph and topological graph.
 ///
 /// The struct implements `TransitNetworkModifier` trait for modifying the underlying physical graph.
-</span><span class="kw">pub struct </span>TransitNetwork&lt;R, T: CoordNum&gt; {
+</span><span class="kw">pub struct </span>TransitNetwork&lt;R: Copy, T: CoordNum&gt; {
     <span class="kw">pub </span>physical_graph: PhysicalGraph&lt;R, T&gt;,
     <span class="kw">pub </span>topology_graph: TopologyGraph,
 }
 
-<span class="kw">impl</span>&lt;R, T: CoordNum&gt; TransitNetwork&lt;R, T&gt; {
+<span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; TransitNetwork&lt;R, T&gt; {
     <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         TransitNetwork {
             physical_graph: PhysicalGraph::new(),
@@ -313,7 +313,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;R, T: CoordNum&gt; Default <span class="kw">for </span>TransitNetwork&lt;R, T&gt; {
+<span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; Default <span class="kw">for </span>TransitNetwork&lt;R, T&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::new()
     }
@@ -322,7 +322,7 @@
 <span class="doccomment">/// Implementation of `TransitNetworkModifier` trait for `TransitNetwork`.
 ///
 /// This implementation delegates the operations to the underlying physical graph.
-</span><span class="kw">impl</span>&lt;R, T: CoordNum&gt; TransitNetworkModifier&lt;R, T&gt; <span class="kw">for </span>TransitNetwork&lt;R, T&gt; {
+</span><span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; TransitNetworkModifier&lt;R, T&gt; <span class="kw">for </span>TransitNetwork&lt;R, T&gt; {
     <span class="doccomment">/// Adds a `TransitNode` to the physical graph of the network.
     ///
     /// # Arguments

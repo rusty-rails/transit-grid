@@ -606,18 +606,6 @@
 <a href="#606" id="606">606</a>
 <a href="#607" id="607">607</a>
 <a href="#608" id="608">608</a>
-<a href="#609" id="609">609</a>
-<a href="#610" id="610">610</a>
-<a href="#611" id="611">611</a>
-<a href="#612" id="612">612</a>
-<a href="#613" id="613">613</a>
-<a href="#614" id="614">614</a>
-<a href="#615" id="615">615</a>
-<a href="#616" id="616">616</a>
-<a href="#617" id="617">617</a>
-<a href="#618" id="618">618</a>
-<a href="#619" id="619">619</a>
-<a href="#620" id="620">620</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::{HashMap, HashSet};
 
 <span class="kw">use </span>petgraph::{
@@ -636,8 +624,8 @@
 /// This is particularly useful for scenarios such as rail switches where the directionality of edges matters.
 </span><span class="kw">pub struct </span>TopologyGraph {
     <span class="kw">pub </span>graph: StableDiGraph&lt;TopoNode, TopoEdge, u32&gt;,
-    node_to_toponode: HashMap&lt;NodeId, (NodeIndex, NodeIndex)&gt;,
-    toponode_to_node: HashMap&lt;NodeIndex, NodeId&gt;,
+    id_to_index: HashMap&lt;NodeId, (NodeIndex, NodeIndex)&gt;,
+    index_to_id: HashMap&lt;NodeIndex, NodeId&gt;,
 }
 
 <span class="kw">impl </span>TopologyGraph {
@@ -645,13 +633,17 @@
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         TopologyGraph {
             graph: StableDiGraph::&lt;TopoNode, TopoEdge, u32&gt;::new(),
-            node_to_toponode: HashMap::new(),
-            toponode_to_node: HashMap::new(),
+            id_to_index: HashMap::new(),
+            index_to_id: HashMap::new(),
         }
     }
 
-    <span class="kw">pub fn </span>topo_node_id_to_node_id(<span class="kw-2">&amp;</span><span class="self">self</span>, topo_node_id: NodeIndex) -&gt; NodeId {
-        <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>topo_node_id).unwrap().clone()
+    <span class="kw">pub fn </span>index_to_id(<span class="kw-2">&amp;</span><span class="self">self</span>, index: NodeIndex) -&gt; NodeId {
+        <span class="self">self</span>.index_to_id[<span class="kw-2">&amp;</span>index]
+    }
+
+    <span class="kw">pub fn </span>id_to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, id: NodeId) -&gt; (NodeIndex, NodeIndex) {
+        <span class="self">self</span>.id_to_index[<span class="kw-2">&amp;</span>id]
     }
 
     <span class="doccomment">/// Adds a Node with a `NodeId` to the topological graph. This internally adds two `TopoNode`s to the graph.
@@ -678,11 +670,11 @@
         <span class="kw">let </span>topo_node2_id = <span class="self">self</span>.graph.add_node(topo_node2);
         <span class="self">self</span>.graph.node_weight_mut(topo_node2_id).unwrap().id = topo_node2_id;
 
-        <span class="self">self</span>.node_to_toponode
+        <span class="self">self</span>.id_to_index
             .insert(node_id, (topo_node1_id, topo_node2_id));
 
-        <span class="self">self</span>.toponode_to_node.insert(topo_node1_id, node_id);
-        <span class="self">self</span>.toponode_to_node.insert(topo_node2_id, node_id);
+        <span class="self">self</span>.index_to_id.insert(topo_node1_id, node_id);
+        <span class="self">self</span>.index_to_id.insert(topo_node2_id, node_id);
         (topo_node1_id, topo_node2_id)
     }
 
@@ -704,8 +696,8 @@
         to_node_id: NodeId,
     ) -&gt; (EdgeIndex, EdgeIndex) {
         <span class="kw">let </span>(from_topo_node_id1, from_topo_node_id2) =
-            <span class="kw-2">*</span><span class="self">self</span>.node_to_toponode.get(<span class="kw-2">&amp;</span>from_node_id).unwrap();
-        <span class="kw">let </span>(to_topo_node_id1, to_topo_node_id2) = <span class="kw-2">*</span><span class="self">self</span>.node_to_toponode.get(<span class="kw-2">&amp;</span>to_node_id).unwrap();
+            <span class="kw-2">*</span><span class="self">self</span>.id_to_index.get(<span class="kw-2">&amp;</span>from_node_id).unwrap();
+        <span class="kw">let </span>(to_topo_node_id1, to_topo_node_id2) = <span class="kw-2">*</span><span class="self">self</span>.id_to_index.get(<span class="kw-2">&amp;</span>to_node_id).unwrap();
 
         <span class="kw">let </span>from_topo_node_id = <span class="kw">if </span><span class="self">self</span>.has_incoming(from_topo_node_id1) {
             from_topo_node_id2
@@ -719,8 +711,8 @@
             to_topo_node_id1
         };
 
-        <span class="kw">let </span>from_node_id: NodeId = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>from_topo_node_id).unwrap();
-        <span class="kw">let </span>to_node_id: NodeId = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>to_topo_node_id).unwrap();
+        <span class="kw">let </span>from_node_id: NodeId = <span class="kw-2">*</span><span class="self">self</span>.index_to_id.get(<span class="kw-2">&amp;</span>from_topo_node_id).unwrap();
+        <span class="kw">let </span>to_node_id: NodeId = <span class="kw-2">*</span><span class="self">self</span>.index_to_id.get(<span class="kw-2">&amp;</span>to_topo_node_id).unwrap();
 
         <span class="kw">let </span>topo_edge1 = TopoEdge {
             id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
@@ -799,7 +791,7 @@
         neighbors: Vec&lt;NodeId&gt;,
         dir: Direction,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;NodeIndex&gt; {
-        <span class="kw">let </span>topo_node_ids = <span class="self">self</span>.node_to_toponode.get(<span class="kw-2">&amp;</span>node_id)<span class="question-mark">?</span>;
+        <span class="kw">let </span>topo_node_ids = <span class="self">self</span>.id_to_index.get(<span class="kw-2">&amp;</span>node_id)<span class="question-mark">?</span>;
         <span class="kw">if </span><span class="self">self</span>.no_edges_in_direction(topo_node_ids.<span class="number">0</span>, neighbors.clone(), dir.opposite()) {
             <span class="kw">return </span><span class="prelude-val">Some</span>(topo_node_ids.<span class="number">0</span>);
         }
@@ -819,8 +811,8 @@
     ///
     /// * `Option&lt;NodeIndex&gt;` - The `NodeIndex` of the other `TopoNode` for the given `TopoNode`, if it exists.
     </span><span class="kw">pub fn </span>get_other_toponode(<span class="kw-2">&amp;</span><span class="self">self</span>, topo_node_id: NodeIndex) -&gt; <span class="prelude-ty">Option</span>&lt;NodeIndex&gt; {
-        <span class="kw">let </span>node_id = <span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>topo_node_id)<span class="question-mark">?</span>;
-        <span class="kw">let </span>topo_node_ids = <span class="self">self</span>.node_to_toponode.get(node_id)<span class="question-mark">?</span>;
+        <span class="kw">let </span>node_id = <span class="self">self</span>.index_to_id.get(<span class="kw-2">&amp;</span>topo_node_id)<span class="question-mark">?</span>;
+        <span class="kw">let </span>topo_node_ids = <span class="self">self</span>.id_to_index.get(node_id)<span class="question-mark">?</span>;
         <span class="kw">if </span>topo_node_ids.<span class="number">0 </span>== topo_node_id {
             <span class="prelude-val">Some</span>(topo_node_ids.<span class="number">1</span>)
         } <span class="kw">else if </span>topo_node_ids.<span class="number">1 </span>== topo_node_id {
@@ -871,8 +863,8 @@
             <span class="kw">let </span>v2 = <span class="self">self</span>.get_other_toponode(v1);
 
             <span class="kw">if let </span>(<span class="prelude-val">Some</span>(u2), <span class="prelude-val">Some</span>(v2)) = (u2, v2) {
-                <span class="kw">let </span>from_node_id = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>u1).unwrap();
-                <span class="kw">let </span>to_node_id = <span class="kw-2">*</span><span class="self">self</span>.toponode_to_node.get(<span class="kw-2">&amp;</span>v1).unwrap();
+                <span class="kw">let </span>from_node_id = <span class="kw-2">*</span><span class="self">self</span>.index_to_id.get(<span class="kw-2">&amp;</span>u1).unwrap();
+                <span class="kw">let </span>to_node_id = <span class="kw-2">*</span><span class="self">self</span>.index_to_id.get(<span class="kw-2">&amp;</span>v1).unwrap();
 
                 <span class="kw">let </span>topo_edge1 = TopoEdge {
                     id: EdgeIndex::new(<span class="number">0</span>), <span class="comment">// Temporary value; will be updated
@@ -1155,26 +1147,10 @@
             topo_graph.add_node(<span class="kw-2">*</span>node_id);
         }
 
-        <span class="kw">let </span>node_idx0 = topo_graph
-            .node_to_toponode
-            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">0</span>])
-            .unwrap()
-            .clone();
-        <span class="kw">let </span>node_idx1 = topo_graph
-            .node_to_toponode
-            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">1</span>])
-            .unwrap()
-            .clone();
-        <span class="kw">let </span>node_idx2 = topo_graph
-            .node_to_toponode
-            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">2</span>])
-            .unwrap()
-            .clone();
-        <span class="kw">let </span>node_idx3 = topo_graph
-            .node_to_toponode
-            .get(<span class="kw-2">&amp;</span>node_ids[<span class="number">3</span>])
-            .unwrap()
-            .clone();
+        <span class="kw">let </span>node_idx0 = topo_graph.id_to_index.get(<span class="kw-2">&amp;</span>node_ids[<span class="number">0</span>]).unwrap().clone();
+        <span class="kw">let </span>node_idx1 = topo_graph.id_to_index.get(<span class="kw-2">&amp;</span>node_ids[<span class="number">1</span>]).unwrap().clone();
+        <span class="kw">let </span>node_idx2 = topo_graph.id_to_index.get(<span class="kw-2">&amp;</span>node_ids[<span class="number">2</span>]).unwrap().clone();
+        <span class="kw">let </span>node_idx3 = topo_graph.id_to_index.get(<span class="kw-2">&amp;</span>node_ids[<span class="number">3</span>]).unwrap().clone();
 
         <span class="kw">let </span>topo_edge = TopoEdge {
             id: EdgeIndex::new(<span class="number">0</span>),

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["core","graphs","operations","prelude"]};
+window.SIDEBAR_ITEMS = {"mod":["algorithms","core","graphs","operations","prelude"]};
