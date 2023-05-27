@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::core::{EdgeId, NodeId, TransitEdge, TransitNode};
 use geo::CoordNum;
 use petgraph::graph::{NodeIndex, UnGraph};
@@ -11,14 +13,26 @@ use petgraph::graph::{NodeIndex, UnGraph};
 /// The graph is implemented using `petgraph`'s `Csr` structure.
 pub struct PhysicalGraph<R, T: CoordNum> {
     pub graph: UnGraph<TransitNode<R>, TransitEdge<T>, u32>,
+    id_to_index: HashMap<NodeId, NodeIndex>,
+    index_to_id: HashMap<NodeIndex, NodeId>,
 }
 
-impl<R, T: CoordNum> PhysicalGraph<R, T> {
+impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     /// Creates a new, empty `PhysicalGraph`.
     pub fn new() -> Self {
         PhysicalGraph {
             graph: UnGraph::<TransitNode<R>, TransitEdge<T>, u32>::new_undirected(),
+            id_to_index: HashMap::new(),
+            index_to_id: HashMap::new(),
         }
+    }
+
+    pub fn index_to_id(&self, index: NodeIndex) -> NodeId {
+        self.index_to_id[&index]
+    }
+
+    pub fn id_to_index(&self, id: NodeId) -> NodeIndex {
+        self.id_to_index[&id]
     }
 
     /// Adds a `TransitNode` to the `PhysicalGraph`.
@@ -34,7 +48,10 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     /// graph.add_transit_node(node);
     /// ```
     pub fn add_transit_node(&mut self, node: TransitNode<R>) -> NodeId {
-        self.graph.add_node(node).index().try_into().unwrap()
+        let index = self.graph.add_node(node);
+        self.id_to_index.insert(node.id, index);
+        self.index_to_id.insert(index, node.id);
+        index.index().try_into().unwrap()
     }
 
     /// Adds a `TransitEdge` to the `PhysicalGraph`.
@@ -63,19 +80,17 @@ impl<R, T: CoordNum> PhysicalGraph<R, T> {
     /// graph.add_transit_edge(edge);
     /// ```
     pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) -> EdgeId {
+        let from = self.id_to_index(edge.from);
+        let to = self.id_to_index(edge.to);
         self.graph
-            .add_edge(
-                NodeIndex::new(edge.from.try_into().unwrap()),
-                NodeIndex::new(edge.to.try_into().unwrap()),
-                edge,
-            )
+            .add_edge(from, to, edge)
             .index()
             .try_into()
             .unwrap()
     }
 }
 
-impl<R, T: CoordNum> Default for PhysicalGraph<R, T> {
+impl<R: Copy, T: CoordNum> Default for PhysicalGraph<R, T> {
     fn default() -> Self {
         Self::new()
     }
@@ -85,7 +100,6 @@ impl<R, T: CoordNum> Default for PhysicalGraph<R, T> {
 mod tests {
     use super::*;
     use geo::{coord, LineString};
-    use petgraph::stable_graph::IndexType;
 
     #[test]
     fn test_graph() {
@@ -101,13 +115,13 @@ mod tests {
             location: coord! { x:1.0, y:1.0 },
         };
 
-        let node1_id = graph.add_transit_node(node1);
-        let node2_id = graph.add_transit_node(node2);
+        let _node1_id = graph.add_transit_node(node1);
+        let _node2_id = graph.add_transit_node(node2);
 
         let edge = TransitEdge {
             id: 1,
-            from: node1_id.index().try_into().unwrap(),
-            to: node2_id.index().try_into().unwrap(),
+            from: 1,
+            to: 2,
             path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
         };
 

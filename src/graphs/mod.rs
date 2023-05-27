@@ -1,7 +1,7 @@
-mod physical_graph;
+mod physical;
 mod topology;
 mod transit_network;
 
-pub use physical_graph::PhysicalGraph;
+pub use physical::PhysicalGraph;
 pub use topology::*;
 pub use transit_network::TransitNetwork;

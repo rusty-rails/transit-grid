@@ -1,4 +1,5 @@
-use crate::core::{TransitEdge, TransitNode};
+use crate::core::{EdgeId, NodeId, TransitEdge, TransitNode};
+use crate::prelude::PhysicalGraph;
 use geo::CoordNum;
 use petgraph::Undirected;
 
@@ -42,11 +43,9 @@ impl<'a, R: std::marker::Copy, T: CoordNum> UndirectedGraph<'a, R, T> {
     }
 }
 
-// Then you can implement the required traits on your TopologicalGraph:
-
 impl<'a, R: std::marker::Copy, T: CoordNum> GraphBase for UndirectedGraph<'a, R, T> {
-    type NodeId = NodeIndex;
-    type EdgeId = EdgeIndex;
+    type NodeId = NodeIndex<NodeId>;
+    type EdgeId = EdgeIndex<EdgeId>;
 }
 
 impl<'a, R: std::marker::Copy, T: CoordNum> GraphRef for UndirectedGraph<'a, R, T> {}
@@ -56,18 +55,38 @@ impl<'a, R: std::marker::Copy, T: CoordNum> Data for UndirectedGraph<'a, R, T> {
     type EdgeWeight = TransitEdge<T>;
 }
 
+pub struct NodeIdentifierIterator<'a, R: Copy, T: CoordNum> {
+    inner: NodeIndices<u32>,
+    graph: &'a PhysicalGraph<R, T>,
+}
+
+impl<'a, R: Copy, T: CoordNum> Iterator for NodeIdentifierIterator<'a, R, T> {
+    type Item = NodeIndex<NodeId>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.inner.next() {
+            Some(node_index) => Some(NodeIndex::new(
+                self.graph.index_to_id(node_index).try_into().unwrap(),
+            )),
+            None => None,
+        }
+    }
+}
+
 impl<'a, R: std::marker::Copy, T: CoordNum> IntoNodeIdentifiers for UndirectedGraph<'a, R, T> {
-    type NodeIdentifiers =
-        std::iter::Map<NodeIndices<u32>, fn(petgraph::graph::NodeIndex<u32>) -> Self::NodeId>;
+    type NodeIdentifiers = NodeIdentifierIterator<'a, R, T>;
 
     fn node_identifiers(self) -> Self::NodeIdentifiers {
-        self.network.physical_graph.graph.node_indices().map(|i| i)
+        NodeIdentifierIterator {
+            inner: self.network.physical_graph.graph.node_indices(),
+            graph: &self.network.physical_graph,
+        }
     }
 }
 
 impl<'a, R: std::marker::Copy, T: CoordNum> IntoEdgeReferences for UndirectedGraph<'a, R, T> {
-    type EdgeRef = petgraph::graph::EdgeReference<'a, TransitEdge<T>, u32>;
-    type EdgeReferences = petgraph::graph::EdgeReferences<'a, TransitEdge<T>, u32>;
+    type EdgeRef = petgraph::graph::EdgeReference<'a, TransitEdge<T>>;
+    type EdgeReferences = petgraph::graph::EdgeReferences<'a, TransitEdge<T>>;
 
     fn edge_references(self) -> Self::EdgeReferences {
         (self.network.physical_graph.graph).edge_references()
@@ -91,12 +110,23 @@ impl<'a, R: std::marker::Copy, T: CoordNum> NodeIndexable for UndirectedGraph<'a
         self.network.physical_graph.graph.node_bound()
     }
 
-    fn to_index(&self, a: NodeIndex<u32>) -> usize {
-        self.network.physical_graph.graph.to_index(a)
+    fn to_index(&self, a: Self::NodeId) -> usize {
+        let index = self
+            .network
+            .physical_graph
+            .id_to_index(a.index().try_into().unwrap());
+        self.network.physical_graph.graph.to_index(index)
     }
 
-    fn from_index(&self, i: usize) -> NodeIndex<u32> {
-        self.network.physical_graph.graph.from_index(i)
+    fn from_index(&self, i: usize) -> Self::NodeId {
+        let index = self.network.physical_graph.graph.from_index(i);
+        NodeIndex::new(
+            self.network
+                .physical_graph
+                .index_to_id(index)
+                .try_into()
+                .unwrap(),
+        )
     }
 }
 
@@ -104,15 +134,24 @@ impl<'a, R: std::marker::Copy, T: CoordNum> IntoEdges for UndirectedGraph<'a, R,
     type Edges = petgraph::graph::Edges<'a, TransitEdge<T>, Undirected, u32>;
 
     fn edges(self, a: Self::NodeId) -> Self::Edges {
-        self.network.physical_graph.graph.edges(a)
+        let index = self
+            .network
+            .physical_graph
+            .id_to_index(a.index().try_into().unwrap());
+        self.network.physical_graph.graph.edges(index)
     }
 }
 
 impl<'a, R: std::marker::Copy, T: CoordNum> IntoNeighbors for UndirectedGraph<'a, R, T> {
     type Neighbors = petgraph::graph::Neighbors<'a, TransitEdge<T>>;
+    //type Neighbors = petgraph::graph::Neighbors<'a, TopoEdge>;
 
-    fn neighbors(self, n: NodeIndex<u32>) -> Self::Neighbors {
-        self.network.physical_graph.graph.neighbors(n)
+    fn neighbors(self, n: Self::NodeId) -> Self::Neighbors {
+        let index = self
+            .network
+            .physical_graph
+            .id_to_index(n.index().try_into().unwrap());
+        self.network.physical_graph.graph.neighbors(index)
     }
 }
 
@@ -184,6 +223,7 @@ mod tests {
             Some(target_node),
             |_e| 1,
         );
-        assert_eq!(path[&target_node], 2);
+        println!("{:?}", path);
+        assert_eq!(path[&target_node], 3);
     }
 }

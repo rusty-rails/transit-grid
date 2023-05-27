@@ -1,3 +1,4 @@
+pub mod algorithms;
 pub mod core;
 pub mod graphs;
 pub mod operations;

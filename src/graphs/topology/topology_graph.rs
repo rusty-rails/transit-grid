@@ -16,8 +16,8 @@ use super::{TopoEdge, TopoNode};
 /// This is particularly useful for scenarios such as rail switches where the directionality of edges matters.
 pub struct TopologyGraph {
     pub graph: StableDiGraph<TopoNode, TopoEdge, u32>,
-    node_to_toponode: HashMap<NodeId, (NodeIndex, NodeIndex)>,
-    toponode_to_node: HashMap<NodeIndex, NodeId>,
+    id_to_index: HashMap<NodeId, (NodeIndex, NodeIndex)>,
+    index_to_id: HashMap<NodeIndex, NodeId>,
 }
 
 impl TopologyGraph {
@@ -25,13 +25,17 @@ impl TopologyGraph {
     pub fn new() -> Self {
         TopologyGraph {
             graph: StableDiGraph::<TopoNode, TopoEdge, u32>::new(),
-            node_to_toponode: HashMap::new(),
-            toponode_to_node: HashMap::new(),
+            id_to_index: HashMap::new(),
+            index_to_id: HashMap::new(),
         }
     }
 
-    pub fn topo_node_id_to_node_id(&self, topo_node_id: NodeIndex) -> NodeId {
-        self.toponode_to_node.get(&topo_node_id).unwrap().clone()
+    pub fn index_to_id(&self, index: NodeIndex) -> NodeId {
+        self.index_to_id[&index]
+    }
+
+    pub fn id_to_index(&self, id: NodeId) -> (NodeIndex, NodeIndex) {
+        self.id_to_index[&id]
     }
 
     /// Adds a Node with a `NodeId` to the topological graph. This internally adds two `TopoNode`s to the graph.
@@ -58,11 +62,11 @@ impl TopologyGraph {
         let topo_node2_id = self.graph.add_node(topo_node2);
         self.graph.node_weight_mut(topo_node2_id).unwrap().id = topo_node2_id;
 
-        self.node_to_toponode
+        self.id_to_index
             .insert(node_id, (topo_node1_id, topo_node2_id));
 
-        self.toponode_to_node.insert(topo_node1_id, node_id);
-        self.toponode_to_node.insert(topo_node2_id, node_id);
+        self.index_to_id.insert(topo_node1_id, node_id);
+        self.index_to_id.insert(topo_node2_id, node_id);
         (topo_node1_id, topo_node2_id)
     }
 
@@ -84,8 +88,8 @@ impl TopologyGraph {
         to_node_id: NodeId,
     ) -> (EdgeIndex, EdgeIndex) {
         let (from_topo_node_id1, from_topo_node_id2) =
-            *self.node_to_toponode.get(&from_node_id).unwrap();
-        let (to_topo_node_id1, to_topo_node_id2) = *self.node_to_toponode.get(&to_node_id).unwrap();
+            *self.id_to_index.get(&from_node_id).unwrap();
+        let (to_topo_node_id1, to_topo_node_id2) = *self.id_to_index.get(&to_node_id).unwrap();
 
         let from_topo_node_id = if self.has_incoming(from_topo_node_id1) {
             from_topo_node_id2
@@ -99,8 +103,8 @@ impl TopologyGraph {
             to_topo_node_id1
         };
 
-        let from_node_id: NodeId = *self.toponode_to_node.get(&from_topo_node_id).unwrap();
-        let to_node_id: NodeId = *self.toponode_to_node.get(&to_topo_node_id).unwrap();
+        let from_node_id: NodeId = *self.index_to_id.get(&from_topo_node_id).unwrap();
+        let to_node_id: NodeId = *self.index_to_id.get(&to_topo_node_id).unwrap();
 
         let topo_edge1 = TopoEdge {
             id: EdgeIndex::new(0), // Temporary value; will be updated
@@ -179,7 +183,7 @@ impl TopologyGraph {
         neighbors: Vec<NodeId>,
         dir: Direction,
     ) -> Option<NodeIndex> {
-        let topo_node_ids = self.node_to_toponode.get(&node_id)?;
+        let topo_node_ids = self.id_to_index.get(&node_id)?;
         if self.no_edges_in_direction(topo_node_ids.0, neighbors.clone(), dir.opposite()) {
             return Some(topo_node_ids.0);
         }
@@ -199,8 +203,8 @@ impl TopologyGraph {
     ///
     /// * `Option<NodeIndex>` - The `NodeIndex` of the other `TopoNode` for the given `TopoNode`, if it exists.
     pub fn get_other_toponode(&self, topo_node_id: NodeIndex) -> Option<NodeIndex> {
-        let node_id = self.toponode_to_node.get(&topo_node_id)?;
-        let topo_node_ids = self.node_to_toponode.get(node_id)?;
+        let node_id = self.index_to_id.get(&topo_node_id)?;
+        let topo_node_ids = self.id_to_index.get(node_id)?;
         if topo_node_ids.0 == topo_node_id {
             Some(topo_node_ids.1)
         } else if topo_node_ids.1 == topo_node_id {
@@ -251,8 +255,8 @@ impl TopologyGraph {
             let v2 = self.get_other_toponode(v1);
 
             if let (Some(u2), Some(v2)) = (u2, v2) {
-                let from_node_id = *self.toponode_to_node.get(&u1).unwrap();
-                let to_node_id = *self.toponode_to_node.get(&v1).unwrap();
+                let from_node_id = *self.index_to_id.get(&u1).unwrap();
+                let to_node_id = *self.index_to_id.get(&v1).unwrap();
 
                 let topo_edge1 = TopoEdge {
                     id: EdgeIndex::new(0), // Temporary value; will be updated
@@ -535,26 +539,10 @@ mod tests {
             topo_graph.add_node(*node_id);
         }
 
-        let node_idx0 = topo_graph
-            .node_to_toponode
-            .get(&node_ids[0])
-            .unwrap()
-            .clone();
-        let node_idx1 = topo_graph
-            .node_to_toponode
-            .get(&node_ids[1])
-            .unwrap()
-            .clone();
-        let node_idx2 = topo_graph
-            .node_to_toponode
-            .get(&node_ids[2])
-            .unwrap()
-            .clone();
-        let node_idx3 = topo_graph
-            .node_to_toponode
-            .get(&node_ids[3])
-            .unwrap()
-            .clone();
+        let node_idx0 = topo_graph.id_to_index.get(&node_ids[0]).unwrap().clone();
+        let node_idx1 = topo_graph.id_to_index.get(&node_ids[1]).unwrap().clone();
+        let node_idx2 = topo_graph.id_to_index.get(&node_ids[2]).unwrap().clone();
+        let node_idx3 = topo_graph.id_to_index.get(&node_ids[3]).unwrap().clone();
 
         let topo_edge = TopoEdge {
             id: EdgeIndex::new(0),

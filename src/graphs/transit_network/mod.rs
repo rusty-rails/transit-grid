@@ -14,12 +14,12 @@ pub mod undirected_graph;
 /// The `TransitNetwork` provides a higher-level interface to the physical graph and topological graph.
 ///
 /// The struct implements `TransitNetworkModifier` trait for modifying the underlying physical graph.
-pub struct TransitNetwork<R, T: CoordNum> {
+pub struct TransitNetwork<R: Copy, T: CoordNum> {
     pub physical_graph: PhysicalGraph<R, T>,
     pub topology_graph: TopologyGraph,
 }
 
-impl<R, T: CoordNum> TransitNetwork<R, T> {
+impl<R: Copy, T: CoordNum> TransitNetwork<R, T> {
     pub fn new() -> Self {
         TransitNetwork {
             physical_graph: PhysicalGraph::new(),
@@ -28,7 +28,7 @@ impl<R, T: CoordNum> TransitNetwork<R, T> {
     }
 }
 
-impl<R, T: CoordNum> Default for TransitNetwork<R, T> {
+impl<R: Copy, T: CoordNum> Default for TransitNetwork<R, T> {
     fn default() -> Self {
         Self::new()
     }
@@ -37,7 +37,7 @@ impl<R, T: CoordNum> Default for TransitNetwork<R, T> {
 /// Implementation of `TransitNetworkModifier` trait for `TransitNetwork`.
 ///
 /// This implementation delegates the operations to the underlying physical graph.
-impl<R, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T> {
+impl<R: Copy, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T> {
     /// Adds a `TransitNode` to the physical graph of the network.
     ///
     /// # Arguments
