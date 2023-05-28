@@ -636,4 +636,15 @@ mod tests {
             assert!(topo_graph.graph.edge_weight(edge_index2).is_some());
         }
     }
+
+    #[test]
+    fn test_default() {
+        let topo_graph = TopologyGraph::default();
+
+        // Ensure that the graph is empty
+        assert_eq!(topo_graph.graph.node_count(), 0);
+        assert_eq!(topo_graph.graph.edge_count(), 0);
+        assert_eq!(topo_graph.id_to_index.len(), 0);
+        assert_eq!(topo_graph.index_to_id.len(), 0);
+    }
 }

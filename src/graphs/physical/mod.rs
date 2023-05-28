@@ -185,7 +185,7 @@ impl<R: Copy, T: CoordNum> Default for PhysicalGraph<R, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use geo::{coord, LineString};
+    use geo::{coord, Coord, LineString};
 
     #[test]
     fn test_graph() {
@@ -215,5 +215,61 @@ mod tests {
 
         assert_eq!(graph.graph.node_count(), 2);
         assert_eq!(graph.graph.edge_count(), 1);
+    }
+
+    #[test]
+    fn test_index_to_id() {
+        let mut graph = PhysicalGraph::<Coord, f64>::new();
+
+        let node1 = TransitNode {
+            id: 1,
+            location: coord! { x:0.0, y:0.0 },
+        };
+
+        let node2 = TransitNode {
+            id: 2,
+            location: coord! { x:1.0, y:1.0 },
+        };
+
+        let node1_index = graph.add_transit_node(node1);
+        let node2_index = graph.add_transit_node(node2);
+
+        let node1_id = graph.index_to_id(node1_index);
+        let node2_id = graph.index_to_id(node2_index);
+
+        assert_eq!(node1_id, 1);
+        assert_eq!(node2_id, 2);
+    }
+
+    #[test]
+    fn test_id_to_index() {
+        let mut graph = PhysicalGraph::<Coord, f64>::new();
+
+        let node1 = TransitNode {
+            id: 1,
+            location: coord! { x:0.0, y:0.0 },
+        };
+
+        let node2 = TransitNode {
+            id: 2,
+            location: coord! { x:1.0, y:1.0 },
+        };
+
+        let node1_index = graph.add_transit_node(node1);
+        let node2_index = graph.add_transit_node(node2);
+
+        let queried_node1_index = graph.id_to_index(1);
+        let queried_node2_index = graph.id_to_index(2);
+
+        assert_eq!(node1_index, queried_node1_index);
+        assert_eq!(node2_index, queried_node2_index);
+    }
+
+    #[test]
+    fn test_default() {
+        let graph: PhysicalGraph<u32, f64> = PhysicalGraph::default();
+
+        assert_eq!(graph.graph.node_count(), 0);
+        assert_eq!(graph.graph.edge_count(), 0);
     }
 }

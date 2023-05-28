@@ -296,4 +296,14 @@ mod tests {
             .collect();
         assert_eq!(edge_ids, vec![1, 1, 2, 2, 3, 3, 4, 4, 5, 5]);
     }
+
+    #[test]
+    fn test_default() {
+        let network: TransitNetwork<u32, f64> = TransitNetwork::default();
+
+        assert_eq!(network.physical_graph.graph.node_count(), 0);
+        assert_eq!(network.physical_graph.graph.edge_count(), 0);
+        assert_eq!(network.topology_graph.graph.node_count(), 0);
+        assert_eq!(network.topology_graph.graph.edge_count(), 0);
+    }
 }

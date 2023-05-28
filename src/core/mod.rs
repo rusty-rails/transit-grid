@@ -125,4 +125,13 @@ mod tests {
             LineString(vec![coord! { x:0.0, y:0.0}, coord! { x:1.0, y:1.0}])
         );
     }
+
+    #[test]
+    fn test_edge_default() {
+        let edge = TransitEdge::<f64>::default();
+        assert_eq!(edge.id, 0);
+        assert_eq!(edge.from, 0);
+        assert_eq!(edge.to, 0);
+        assert_eq!(edge.path, LineString::<f64>(vec![]));
+    }
 }

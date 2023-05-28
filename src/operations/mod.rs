@@ -1,5 +1,3 @@
-//! # operations
-//!
 //! This module provides abstractions and implementations for modifying a transit network. A transit network is represented as a graph,
 //! where each node is a `TransitNode` (a point in the transit network where a vehicle can stop) and each edge represents a path
 //! (`TransitEdge`) between two transit nodes. The main trait provided by this module is `TransitNetworkModifier`.
