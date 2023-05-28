@@ -297,6 +297,16 @@
 <a href="#297" id="297">297</a>
 <a href="#298" id="298">298</a>
 <a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, NodeId, TransitEdge, TransitNode},
@@ -594,6 +604,16 @@
             .map(|edge| edge.weight().edge_id)
             .collect();
         <span class="macro">assert_eq!</span>(edge_ids, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>]);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_default() {
+        <span class="kw">let </span>network: TransitNetwork&lt;u32, f64&gt; = TransitNetwork::default();
+
+        <span class="macro">assert_eq!</span>(network.physical_graph.graph.node_count(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(network.physical_graph.graph.edge_count(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(network.topology_graph.graph.node_count(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(network.topology_graph.graph.edge_count(), <span class="number">0</span>);
     }
 }
 </code></pre></div>

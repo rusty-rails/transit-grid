@@ -637,6 +637,17 @@
 <a href="#637" id="637">637</a>
 <a href="#638" id="638">638</a>
 <a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::{HashMap, HashSet};
 
 <span class="kw">use </span>petgraph::{
@@ -1274,6 +1285,17 @@
             <span class="macro">assert!</span>(topo_graph.graph.edge_weight(edge_index1).is_some());
             <span class="macro">assert!</span>(topo_graph.graph.edge_weight(edge_index2).is_some());
         }
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_default() {
+        <span class="kw">let </span>topo_graph = TopologyGraph::default();
+
+        <span class="comment">// Ensure that the graph is empty
+        </span><span class="macro">assert_eq!</span>(topo_graph.graph.node_count(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.graph.edge_count(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.id_to_index.len(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.index_to_id.len(), <span class="number">0</span>);
     }
 }
 </code></pre></div>

@@ -126,6 +126,15 @@
 <a href="#126" id="126">126</a>
 <a href="#127" id="127">127</a>
 <a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
 </pre><pre class="rust"><code><span class="doccomment">//! This module provides basic structures for representing a transit network.
 //! It provides `TransitNode` and `TransitEdge` structures, along with ID types for them.
 //! The `TransitNode` represents a node in the transit network, while the `TransitEdge` represents a connection between two nodes.
@@ -252,6 +261,15 @@
             edge.path,
             LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0</span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0</span>}])
         );
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_edge_default() {
+        <span class="kw">let </span>edge = TransitEdge::&lt;f64&gt;::default();
+        <span class="macro">assert_eq!</span>(edge.id, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(edge.from, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(edge.to, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(edge.path, LineString::&lt;f64&gt;(<span class="macro">vec!</span>[]));
     }
 }
 </code></pre></div>
