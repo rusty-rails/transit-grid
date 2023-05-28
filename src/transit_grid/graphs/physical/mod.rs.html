@@ -558,13 +558,13 @@
     ///     path: LineString(vec![coord! { x:1.0, y:1.0 }, coord! { x:0.0, y:0.0 }]),  // Note that the direction is initially reversed
     /// };
     ///
-    /// graph.repair_physical(&amp;mut edge);
+    /// graph.repair_edge(&amp;mut edge);
     ///
     /// // After repair, the edge path should be from 0,0 to 1,1
     /// //assert_eq!(edge.path.0.first().unwrap(), &amp;coord! { x:0.0, y:0.0 });
     /// //assert_eq!(edge.path.0.last().unwrap(), &amp;coord! { x:1.0, y:1.0 });
     /// ```
-    </span><span class="kw">pub fn </span>repair_physical(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: <span class="kw-2">&amp;mut </span>TransitEdge&lt;T&gt;)
+    </span><span class="kw">pub fn </span>repair_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: <span class="kw-2">&amp;mut </span>TransitEdge&lt;T&gt;)
     <span class="kw">where
         </span>R: EuclideanDistance&lt;T, Coord&lt;T&gt;&gt;,
     {
@@ -702,7 +702,7 @@
             path: LineString(<span class="macro">vec!</span>[Coord { x: <span class="number">1.0</span>, y: <span class="number">1.0 </span>}, Coord { x: <span class="number">0.0</span>, y: <span class="number">0.0 </span>}]),
         };
 
-        graph.repair_physical(<span class="kw-2">&amp;mut </span>edge);
+        graph.repair_edge(<span class="kw-2">&amp;mut </span>edge);
 
         <span class="macro">assert_eq!</span>(
             edge.path,
