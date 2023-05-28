@@ -15,6 +15,7 @@ use super::{TopoEdge, TopoNode};
 /// Topological graph is directed and each node in the topological graph maps to a node in the physical graph.
 /// This is particularly useful for scenarios such as rail switches where the directionality of edges matters.
 pub struct TopologyGraph {
+    /// the inner graph
     pub graph: StableDiGraph<TopoNode, TopoEdge, u32>,
     id_to_index: HashMap<NodeId, (NodeIndex, NodeIndex)>,
     index_to_id: HashMap<NodeIndex, NodeId>,
@@ -30,10 +31,41 @@ impl TopologyGraph {
         }
     }
 
+    /// Returns the `NodeId` corresponding to a given `NodeIndex`.
+    ///
+    /// This method is useful when you have the index of a node in the graph and you want to retrieve its identifier.
+    ///
+    /// # Arguments
+    ///
+    /// * `index` - The `NodeIndex` of the node.
+    ///
+    /// # Returns
+    ///
+    /// * `NodeId` - The identifier of the node corresponding to the input index.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if the `NodeIndex` does not exist in the graph.
     pub fn index_to_id(&self, index: NodeIndex) -> NodeId {
         self.index_to_id[&index]
     }
 
+    /// Returns the `NodeIndex` corresponding to a given `NodeId`.
+    ///
+    /// This method is useful when you have the identifier of a node and you want to retrieve its index in the graph.
+    /// As each `NodeId` maps to two `TopoNode`s in the graph, this function returns a tuple of `NodeIndex`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The `NodeId` of the node.
+    ///
+    /// # Returns
+    ///
+    /// * A tuple of two `NodeIndex` values corresponding to the two `TopoNode`s for the input `NodeId`.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if the `NodeId` does not exist in the graph.
     pub fn id_to_index(&self, id: NodeId) -> (NodeIndex, NodeIndex) {
         self.id_to_index[&id]
     }
@@ -213,7 +245,6 @@ impl TopologyGraph {
             None
         }
     }
-
     /// Adds an edge with a certain accessibility into the graph.
     ///
     /// # Arguments
@@ -229,7 +260,7 @@ impl TopologyGraph {
     ///
     /// # Panics
     ///
-    /// The function will panic if it's unable to add an edge with the provided accessibility.
+    /// The function will panic if it's unable to add an edge with the provided accessibility. This might occur if it cannot find nodes with the desired edge accessability or if the respective `TopoNode`s for the given nodes cannot be found.
     pub fn add_edge_with_accessibility(
         &mut self,
         edge_id: EdgeId,

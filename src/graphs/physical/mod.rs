@@ -7,16 +7,51 @@ use petgraph::{
     graph::{NodeIndex, UnGraph},
 };
 
-/// `PhysicalGraph` represents the physical layout of the transit network.
+/// Represents the physical layout of the transit network.
 ///
-/// It is an undirected graph where each node represents a transit node
-/// (a point in the transit network where a vehicle can stop) and each edge
-/// represents a transit edge (a path between two transit nodes).
+/// `PhysicalGraph` is an undirected graph where each node represents a transit node (a point in the transit network where a vehicle can stop) and each edge represents a transit edge (a path between two transit nodes).
+/// The `PhysicalGraph` uses the `UnGraph` structure from the `petgraph` crate to internally represent this data. The `PhysicalGraph` maintains mappings between `NodeId`s and `NodeIndex`es (from `petgraph`), allowing for efficient conversion between the two.
 ///
-/// The graph is implemented using `petgraph`'s `Csr` structure.
+/// # Examples
+///
+/// Creating a new `PhysicalGraph` and adding a `TransitNode`:
+/// ```
+/// use transit_grid::core::TransitNode;
+/// use transit_grid::prelude::PhysicalGraph;
+/// use geo::{coord, Coord};
+///
+/// let mut graph: PhysicalGraph<Coord, f64> = PhysicalGraph::new();
+/// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+/// graph.add_transit_node(node);
+/// ```
+///
+/// Adding a `TransitEdge` to the `PhysicalGraph`:
+/// ```
+/// use transit_grid::core::{TransitNode, TransitEdge};
+/// use transit_grid::prelude::PhysicalGraph;
+/// use geo::{coord, Coord, LineString};
+///
+/// let mut graph: PhysicalGraph<Coord, f64> = PhysicalGraph::new();
+/// let node1 = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+/// let node2 = TransitNode { id: 2, location: coord! { x:1.0, y:1.0 } };
+/// let node1_id = graph.add_transit_node(node1);
+/// let node2_id = graph.add_transit_node(node2);
+/// let edge = TransitEdge {
+///     id: 1,
+///     from: 1,
+///     to: 2,
+///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
+/// };
+/// graph.add_transit_edge(edge);
+/// ```
 pub struct PhysicalGraph<R, T: CoordNum> {
+    /// Underlying undirected graph.
     pub graph: UnGraph<TransitNode<R>, TransitEdge<T>, u32>,
+
+    /// Mapping of NodeId to petgraph's NodeIndex.
     id_to_index: HashMap<NodeId, NodeIndex>,
+
+    /// Mapping of petgraph's NodeIndex to NodeId.
     index_to_id: HashMap<NodeIndex, NodeId>,
 }
 
@@ -30,10 +65,62 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
         }
     }
 
+    /// Converts a `NodeIndex` to a `NodeId`.
+    ///
+    /// This method provides a way to map from the petgraph's `NodeIndex` to
+    /// the `NodeId` used in the `TransitNode`.
+    ///
+    /// # Arguments
+    ///
+    /// * `index` - The `NodeIndex` to be converted.
+    ///
+    /// # Returns
+    ///
+    /// * `NodeId` - The corresponding `NodeId` of the provided `NodeIndex`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use transit_grid::prelude::PhysicalGraph;
+    /// use transit_grid::core::TransitNode;
+    /// use geo::{coord, Coord};
+    ///
+    /// let mut graph: PhysicalGraph<Coord, f64> = PhysicalGraph::new();
+    /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+    /// let node_index = graph.add_transit_node(node);
+    /// let node_id = graph.index_to_id(node_index);
+    /// assert_eq!(node_id, 1);
+    /// ```
     pub fn index_to_id(&self, index: NodeIndex) -> NodeId {
         self.index_to_id[&index]
     }
 
+    /// Converts a `NodeId` to a `NodeIndex`.
+    ///
+    /// This method provides a way to map from a `NodeId` used in the `TransitNode` to
+    /// the petgraph's `NodeIndex`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The `NodeId` to be converted.
+    ///
+    /// # Returns
+    ///
+    /// * `NodeIndex` - The corresponding `NodeIndex` of the provided `NodeId`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use transit_grid::prelude::PhysicalGraph;
+    /// use transit_grid::core::TransitNode;
+    /// use geo::{coord, Coord};
+    ///
+    /// let mut graph: PhysicalGraph<Coord, f64> = PhysicalGraph::new();
+    /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+    /// let node_index = graph.add_transit_node(node);
+    /// let queried_index = graph.id_to_index(1);
+    /// assert_eq!(node_index, queried_index);
+    /// ```
     pub fn id_to_index(&self, id: NodeId) -> NodeIndex {
         self.id_to_index[&id]
     }

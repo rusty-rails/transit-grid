@@ -5,18 +5,35 @@ use crate::{
 };
 use geo::CoordNum;
 
-/// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.
+/// Represents a transit network as a graph with transit nodes and edges.
 ///
 /// The struct holds a physical graph and a topological graph which are lower-level representations of the network.
-/// The `TransitNetwork` provides a higher-level interface to the physical graph and topological graph.
+/// `TransitNetwork` provides a higher-level interface to the physical graph and topological graph.
 ///
 /// The struct implements `TransitNetworkModifier` trait for modifying the underlying physical graph.
+///
+/// # Generics
+///
+/// `R`: Copyable trait bound. This represents the type of the data associated with the network's routes.
+/// `T`: This represents the type of the coordinates used in the network. It's expected to implement `CoordNum` trait.
+///
+/// # Fields
+///
+/// * `physical_graph: PhysicalGraph<R, T>` - The physical graph representing the transit network.
+/// * `topology_graph: TopologyGraph` - The topological graph representing the transit network.
 pub struct TransitNetwork<R: Copy, T: CoordNum> {
+    /// The physical graph representing the transit network.
     pub physical_graph: PhysicalGraph<R, T>,
+    /// The topological graph representing the transit network.
     pub topology_graph: TopologyGraph,
 }
 
 impl<R: Copy, T: CoordNum> TransitNetwork<R, T> {
+    /// Constructs a new `TransitNetwork` with an empty `PhysicalGraph` and `TopologyGraph`.
+    ///
+    /// # Returns
+    ///
+    /// A new `TransitNetwork` instance.
     pub fn new() -> Self {
         TransitNetwork {
             physical_graph: PhysicalGraph::new(),

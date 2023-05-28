@@ -1,13 +1,45 @@
 use super::NodeId;
 
-/// Enum representing the accessibility of nodes in the network.
+/// Enum `Accessability` representing the accessibility of nodes in a network.
 ///
-/// There are two variants:
-/// - `ReachableNodes`: This variant contains a vector of node IDs that can be reached from a given node.
-/// - `UnreachableNodes`: This variant contains a vector of node IDs that cannot be reached from a given node.
+/// This enum has two variants:
+/// * `ReachableNodes`: This variant holds a vector of `NodeId`s which are reachable from a specific node.
+///     This information could be used to limit the search space during network traversal operations.
+///
+/// * `UnreachableNodes`: This variant holds a vector of `NodeId`s which cannot be reached from a specific node.
+///     This information could be used to prevent the search from exploring infeasible paths during network traversal operations.
+///
+/// # Variants
+///
+/// * `ReachableNodes(Vec<NodeId>)`: A variant holding a vector of reachable node IDs.
+///
+/// * `UnreachableNodes(Vec<NodeId>)`: A variant holding a vector of unreachable node IDs.
+///
+/// # Example
+///
+/// ```
+/// use transit_grid::core::{Accessability, NodeId};
+///
+/// // Define some node IDs
+/// let nodes = vec![1, 2, 3, 4, 5];
+///
+/// // Define Accessability
+/// let access = Accessability::ReachableNodes(nodes);
+///
+/// match access {
+///     Accessability::ReachableNodes(ids) => {
+///         // Process reachable nodes
+///     }
+///     Accessability::UnreachableNodes(ids) => {
+///         // Process unreachable nodes
+///     }
+/// }
+/// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Accessability {
+    /// A variant holding a vector of reachable node IDs.
     ReachableNodes(Vec<NodeId>),
+    /// A variant holding a vector of unreachable node IDs.
     UnreachableNodes(Vec<NodeId>),
 }
 

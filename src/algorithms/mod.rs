@@ -1,3 +1,15 @@
+//! Module providing traits and implementations for shortest path computations
+//! on a transit network. The two main traits defined are `ShortestPath` and `ShortestPathWithAccessability`.
+//!
+//! `ShortestPath` trait is used for computing shortest path between two nodes in a network.
+//!
+//! `ShortestPathWithAccessability` extends `ShortestPath` and takes into account the accessibility
+//! of nodes while computing the shortest path. This is useful in scenarios where certain nodes
+//! in the network may not be accessible and need to be avoided.
+//!
+//! The module also provides implementations of these traits for `TransitNetwork` struct.
+//! It uses A* algorithm from `petgraph` crate for shortest path computation.
+
 use std::{cmp::Ordering, f64::INFINITY};
 
 use geo::CoordNum;
