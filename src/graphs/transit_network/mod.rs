@@ -5,8 +5,6 @@ use crate::{
 };
 use geo::CoordNum;
 
-pub mod directed_graph;
-
 /// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.
 ///
 /// The struct holds a physical graph and a topological graph which are lower-level representations of the network.
