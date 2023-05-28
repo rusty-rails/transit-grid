@@ -200,6 +200,80 @@ mod tests {
     use geo::{coord, point, LineString};
 
     #[test]
+    fn test_shortest_path() {
+        // Create a new TransitNetwork
+        let mut network = TransitNetwork::new();
+
+        // Define some nodes
+        let node0 = TransitNode {
+            id: 0,
+            location: point!(x: 0.0, y: 0.0),
+        };
+
+        let node1 = TransitNode {
+            id: 1,
+            location: point!(x: 1.0, y: 1.0),
+        };
+
+        let node2 = TransitNode {
+            id: 2,
+            location: point!(x: 2.0, y: 2.0),
+        };
+
+        let node3 = TransitNode {
+            id: 3,
+            location: point!(x: 3.0, y: 3.0),
+        };
+
+        let node4 = TransitNode {
+            id: 4,
+            location: point!(x: 4.0, y: 4.0),
+        };
+
+        // Add nodes to the network
+        network.add_node(node0);
+        network.add_node(node1);
+        network.add_node(node2);
+        network.add_node(node3);
+        network.add_node(node4);
+
+        // Define edges
+        let edge01 = TransitEdge {
+            id: 01,
+            from: 0,
+            to: 1,
+            path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
+        };
+        let edge12 = TransitEdge {
+            id: 12,
+            from: 1,
+            to: 2,
+            path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 2.0, y: 2.0}]),
+        };
+        let edge23 = TransitEdge {
+            id: 23,
+            from: 2,
+            to: 3,
+            path: LineString(vec![coord! {x: 2.0, y: 2.0}, coord! {x: 3.0, y: 3.0}]),
+        };
+        let edge34 = TransitEdge {
+            id: 34,
+            from: 3,
+            to: 4,
+            path: LineString(vec![coord! {x: 3.0, y: 3.0}, coord! {x: 4.0, y: 4.0}]),
+        };
+
+        // Add edges to the network
+        network.add_edge(edge01);
+        network.add_edge_with_accessibility(edge12, Accessability::ReachableNodes(vec![0]));
+        network.add_edge_with_accessibility(edge23, Accessability::ReachableNodes(vec![1]));
+        network.add_edge_with_accessibility(edge34, Accessability::ReachableNodes(vec![2]));
+
+        let result = network.find_shortest_path(0, 4);
+        assert_eq!(result, Some(vec![0, 1, 2, 3, 4])); // Expected shortest path is 0 -> 1 -> 2 -> 3 -> 4
+    }
+
+    #[test]
     fn test_shortest_path_with_accessability() {
         // Create a new TransitNetwork
 
