@@ -328,6 +328,48 @@ impl TopologyGraph {
             .next()
             .is_some()
     }
+
+    /// Returns the indices of edges between two nodes in all directions.
+    ///
+    /// # Arguments
+    ///
+    /// * `node1_id` - The ID of the first node.
+    /// * `node2_id` - The ID of the second node.
+    ///
+    /// # Returns
+    ///
+    /// * `Option<(EdgeIndex, EdgeIndex)>` - The indices of the two edges between the nodes, if they exist.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if the nodes do not exist in the graph.
+    pub fn find_edge_indices(
+        &self,
+        node1_id: NodeId,
+        node2_id: NodeId,
+    ) -> Option<(EdgeIndex, EdgeIndex)> {
+        let (node1_index1, node1_index2) = self.id_to_index(node1_id);
+        let (node2_index1, node2_index2) = self.id_to_index(node2_id);
+
+        let mut edges = Vec::new();
+
+        for &source_index in &[node1_index1, node1_index2] {
+            for &target_index in &[node2_index1, node2_index2] {
+                if let Some(edge) = self.graph.find_edge(source_index, target_index) {
+                    edges.push(edge);
+                }
+                if let Some(edge) = self.graph.find_edge(target_index, source_index) {
+                    edges.push(edge);
+                }
+            }
+        }
+
+        if edges.len() == 2 {
+            Some((edges[0], edges[1]))
+        } else {
+            None
+        }
+    }
 }
 
 impl Default for TopologyGraph {
@@ -515,6 +557,11 @@ mod tests {
         // Assert that the edge has been added correctly
         assert!(topo_graph.graph.edge_weight(edge_index1).is_some());
         assert!(topo_graph.graph.edge_weight(edge_index2).is_some());
+        println!("{}", Dot::new(&topo_graph.graph));
+
+        let edge_indices = topo_graph.find_edge_indices(1, 2);
+        assert_eq!(edge_indices.is_some(), true);
+        assert_eq!(edge_indices.unwrap().0, EdgeIndex::new(0));
     }
 
     #[test]

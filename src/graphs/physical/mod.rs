@@ -202,13 +202,13 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///     path: LineString(vec![coord! { x:1.0, y:1.0 }, coord! { x:0.0, y:0.0 }]),  // Note that the direction is initially reversed
     /// };
     ///
-    /// graph.repair_physical(&mut edge);
+    /// graph.repair_edge(&mut edge);
     ///
     /// // After repair, the edge path should be from 0,0 to 1,1
     /// //assert_eq!(edge.path.0.first().unwrap(), &coord! { x:0.0, y:0.0 });
     /// //assert_eq!(edge.path.0.last().unwrap(), &coord! { x:1.0, y:1.0 });
     /// ```
-    pub fn repair_physical(&mut self, edge: &mut TransitEdge<T>)
+    pub fn repair_edge(&mut self, edge: &mut TransitEdge<T>)
     where
         R: EuclideanDistance<T, Coord<T>>,
     {
@@ -346,7 +346,7 @@ mod tests {
             path: LineString(vec![Coord { x: 1.0, y: 1.0 }, Coord { x: 0.0, y: 0.0 }]),
         };
 
-        graph.repair_physical(&mut edge);
+        graph.repair_edge(&mut edge);
 
         assert_eq!(
             edge.path,
