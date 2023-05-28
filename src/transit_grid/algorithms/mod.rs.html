@@ -229,30 +229,162 @@
 <a href="#229" id="229">229</a>
 <a href="#230" id="230">230</a>
 <a href="#231" id="231">231</a>
-</pre><pre class="rust"><code><span class="kw">use </span>geo::CoordNum;
-<span class="kw">use </span>petgraph::{algo::astar, dot::Dot, visit::EdgeRef};
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+</pre><pre class="rust"><code><span class="kw">use </span>std::{cmp::Ordering, f64::INFINITY};
+
+<span class="kw">use </span>geo::CoordNum;
+<span class="kw">use </span>petgraph::{algo::astar, visit::EdgeRef};
 
 <span class="kw">use crate</span>::{
     core::{Accessability, NodeId, TransitEdge},
     graphs::TransitNetwork,
 };
 
-<span class="kw">pub trait </span>ShortestPath&lt;R, T&gt; {
-    <span class="kw">fn </span>find_shortest_path(<span class="kw-2">&amp;</span><span class="self">self</span>, from: NodeId, to: NodeId) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;NodeId&gt;&gt;;
-}
+<span class="doccomment">/// `ShortestPath` trait provides functionality to compute shortest path in a network.
+///
+/// It is generic over two types `R` and `T`. `R` represents some properties of the network (like weights or capacities),
+/// and `T` represents the numerical type for calculations (like distances or costs).
+///
+/// Implementations of `ShortestPath` provide a method `find_shortest_path()` that takes the starting and destination nodes,
+/// and returns the shortest path from the start to the destination node as a vector of node IDs.
 
-<span class="kw">pub trait </span>ShortestPathWithAccessability&lt;R, T: CoordNum&gt; {
-    <span class="doccomment">/// Finds the shortest path between two nodes in the network.
+</span><span class="kw">pub trait </span>ShortestPath&lt;R, T&gt; {
+    <span class="doccomment">/// Finds the shortest path from the start node to the destination node.
     ///
     /// # Arguments
     ///
-    /// * `from` - The ID of the node to start the search from.
-    /// * `to` - The ID of the node to end the search at.
-    /// * `accessability` - The accessability of nodes in the network.
+    /// * `from` - The ID of the starting node.
+    /// * `to` - The ID of the destination node.
     ///
     /// # Returns
     ///
-    /// * `Option&lt;(f64, Vec&lt;NodeId&gt;)&gt;` - Some tuple containing the length of the shortest path and the path itself, or None if no path was found.
+    /// * `Option&lt;Vec&lt;NodeId&gt;&gt;` - If a path exists, returns the path as a vector of Node IDs, where the first element
+    ///   is the start node and the last is the destination node. If no path exists, returns None.
+    ///
+    </span><span class="kw">fn </span>find_shortest_path(<span class="kw-2">&amp;</span><span class="self">self</span>, from: NodeId, to: NodeId) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;NodeId&gt;&gt;;
+}
+
+<span class="doccomment">/// This trait provides methods for finding the shortest path between two nodes in a graph
+/// with consideration for the accessibility of nodes.
+///
+/// # Type Parameters
+///
+/// * `R`: The type that represents the route or connection between nodes.
+/// * `T`: The type that represents the coordinate number used in the nodes. This should implement the `CoordNum` trait.
+</span><span class="kw">pub trait </span>ShortestPathWithAccessability&lt;R, T: CoordNum&gt; {
+    <span class="doccomment">/// Calculates the cost of traversing from one node to another, considering the accessibility of the destination node.
+    ///
+    /// # Arguments
+    ///
+    /// * `from` - The ID of the node from where the traversal starts.
+    /// * `to` - The ID of the node to which the traversal ends.
+    /// * `accessability` - A reference to the accessibility information for nodes in the network.
+    /// * `edge_cost` - A mutable reference to a function that calculates the cost of traversing an edge.
+    ///
+    /// # Returns
+    ///
+    /// * `f64` - The cost of the traversal from `from` node to `to` node.
+    ///
+    </span><span class="kw">fn </span>calc_edge_cost&lt;F&gt;(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        from: NodeId,
+        to: NodeId,
+        accessability: <span class="kw-2">&amp;</span>Accessability,
+        edge_cost: <span class="kw-2">&amp;mut </span>F,
+    ) -&gt; f64
+    <span class="kw">where
+        </span>F: FnMut(TransitEdge&lt;T&gt;) -&gt; f64;
+
+    <span class="doccomment">/// Finds the shortest path between two nodes considering the accessibility of nodes.
+    ///
+    /// # Arguments
+    ///
+    /// * `from` - The ID of the starting node.
+    /// * `to` - The ID of the destination node.
+    /// * `accessability` - The accessibility information for nodes in the network.
+    /// * `edge_cost` - A function to calculate the cost of traversing an edge.
+    ///
+    /// # Returns
+    ///
+    /// * `Option&lt;(f64, Vec&lt;NodeId&gt;)&gt;` - A tuple containing the length of the shortest path and the nodes in the path, or None if no path exists.
     ///
     </span><span class="kw">fn </span>find_shortest_path_with_accessability&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -271,13 +403,35 @@
             from,
             to,
             Accessability::UnreachableNodes(<span class="macro">vec!</span>[]),
-            |edge| <span class="number">1.0</span>,
+            |_edge| <span class="number">1.0</span>,
         )
         .map(|(<span class="kw">_</span>, path)| path)
     }
 }
 
 <span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; ShortestPathWithAccessability&lt;R, T&gt; <span class="kw">for </span>TransitNetwork&lt;R, T&gt; {
+    <span class="comment">// Function to calculate edge cost
+    </span><span class="kw">fn </span>calc_edge_cost&lt;F&gt;(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        from: NodeId,
+        to: NodeId,
+        accessability: <span class="kw-2">&amp;</span>Accessability,
+        edge_cost: <span class="kw-2">&amp;mut </span>F,
+    ) -&gt; f64
+    <span class="kw">where
+        </span>F: FnMut(TransitEdge&lt;T&gt;) -&gt; f64,
+    {
+        <span class="kw">if let </span>Accessability::UnreachableNodes(reachable_nodes) = accessability {
+            <span class="kw">if </span>reachable_nodes.contains(<span class="kw-2">&amp;</span>to) {
+                <span class="kw">return </span>INFINITY;
+            }
+        }
+        <span class="kw">let </span>from = <span class="self">self</span>.physical_graph.id_to_index(from);
+        <span class="kw">let </span>to = <span class="self">self</span>.physical_graph.id_to_index(to);
+        <span class="kw">let </span>edge = <span class="self">self</span>.physical_graph.graph.find_edge(from, to).unwrap();
+        edge_cost(<span class="self">self</span>.physical_graph.graph[edge].clone())
+    }
+
     <span class="kw">fn </span>find_shortest_path_with_accessability&lt;F&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         from: NodeId,
@@ -291,21 +445,17 @@
         <span class="kw">let </span>start = <span class="self">self</span>.topology_graph.id_to_index(from);
         <span class="kw">let </span>goal = <span class="self">self</span>.topology_graph.id_to_index(to);
 
-        <span class="macro">println!</span>(<span class="string">&quot;{:?} {:?}&quot;</span>, start, goal);
-
         <span class="kw">let </span>path1 = astar(
             <span class="kw-2">&amp;</span><span class="self">self</span>.topology_graph.graph,
             start.<span class="number">0</span>,
             |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
             |edge| {
-                <span class="kw">let </span>from: NodeId = <span class="self">self</span>.topology_graph.index_to_id(edge.source());
-                <span class="kw">let </span>to: NodeId = <span class="self">self</span>.topology_graph.index_to_id(edge.target());
-
-                <span class="kw">let </span>from = <span class="self">self</span>.physical_graph.id_to_index(from);
-                <span class="kw">let </span>to = <span class="self">self</span>.physical_graph.id_to_index(to);
-                <span class="kw">let </span>edge = <span class="self">self</span>.physical_graph.graph.find_edge(from, to).unwrap();
-
-                edge_cost(<span class="self">self</span>.physical_graph.graph[edge].clone())
+                <span class="self">self</span>.calc_edge_cost(
+                    <span class="self">self</span>.topology_graph.index_to_id(edge.source()),
+                    <span class="self">self</span>.topology_graph.index_to_id(edge.target()),
+                    <span class="kw-2">&amp;</span>accessability,
+                    <span class="kw-2">&amp;mut </span>edge_cost,
+                )
             },
             |<span class="kw">_</span>| <span class="number">0.</span>,
         );
@@ -314,37 +464,20 @@
             start.<span class="number">1</span>,
             |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
             |edge| {
-                <span class="kw">let </span>from: NodeId = <span class="self">self</span>.topology_graph.index_to_id(edge.source());
-                <span class="kw">let </span>to: NodeId = <span class="self">self</span>.topology_graph.index_to_id(edge.target());
-
-                <span class="kw">let </span>from = <span class="self">self</span>.physical_graph.id_to_index(from);
-                <span class="kw">let </span>to = <span class="self">self</span>.physical_graph.id_to_index(to);
-                <span class="kw">let </span>edge = <span class="self">self</span>.physical_graph.graph.find_edge(from, to).unwrap();
-
-                edge_cost(<span class="self">self</span>.physical_graph.graph[edge].clone())
+                <span class="self">self</span>.calc_edge_cost(
+                    <span class="self">self</span>.topology_graph.index_to_id(edge.source()),
+                    <span class="self">self</span>.topology_graph.index_to_id(edge.target()),
+                    <span class="kw-2">&amp;</span>accessability,
+                    <span class="kw-2">&amp;mut </span>edge_cost,
+                )
             },
-            |<span class="kw">_</span>| <span class="number">0.</span>,
+            |<span class="kw">_</span>| <span class="number">1.</span>,
         );
 
-        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, Dot::new(<span class="kw-2">&amp;</span><span class="self">self</span>.topology_graph.graph));
-
-        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, path1);
-        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, path2);
-
-        <span class="kw">let </span>best = <span class="kw">match </span>(path1, path2) {
-            (<span class="prelude-val">Some</span>((cost1, path1)), <span class="prelude-val">Some</span>((cost2, path2))) =&gt; {
-                <span class="kw">if </span>cost1 &lt; cost2 {
-                    <span class="prelude-val">Some</span>((cost1, path1))
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">Some</span>((cost2, path2))
-                }
-            }
-            (<span class="prelude-val">Some</span>((cost, path)), <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Some</span>((cost, path)),
-            (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>((cost, path))) =&gt; <span class="prelude-val">Some</span>((cost, path)),
-            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">None</span>,
-        };
-
-        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>, best);
+        <span class="kw">let </span>best = path1
+            .into_iter()
+            .chain(path2)
+            .min_by(|(cost1, <span class="kw">_</span>), (cost2, <span class="kw">_</span>)| cost1.partial_cmp(cost2).unwrap_or(Ordering::Equal));
 
         best.map(|(cost, path)| {
             <span class="kw">let </span>path = path
@@ -396,38 +529,53 @@
             location: <span class="macro">point!</span>(x: <span class="number">4.0</span>, y: <span class="number">4.0</span>),
         };
 
+        <span class="kw">let </span>node5 = TransitNode {
+            id: <span class="number">5</span>,
+            location: <span class="macro">point!</span>(x: <span class="number">5.0</span>, y: <span class="number">5.0</span>),
+        };
+
         <span class="comment">// Add nodes to the network
         </span>network.add_node(node0);
         network.add_node(node1);
         network.add_node(node2);
         network.add_node(node3);
         network.add_node(node4);
+        network.add_node(node5);
 
         <span class="comment">// Define edges
         </span><span class="kw">let </span>edge01 = TransitEdge {
-            id: <span class="number">1</span>,
+            id: <span class="number">01</span>,
             from: <span class="number">0</span>,
             to: <span class="number">1</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
-
-        <span class="kw">let </span>edge12 = TransitEdge {
-            id: <span class="number">3</span>,
-            from: <span class="number">1</span>,
+        <span class="kw">let </span>edge02 = TransitEdge {
+            id: <span class="number">02</span>,
+            from: <span class="number">0</span>,
             to: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
-
         <span class="kw">let </span>edge13 = TransitEdge {
-            id: <span class="number">4</span>,
+            id: <span class="number">13</span>,
             from: <span class="number">1</span>,
             to: <span class="number">3</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">3.0</span>, y: <span class="number">3.0</span>}]),
         };
-
         <span class="kw">let </span>edge14 = TransitEdge {
-            id: <span class="number">2</span>,
+            id: <span class="number">14</span>,
             from: <span class="number">1</span>,
+            to: <span class="number">4</span>,
+            path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
+        };
+        <span class="kw">let </span>edge25 = TransitEdge {
+            id: <span class="number">25</span>,
+            from: <span class="number">2</span>,
+            to: <span class="number">5</span>,
+            path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
+        };
+        <span class="kw">let </span>edge45 = TransitEdge {
+            id: <span class="number">45</span>,
+            from: <span class="number">5</span>,
             to: <span class="number">4</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
         };
@@ -435,11 +583,13 @@
         <span class="comment">// Add edges to the network
         </span>network.add_edge(edge01);
         network.add_edge_with_accessibility(edge14, Accessability::ReachableNodes(<span class="macro">vec!</span>[<span class="number">0</span>]));
-        network.add_edge_with_accessibility(edge12, Accessability::ReachableNodes(<span class="macro">vec!</span>[<span class="number">0</span>]));
-        network.add_edge(edge13);
+        network.add_edge_with_accessibility(edge02, Accessability::ReachableNodes(<span class="macro">vec!</span>[<span class="number">0</span>]));
+        network.add_edge_with_accessibility(edge13, Accessability::ReachableNodes(<span class="macro">vec!</span>[<span class="number">0</span>]));
+        network.add_edge_with_accessibility(edge25, Accessability::ReachableNodes(<span class="macro">vec!</span>[<span class="number">1</span>]));
+        network.add_edge_with_accessibility(edge45, Accessability::ReachableNodes(<span class="macro">vec!</span>[<span class="number">2</span>, <span class="number">1</span>]));
 
         <span class="comment">// Define edge cost function
-        </span><span class="kw">let </span>edge_cost = |edge: TransitEdge&lt;f32&gt;| <span class="number">1.0</span>;
+        </span><span class="kw">let </span>edge_cost = |_edge: TransitEdge&lt;f32&gt;| <span class="number">1.0</span>;
 
         <span class="comment">// Test case 1: No node is unreachable
         </span><span class="kw">let </span>result = network.find_shortest_path_with_accessability(
@@ -452,12 +602,20 @@
 
         // Test case 2: Node 4 is unreachable
         </span><span class="kw">let </span>result = network.find_shortest_path_with_accessability(
-            <span class="number">2</span>, <span class="comment">// from node 2
+            <span class="number">3</span>, <span class="comment">// from node 2
             </span><span class="number">4</span>, <span class="comment">// to node 4
             </span>Accessability::UnreachableNodes(<span class="macro">vec!</span>[]),
             edge_cost,
         );
         <span class="macro">assert_eq!</span>(result, <span class="prelude-val">None</span>); <span class="comment">// Expected result is None as there is no path to node 4
+
+        </span><span class="kw">let </span>result = network.find_shortest_path_with_accessability(
+            <span class="number">0</span>,                                        <span class="comment">// from node 0
+            </span><span class="number">4</span>,                                        <span class="comment">// to node 4
+            </span>Accessability::UnreachableNodes(<span class="macro">vec!</span>[<span class="number">1</span>]), <span class="comment">// no unreachable node
+            </span>edge_cost,
+        );
+        <span class="macro">assert_eq!</span>(result, <span class="prelude-val">Some</span>((<span class="number">3.0</span>, <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">4</span>]))); <span class="comment">// Expected shortest path is 0 -&gt; 1 -&gt; 4
     </span>}
 }
 </code></pre></div>
