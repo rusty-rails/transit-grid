@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::core::{NodeId, TransitEdge, TransitNode};
-use geo::CoordNum;
+use geo::{Coord, CoordNum, EuclideanDistance};
 use petgraph::{
     graph::EdgeIndex,
     graph::{NodeIndex, UnGraph},
@@ -174,6 +174,57 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
         let to = self.id_to_index(edge.to);
         self.graph.add_edge(from, to, edge)
     }
+
+    /// Repairs a physical edge in the `PhysicalGraph` based on its nodes' locations.
+    ///
+    /// # Arguments
+    ///
+    /// * `edge` - The `TransitEdge` to be repaired.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use transit_grid::prelude::PhysicalGraph;
+    /// use transit_grid::core::{TransitNode, TransitEdge};
+    /// use geo::{coord, Coord, LineString};
+    ///
+    /// let mut graph: PhysicalGraph<Coord, f64> = PhysicalGraph::new();
+    /// let node1 = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+    /// let node2 = TransitNode { id: 2, location: coord! { x:1.0, y:1.0 } };
+    ///
+    /// let node1_id = graph.add_transit_node(node1);
+    /// let node2_id = graph.add_transit_node(node2);
+    ///
+    /// let mut edge = TransitEdge {
+    ///     id: 1,
+    ///     from: 1,
+    ///     to: 2,
+    ///     path: LineString(vec![coord! { x:1.0, y:1.0 }, coord! { x:0.0, y:0.0 }]),  // Note that the direction is initially reversed
+    /// };
+    ///
+    /// graph.repair_physical(&mut edge);
+    ///
+    /// // After repair, the edge path should be from 0,0 to 1,1
+    /// //assert_eq!(edge.path.0.first().unwrap(), &coord! { x:0.0, y:0.0 });
+    /// //assert_eq!(edge.path.0.last().unwrap(), &coord! { x:1.0, y:1.0 });
+    /// ```
+    pub fn repair_physical(&mut self, edge: &mut TransitEdge<T>)
+    where
+        R: EuclideanDistance<T, Coord<T>>,
+    {
+        let from_node: &TransitNode<R> =
+            self.graph.node_weight(self.id_to_index(edge.from)).unwrap();
+
+        let first_point = edge.path.0.first().unwrap();
+        let last_point = edge.path.0.last().unwrap();
+
+        let dist_to_first = from_node.location.euclidean_distance(first_point);
+        let dist_to_last = from_node.location.euclidean_distance(last_point);
+
+        if dist_to_first > dist_to_last {
+            edge.path.0.reverse();
+        }
+    }
 }
 
 impl<R: Copy, T: CoordNum> Default for PhysicalGraph<R, T> {
@@ -271,5 +322,35 @@ mod tests {
 
         assert_eq!(graph.graph.node_count(), 0);
         assert_eq!(graph.graph.edge_count(), 0);
+    }
+
+    #[test]
+    fn test_repair_physical() {
+        let mut graph = PhysicalGraph::<Coord, f64>::new();
+        let node1 = TransitNode {
+            id: 1,
+            location: Coord { x: 0.0, y: 0.0 },
+        };
+        let node2 = TransitNode {
+            id: 2,
+            location: Coord { x: 1.0, y: 1.0 },
+        };
+
+        graph.add_transit_node(node1);
+        graph.add_transit_node(node2);
+
+        let mut edge = TransitEdge {
+            id: 1,
+            from: 1,
+            to: 2,
+            path: LineString(vec![Coord { x: 1.0, y: 1.0 }, Coord { x: 0.0, y: 0.0 }]),
+        };
+
+        graph.repair_physical(&mut edge);
+
+        assert_eq!(
+            edge.path,
+            LineString(vec![Coord { x: 0.0, y: 0.0 }, Coord { x: 1.0, y: 1.0 }])
+        );
     }
 }
