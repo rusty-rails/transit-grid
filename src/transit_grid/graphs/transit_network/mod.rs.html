@@ -280,6 +280,23 @@
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
 <a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, NodeId, TransitEdge, TransitNode},
@@ -287,19 +304,36 @@
 };
 <span class="kw">use </span>geo::CoordNum;
 
-<span class="doccomment">/// `TransitNetwork` represents a transit network as a graph with transit nodes and edges.
+<span class="doccomment">/// Represents a transit network as a graph with transit nodes and edges.
 ///
 /// The struct holds a physical graph and a topological graph which are lower-level representations of the network.
-/// The `TransitNetwork` provides a higher-level interface to the physical graph and topological graph.
+/// `TransitNetwork` provides a higher-level interface to the physical graph and topological graph.
 ///
 /// The struct implements `TransitNetworkModifier` trait for modifying the underlying physical graph.
+///
+/// # Generics
+///
+/// `R`: Copyable trait bound. This represents the type of the data associated with the network&#39;s routes.
+/// `T`: This represents the type of the coordinates used in the network. It&#39;s expected to implement `CoordNum` trait.
+///
+/// # Fields
+///
+/// * `physical_graph: PhysicalGraph&lt;R, T&gt;` - The physical graph representing the transit network.
+/// * `topology_graph: TopologyGraph` - The topological graph representing the transit network.
 </span><span class="kw">pub struct </span>TransitNetwork&lt;R: Copy, T: CoordNum&gt; {
-    <span class="kw">pub </span>physical_graph: PhysicalGraph&lt;R, T&gt;,
-    <span class="kw">pub </span>topology_graph: TopologyGraph,
+    <span class="doccomment">/// The physical graph representing the transit network.
+    </span><span class="kw">pub </span>physical_graph: PhysicalGraph&lt;R, T&gt;,
+    <span class="doccomment">/// The topological graph representing the transit network.
+    </span><span class="kw">pub </span>topology_graph: TopologyGraph,
 }
 
 <span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; TransitNetwork&lt;R, T&gt; {
-    <span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// Constructs a new `TransitNetwork` with an empty `PhysicalGraph` and `TopologyGraph`.
+    ///
+    /// # Returns
+    ///
+    /// A new `TransitNetwork` instance.
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         TransitNetwork {
             physical_graph: PhysicalGraph::new(),
             topology_graph: TopologyGraph::new(),

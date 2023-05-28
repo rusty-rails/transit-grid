@@ -308,7 +308,31 @@
 <a href="#308" id="308">308</a>
 <a href="#309" id="309">309</a>
 <a href="#310" id="310">310</a>
-</pre><pre class="rust"><code><span class="kw">use </span>std::{cmp::Ordering, f64::INFINITY};
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+</pre><pre class="rust"><code><span class="doccomment">//! Module providing traits and implementations for shortest path computations
+//! on a transit network. The two main traits defined are `ShortestPath` and `ShortestPathWithAccessability`.
+//!
+//! `ShortestPath` trait is used for computing shortest path between two nodes in a network.
+//!
+//! `ShortestPathWithAccessability` extends `ShortestPath` and takes into account the accessibility
+//! of nodes while computing the shortest path. This is useful in scenarios where certain nodes
+//! in the network may not be accessible and need to be avoided.
+//!
+//! The module also provides implementations of these traits for `TransitNetwork` struct.
+//! It uses A* algorithm from `petgraph` crate for shortest path computation.
+
+</span><span class="kw">use </span>std::{cmp::Ordering, f64::INFINITY};
 
 <span class="kw">use </span>geo::CoordNum;
 <span class="kw">use </span>petgraph::{algo::astar, visit::EdgeRef};

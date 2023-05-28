@@ -8,12 +8,62 @@
 <a href="#8" id="8">8</a>
 <a href="#9" id="9">9</a>
 <a href="#10" id="10">10</a>
-</pre><pre class="rust"><code><span class="kw">pub mod </span>algorithms;
+<a href="#11" id="11">11</a>
+<a href="#12" id="12">12</a>
+<a href="#13" id="13">13</a>
+<a href="#14" id="14">14</a>
+<a href="#15" id="15">15</a>
+<a href="#16" id="16">16</a>
+<a href="#17" id="17">17</a>
+<a href="#18" id="18">18</a>
+<a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
+<a href="#24" id="24">24</a>
+<a href="#25" id="25">25</a>
+<a href="#26" id="26">26</a>
+<a href="#27" id="27">27</a>
+<a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
+<a href="#31" id="31">31</a>
+<a href="#32" id="32">32</a>
+<a href="#33" id="33">33</a>
+<a href="#34" id="34">34</a>
+<a href="#35" id="35">35</a>
+</pre><pre class="rust"><code><span class="attr">#![warn(missing_docs)]
+#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]
+</span><span class="doccomment">/// TransitNet is a Rust library for representing, manipulating, and performing computations on transit networks.
+/// It provides a set of core data structures and algorithms that are commonly used in transit network analysis.
+///
+/// The library is organized into several modules:
+///
+/// * `algorithms` - This module provides a collection of algorithms for performing various computations on transit networks,
+///                  such as finding the shortest path, calculating the centrality of a node, etc.
+///
+/// * `core` - This module defines the core data structures used throughout the library,
+///            including various types of nodes, edges, and graphs.
+///
+/// * `graphs` - This module defines several types of graphs that can represent a transit network at different levels of detail,
+///              including the physical graph, the topological graph, and the transit network.
+///
+/// * `operations` - This module provides operations for manipulating transit networks,
+///                  such as adding or removing nodes or edges, merging networks, etc.
+///
+/// The `prelude` module re-exports the most commonly used items from the `core`, `graphs`, and `operations` modules,
+/// providing a convenient way to import many items at once.
+///
+/// The top level of the library also includes some general attributes and macros,
+/// as well as an inclusion of the README file as module documentation.
+</span><span class="kw">pub mod </span>algorithms;
 <span class="kw">pub mod </span>core;
 <span class="kw">pub mod </span>graphs;
 <span class="kw">pub mod </span>operations;
 
-<span class="kw">pub mod </span>prelude {
+<span class="doccomment">/// The `prelude` module re-exports the most commonly used items from the `core`, `graphs`, and `operations` modules,
+</span><span class="kw">pub mod </span>prelude {
     <span class="kw">pub use </span><span class="kw">crate</span>::core::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">crate</span>::graphs::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">crate</span>::operations::<span class="kw-2">*</span>;

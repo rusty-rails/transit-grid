@@ -101,43 +101,86 @@
 <a href="#101" id="101">101</a>
 <a href="#102" id="102">102</a>
 <a href="#103" id="103">103</a>
-</pre><pre class="rust"><code><span class="kw">use </span>geo::{CoordNum, LineString};
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+</pre><pre class="rust"><code><span class="doccomment">//! This module provides basic structures for representing a transit network.
+//! It provides `TransitNode` and `TransitEdge` structures, along with ID types for them.
+//! The `TransitNode` represents a node in the transit network, while the `TransitEdge` represents a connection between two nodes.
+//! The module also provides `Accessability`, an enum for representing the accessibility of nodes in the network.
+
+</span><span class="kw">use </span>geo::{CoordNum, LineString};
 
 <span class="kw">mod </span>accessability;
-<span class="kw">pub use </span>accessability::Accessability;
+<span class="doccomment">/// Re-export of the `Accessability` enum from the `accessability` module.
+</span><span class="kw">pub use </span>accessability::Accessability;
 
-<span class="kw">pub type </span>IdType = u32;
+<span class="doccomment">/// Type alias for an identifier.
+</span><span class="kw">pub type </span>IdType = u32;
 
-<span class="kw">pub type </span>NodeId = IdType;
-<span class="kw">pub type </span>EdgeId = IdType;
+<span class="doccomment">/// Type alias for a node identifier.
+</span><span class="kw">pub type </span>NodeId = IdType;
 
-<span class="doccomment">/// `TransitNode` represents a node in the transit network.
+<span class="doccomment">/// Type alias for an edge identifier.
+</span><span class="kw">pub type </span>EdgeId = IdType;
+
+<span class="doccomment">/// Structure representing a node in the transit network.
 ///
-/// Each node is identified by a unique ID and has a location.
+/// Each node has a unique identifier and a location.
+/// The location type `T` is generic and can be any type that implements the `Copy` trait.
 ///
-/// # Example
+/// # Examples
+///
 /// ```
 /// use geo::coord;
 /// use transit_grid::core::TransitNode;
 ///
+/// // GPS coordinates for London, UK: 51.5074 N, 0.1278 W
 /// let node = TransitNode {
 ///     id: 1,
-///     location: coord! { x: 0.0, y: 0.0 },
+///     location: coord! { x: -0.1278, y: 51.5074 },
 /// };
 /// assert_eq!(node.id, 1);
-/// assert_eq!(node.location, coord! { x: 0.0, y: 0.0 });
+/// assert_eq!(node.location, coord! { x: -0.1278, y: 51.5074 });
 /// ```
 </span><span class="attr">#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 </span><span class="kw">pub struct </span>TransitNode&lt;T&gt; {
-    <span class="kw">pub </span>id: NodeId,
-    <span class="kw">pub </span>location: T,
+    <span class="doccomment">/// A unique identifier for the node.
+    </span><span class="kw">pub </span>id: NodeId,
+
+    <span class="doccomment">/// The location of the node, represented by a generic type `T`.
+    </span><span class="kw">pub </span>location: T,
 }
 
-<span class="doccomment">/// `TransitEdge` represents a connection between two `TransitNode` instances.
+<span class="doccomment">/// Structure representing a connection between two `TransitNode` instances.
 ///
-/// Each edge is identified by a unique ID and has a path which is a `LineString`.
+/// Each edge has a unique identifier and a path represented as a `LineString`.
+/// The `LineString` type `T` is generic and can be any type that implements the `CoordNum` trait.
 ///
-/// # Example
+/// # Examples
+///
 /// ```
 /// use geo::{coord, LineString};
 /// use transit_grid::core::TransitEdge;
@@ -155,10 +198,17 @@
 /// ```
 </span><span class="attr">#[derive(Debug, Clone, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>TransitEdge&lt;T: CoordNum&gt; {
-    <span class="kw">pub </span>id: EdgeId,
-    <span class="kw">pub </span>from: NodeId,
-    <span class="kw">pub </span>to: NodeId,
-    <span class="kw">pub </span>path: LineString&lt;T&gt;,
+    <span class="doccomment">/// A unique identifier for the edge.
+    </span><span class="kw">pub </span>id: EdgeId,
+
+    <span class="doccomment">/// The identifier of the node where the edge starts.
+    </span><span class="kw">pub </span>from: NodeId,
+
+    <span class="doccomment">/// The identifier of the node where the edge ends.
+    </span><span class="kw">pub </span>to: NodeId,
+
+    <span class="doccomment">/// The path of the edge, represented as a `LineString`.
+    </span><span class="kw">pub </span>path: LineString&lt;T&gt;,
 }
 
 <span class="kw">impl</span>&lt;T: CoordNum&gt; Default <span class="kw">for </span>TransitEdge&lt;T&gt; {

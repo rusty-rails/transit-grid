@@ -130,6 +130,93 @@
 <a href="#130" id="130">130</a>
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
 <span class="kw">use </span><span class="kw">crate</span>::core::{NodeId, TransitEdge, TransitNode};
@@ -139,17 +226,52 @@
     graph::{NodeIndex, UnGraph},
 };
 
-<span class="doccomment">/// `PhysicalGraph` represents the physical layout of the transit network.
+<span class="doccomment">/// Represents the physical layout of the transit network.
 ///
-/// It is an undirected graph where each node represents a transit node
-/// (a point in the transit network where a vehicle can stop) and each edge
-/// represents a transit edge (a path between two transit nodes).
+/// `PhysicalGraph` is an undirected graph where each node represents a transit node (a point in the transit network where a vehicle can stop) and each edge represents a transit edge (a path between two transit nodes).
+/// The `PhysicalGraph` uses the `UnGraph` structure from the `petgraph` crate to internally represent this data. The `PhysicalGraph` maintains mappings between `NodeId`s and `NodeIndex`es (from `petgraph`), allowing for efficient conversion between the two.
 ///
-/// The graph is implemented using `petgraph`&#39;s `Csr` structure.
+/// # Examples
+///
+/// Creating a new `PhysicalGraph` and adding a `TransitNode`:
+/// ```
+/// use transit_grid::core::TransitNode;
+/// use transit_grid::prelude::PhysicalGraph;
+/// use geo::{coord, Coord};
+///
+/// let mut graph: PhysicalGraph&lt;Coord, f64&gt; = PhysicalGraph::new();
+/// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+/// graph.add_transit_node(node);
+/// ```
+///
+/// Adding a `TransitEdge` to the `PhysicalGraph`:
+/// ```
+/// use transit_grid::core::{TransitNode, TransitEdge};
+/// use transit_grid::prelude::PhysicalGraph;
+/// use geo::{coord, Coord, LineString};
+///
+/// let mut graph: PhysicalGraph&lt;Coord, f64&gt; = PhysicalGraph::new();
+/// let node1 = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+/// let node2 = TransitNode { id: 2, location: coord! { x:1.0, y:1.0 } };
+/// let node1_id = graph.add_transit_node(node1);
+/// let node2_id = graph.add_transit_node(node2);
+/// let edge = TransitEdge {
+///     id: 1,
+///     from: 1,
+///     to: 2,
+///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
+/// };
+/// graph.add_transit_edge(edge);
+/// ```
 </span><span class="kw">pub struct </span>PhysicalGraph&lt;R, T: CoordNum&gt; {
-    <span class="kw">pub </span>graph: UnGraph&lt;TransitNode&lt;R&gt;, TransitEdge&lt;T&gt;, u32&gt;,
-    id_to_index: HashMap&lt;NodeId, NodeIndex&gt;,
-    index_to_id: HashMap&lt;NodeIndex, NodeId&gt;,
+    <span class="doccomment">/// Underlying undirected graph.
+    </span><span class="kw">pub </span>graph: UnGraph&lt;TransitNode&lt;R&gt;, TransitEdge&lt;T&gt;, u32&gt;,
+
+    <span class="doccomment">/// Mapping of NodeId to petgraph&#39;s NodeIndex.
+    </span>id_to_index: HashMap&lt;NodeId, NodeIndex&gt;,
+
+    <span class="doccomment">/// Mapping of petgraph&#39;s NodeIndex to NodeId.
+    </span>index_to_id: HashMap&lt;NodeIndex, NodeId&gt;,
 }
 
 <span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; PhysicalGraph&lt;R, T&gt; {
@@ -162,11 +284,63 @@
         }
     }
 
-    <span class="kw">pub fn </span>index_to_id(<span class="kw-2">&amp;</span><span class="self">self</span>, index: NodeIndex) -&gt; NodeId {
+    <span class="doccomment">/// Converts a `NodeIndex` to a `NodeId`.
+    ///
+    /// This method provides a way to map from the petgraph&#39;s `NodeIndex` to
+    /// the `NodeId` used in the `TransitNode`.
+    ///
+    /// # Arguments
+    ///
+    /// * `index` - The `NodeIndex` to be converted.
+    ///
+    /// # Returns
+    ///
+    /// * `NodeId` - The corresponding `NodeId` of the provided `NodeIndex`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use transit_grid::prelude::PhysicalGraph;
+    /// use transit_grid::core::TransitNode;
+    /// use geo::{coord, Coord};
+    ///
+    /// let mut graph: PhysicalGraph&lt;Coord, f64&gt; = PhysicalGraph::new();
+    /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+    /// let node_index = graph.add_transit_node(node);
+    /// let node_id = graph.index_to_id(node_index);
+    /// assert_eq!(node_id, 1);
+    /// ```
+    </span><span class="kw">pub fn </span>index_to_id(<span class="kw-2">&amp;</span><span class="self">self</span>, index: NodeIndex) -&gt; NodeId {
         <span class="self">self</span>.index_to_id[<span class="kw-2">&amp;</span>index]
     }
 
-    <span class="kw">pub fn </span>id_to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, id: NodeId) -&gt; NodeIndex {
+    <span class="doccomment">/// Converts a `NodeId` to a `NodeIndex`.
+    ///
+    /// This method provides a way to map from a `NodeId` used in the `TransitNode` to
+    /// the petgraph&#39;s `NodeIndex`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The `NodeId` to be converted.
+    ///
+    /// # Returns
+    ///
+    /// * `NodeIndex` - The corresponding `NodeIndex` of the provided `NodeId`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use transit_grid::prelude::PhysicalGraph;
+    /// use transit_grid::core::TransitNode;
+    /// use geo::{coord, Coord};
+    ///
+    /// let mut graph: PhysicalGraph&lt;Coord, f64&gt; = PhysicalGraph::new();
+    /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
+    /// let node_index = graph.add_transit_node(node);
+    /// let queried_index = graph.id_to_index(1);
+    /// assert_eq!(node_index, queried_index);
+    /// ```
+    </span><span class="kw">pub fn </span>id_to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, id: NodeId) -&gt; NodeIndex {
         <span class="self">self</span>.id_to_index[<span class="kw-2">&amp;</span>id]
     }
 
