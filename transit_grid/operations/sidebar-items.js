@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":["TransitNetworkModifier"]};
+window.SIDEBAR_ITEMS = {"trait":["TransitNetworkModifier","TransitNetworkRepairer"]};

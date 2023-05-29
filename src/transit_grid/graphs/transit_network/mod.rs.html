@@ -307,12 +307,16 @@
 <a href="#307" id="307">307</a>
 <a href="#308" id="308">308</a>
 <a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, NodeId, TransitEdge, TransitNode},
     operations::TransitNetworkModifier,
 };
 <span class="kw">use </span>geo::CoordNum;
+
+<span class="kw">pub mod </span>repair;
 
 <span class="doccomment">/// Represents a transit network as a graph with transit nodes and edges.
 ///
