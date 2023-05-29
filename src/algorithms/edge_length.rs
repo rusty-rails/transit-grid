@@ -7,7 +7,7 @@ use crate::core::TransitEdge;
 
 /// EdgeLength trait provides the length of an element.
 /// It is designed to work with types that implement the `CoordFloat`, `FromPrimitive`, and `Sum` traits.
-pub trait EdgeLength<T: CoordFloat + FromPrimitive + Sum> {
+pub trait EdgeLength<T: CoordFloat + Sum> {
     /// Returns the Euclidean length of the element.
     fn length(&self) -> T;
 }
@@ -22,7 +22,7 @@ impl<T: CoordFloat + FromPrimitive + Sum> EdgeLength<T> for TransitEdge<T> {
 
 /// EuclideanLength trait implementation for `TransitEdge`.
 /// Returns the Euclidean length of the `TransitEdge`.
-impl<T: CoordFloat + FromPrimitive + Sum> EuclideanLength<T> for TransitEdge<T> {
+impl<T: CoordFloat + Sum> EuclideanLength<T> for TransitEdge<T> {
     fn euclidean_length(&self) -> T {
         self.path.euclidean_length()
     }
@@ -30,7 +30,7 @@ impl<T: CoordFloat + FromPrimitive + Sum> EuclideanLength<T> for TransitEdge<T> 
 
 /// HaversineLength trait implementation for `TransitEdge`.
 /// Returns the Haversine (great-circle) length of the `TransitEdge`.
-impl<T: CoordFloat + FromPrimitive + Sum> HaversineLength<T> for TransitEdge<T> {
+impl<T: CoordFloat + FromPrimitive> HaversineLength<T> for TransitEdge<T> {
     fn haversine_length(&self) -> T {
         self.path.haversine_length()
     }
@@ -39,8 +39,7 @@ impl<T: CoordFloat + FromPrimitive + Sum> HaversineLength<T> for TransitEdge<T> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::NodeId;
-    use geo::{LineString, Point};
+    use geo::LineString;
 
     #[test]
     fn test_edge_length() {

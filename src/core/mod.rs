@@ -3,7 +3,8 @@
 //! The `TransitNode` represents a node in the transit network, while the `TransitEdge` represents a connection between two nodes.
 //! The module also provides `Accessability`, an enum for representing the accessibility of nodes in the network.
 
-use geo::{CoordNum, LineString};
+mod edge;
+pub use edge::{EdgeId, TransitEdge};
 
 mod accessability;
 /// Re-export of the `Accessability` enum from the `accessability` module.
@@ -14,9 +15,6 @@ pub type IdType = u32;
 
 /// Type alias for a node identifier.
 pub type NodeId = IdType;
-
-/// Type alias for an edge identifier.
-pub type EdgeId = IdType;
 
 /// Structure representing a node in the transit network.
 ///
@@ -46,54 +44,6 @@ pub struct TransitNode<T> {
     pub location: T,
 }
 
-/// Structure representing a connection between two `TransitNode` instances.
-///
-/// Each edge has a unique identifier and a path represented as a `LineString`.
-/// The `LineString` type `T` is generic and can be any type that implements the `CoordNum` trait.
-///
-/// # Examples
-///
-/// ```
-/// use geo::{coord, LineString};
-/// use transit_grid::core::TransitEdge;
-///
-/// let edge = TransitEdge {
-///     id: 1,
-///     source: 1,
-///     target: 2,
-///     path: LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]),
-/// };
-/// assert_eq!(edge.id, 1);
-/// assert_eq!(edge.source, 1);
-/// assert_eq!(edge.target, 2);
-/// assert_eq!(edge.path, LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]));
-/// ```
-#[derive(Debug, Clone, Eq, PartialEq)]
-pub struct TransitEdge<T: CoordNum> {
-    /// A unique identifier for the edge.
-    pub id: EdgeId,
-
-    /// The identifier of the node where the edge starts.
-    pub source: NodeId,
-
-    /// The identifier of the node where the edge ends.
-    pub target: NodeId,
-
-    /// The path of the edge, represented as a `LineString`.
-    pub path: LineString<T>,
-}
-
-impl<T: CoordNum> Default for TransitEdge<T> {
-    fn default() -> Self {
-        Self {
-            id: 0,
-            source: 0,
-            target: 0,
-            path: LineString(vec![]),
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -107,31 +57,5 @@ mod tests {
         };
         assert_eq!(node.id, 1);
         assert_eq!(node.location, coord! { x:0.0, y:0.0});
-    }
-
-    #[test]
-    fn test_edge() {
-        let edge = TransitEdge {
-            id: 1,
-            source: 1,
-            target: 2,
-            path: LineString(vec![coord! { x:0.0, y:0.0}, coord! { x:1.0, y:1.0}]),
-        };
-        assert_eq!(edge.id, 1);
-        assert_eq!(edge.source, 1);
-        assert_eq!(edge.target, 2);
-        assert_eq!(
-            edge.path,
-            LineString(vec![coord! { x:0.0, y:0.0}, coord! { x:1.0, y:1.0}])
-        );
-    }
-
-    #[test]
-    fn test_edge_default() {
-        let edge = TransitEdge::<f64>::default();
-        assert_eq!(edge.id, 0);
-        assert_eq!(edge.source, 0);
-        assert_eq!(edge.target, 0);
-        assert_eq!(edge.path, LineString::<f64>(vec![]));
     }
 }
