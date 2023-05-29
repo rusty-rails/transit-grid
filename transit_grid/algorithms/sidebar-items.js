@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":["ShortestPath","ShortestPathWithAccessability"]};
+window.SIDEBAR_ITEMS = {"mod":["edge_length"],"trait":["ShortestPath","ShortestPathWithAccessability"]};

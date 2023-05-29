@@ -394,6 +394,8 @@
 <a href="#394" id="394">394</a>
 <a href="#395" id="395">395</a>
 <a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Module providing traits and implementations for shortest path computations
 //! on a transit network. The two main traits defined are `ShortestPath` and `ShortestPathWithAccessability`.
 //!
@@ -415,6 +417,8 @@
     core::{Accessability, NodeId, TransitEdge},
     graphs::TransitNetwork,
 };
+
+<span class="kw">pub mod </span>edge_length;
 
 <span class="doccomment">/// `ShortestPath` trait provides functionality to compute shortest path in a network.
 ///
