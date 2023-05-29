@@ -77,13 +77,18 @@ impl<R: Copy, T: CoordNum> TransitNetworkModifier<R, T> for TransitNetwork<R, T>
     /// * `edge` - The `TransitEdge` to be added to the network.
     fn add_edge(&mut self, edge: TransitEdge<T>) {
         self.physical_graph.add_transit_edge(edge.clone());
-        self.topology_graph.add_edge(edge.id, edge.from, edge.to);
+        self.topology_graph
+            .add_edge(edge.id, edge.source, edge.target);
     }
 
     fn add_edge_with_accessibility(&mut self, edge: TransitEdge<T>, accessability: Accessability) {
         self.physical_graph.add_transit_edge(edge.clone());
-        self.topology_graph
-            .add_edge_with_accessibility(edge.id, edge.from, edge.to, accessability);
+        self.topology_graph.add_edge_with_accessibility(
+            edge.id,
+            edge.source,
+            edge.target,
+            accessability,
+        );
     }
 }
 
@@ -120,8 +125,8 @@ mod tests {
         // Define an edge
         let edge = TransitEdge {
             id: 1,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
@@ -165,15 +170,15 @@ mod tests {
         // Define edges
         let edge1 = TransitEdge {
             id: 1,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
         let edge2 = TransitEdge {
             id: 2,
-            from: 2,
-            to: 3,
+            source: 2,
+            target: 3,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 2.0, y: 2.0}]),
         };
 
@@ -240,29 +245,29 @@ mod tests {
         // Define edges
         let edge01 = TransitEdge {
             id: 1,
-            from: 0,
-            to: 1,
+            source: 0,
+            target: 1,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
         let edge14 = TransitEdge {
             id: 2,
-            from: 1,
-            to: 4,
+            source: 1,
+            target: 4,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 4.0, y: 4.0}]),
         };
 
         let edge12 = TransitEdge {
             id: 3,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 2.0, y: 2.0}]),
         };
 
         let edge13 = TransitEdge {
             id: 4,
-            from: 1,
-            to: 3,
+            source: 1,
+            target: 3,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 3.0, y: 3.0}]),
         };
 
@@ -275,8 +280,8 @@ mod tests {
         // Add edge with accessibility
         let edge40 = TransitEdge {
             id: 5,
-            from: 4,
-            to: 0,
+            source: 4,
+            target: 0,
             path: LineString(vec![coord! {x: 4.0, y: 4.0}, coord! {x: 0.0, y: 0.0}]),
         };
 

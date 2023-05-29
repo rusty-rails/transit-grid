@@ -17,7 +17,7 @@ impl<R: Copy + geo::EuclideanDistance<T, geo::Coord<T>>, T: CoordNum> TransitNet
             .physical_graph
             .graph
             .edge_weights()
-            .map(|edge| (edge.from, edge.to))
+            .map(|edge| (edge.source, edge.target))
             .collect();
 
         for edge in edges {
@@ -65,15 +65,15 @@ mod tests {
         // Define edges
         let edge1 = TransitEdge {
             id: 1,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
         let edge2 = TransitEdge {
             id: 2,
-            from: 2,
-            to: 3,
+            source: 2,
+            target: 3,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 2.0, y: 2.0}]),
         };
 

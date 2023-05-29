@@ -240,26 +240,26 @@ mod tests {
         // Define edges
         let edge01 = TransitEdge {
             id: 01,
-            from: 0,
-            to: 1,
+            source: 0,
+            target: 1,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
         let edge12 = TransitEdge {
             id: 12,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 2.0, y: 2.0}]),
         };
         let edge23 = TransitEdge {
             id: 23,
-            from: 2,
-            to: 3,
+            source: 2,
+            target: 3,
             path: LineString(vec![coord! {x: 2.0, y: 2.0}, coord! {x: 3.0, y: 3.0}]),
         };
         let edge34 = TransitEdge {
             id: 34,
-            from: 3,
-            to: 4,
+            source: 3,
+            target: 4,
             path: LineString(vec![coord! {x: 3.0, y: 3.0}, coord! {x: 4.0, y: 4.0}]),
         };
 
@@ -321,38 +321,38 @@ mod tests {
         // Define edges
         let edge01 = TransitEdge {
             id: 01,
-            from: 0,
-            to: 1,
+            source: 0,
+            target: 1,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
         let edge02 = TransitEdge {
             id: 02,
-            from: 0,
-            to: 2,
+            source: 0,
+            target: 2,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 2.0, y: 2.0}]),
         };
         let edge13 = TransitEdge {
             id: 13,
-            from: 1,
-            to: 3,
+            source: 1,
+            target: 3,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 3.0, y: 3.0}]),
         };
         let edge14 = TransitEdge {
             id: 14,
-            from: 1,
-            to: 4,
+            source: 1,
+            target: 4,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 4.0, y: 4.0}]),
         };
         let edge25 = TransitEdge {
             id: 25,
-            from: 2,
-            to: 5,
+            source: 2,
+            target: 5,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 4.0, y: 4.0}]),
         };
         let edge45 = TransitEdge {
             id: 45,
-            from: 5,
-            to: 4,
+            source: 5,
+            target: 4,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 4.0, y: 4.0}]),
         };
 

@@ -59,13 +59,13 @@ pub struct TransitNode<T> {
 ///
 /// let edge = TransitEdge {
 ///     id: 1,
-///     from: 1,
-///     to: 2,
+///     source: 1,
+///     target: 2,
 ///     path: LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]),
 /// };
 /// assert_eq!(edge.id, 1);
-/// assert_eq!(edge.from, 1);
-/// assert_eq!(edge.to, 2);
+/// assert_eq!(edge.source, 1);
+/// assert_eq!(edge.target, 2);
 /// assert_eq!(edge.path, LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]));
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -74,10 +74,10 @@ pub struct TransitEdge<T: CoordNum> {
     pub id: EdgeId,
 
     /// The identifier of the node where the edge starts.
-    pub from: NodeId,
+    pub source: NodeId,
 
     /// The identifier of the node where the edge ends.
-    pub to: NodeId,
+    pub target: NodeId,
 
     /// The path of the edge, represented as a `LineString`.
     pub path: LineString<T>,
@@ -87,8 +87,8 @@ impl<T: CoordNum> Default for TransitEdge<T> {
     fn default() -> Self {
         Self {
             id: 0,
-            from: 0,
-            to: 0,
+            source: 0,
+            target: 0,
             path: LineString(vec![]),
         }
     }
@@ -113,13 +113,13 @@ mod tests {
     fn test_edge() {
         let edge = TransitEdge {
             id: 1,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![coord! { x:0.0, y:0.0}, coord! { x:1.0, y:1.0}]),
         };
         assert_eq!(edge.id, 1);
-        assert_eq!(edge.from, 1);
-        assert_eq!(edge.to, 2);
+        assert_eq!(edge.source, 1);
+        assert_eq!(edge.target, 2);
         assert_eq!(
             edge.path,
             LineString(vec![coord! { x:0.0, y:0.0}, coord! { x:1.0, y:1.0}])
@@ -130,8 +130,8 @@ mod tests {
     fn test_edge_default() {
         let edge = TransitEdge::<f64>::default();
         assert_eq!(edge.id, 0);
-        assert_eq!(edge.from, 0);
-        assert_eq!(edge.to, 0);
+        assert_eq!(edge.source, 0);
+        assert_eq!(edge.target, 0);
         assert_eq!(edge.path, LineString::<f64>(vec![]));
     }
 }

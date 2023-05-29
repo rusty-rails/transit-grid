@@ -38,8 +38,8 @@ use petgraph::{
 /// let node2_id = graph.add_transit_node(node2);
 /// let edge = TransitEdge {
 ///     id: 1,
-///     from: 1,
-///     to: 2,
+///     source: 1,
+///     target: 2,
 ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
 /// };
 /// graph.add_transit_edge(edge);
@@ -162,16 +162,16 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///
     /// let edge = TransitEdge {
     ///     id: 1,
-    ///     from: 1,
-    ///     to: 2,
+    ///     source: 1,
+    ///     target: 2,
     ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
     /// };
     ///
     /// graph.add_transit_edge(edge);
     /// ```
     pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) -> EdgeIndex {
-        let from = self.id_to_index(edge.from);
-        let to = self.id_to_index(edge.to);
+        let from = self.id_to_index(edge.source);
+        let to = self.id_to_index(edge.target);
         self.graph.add_edge(from, to, edge)
     }
 
@@ -221,8 +221,8 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///
     /// let mut edge = TransitEdge {
     ///     id: 1,
-    ///     from: 1,
-    ///     to: 2,
+    ///     source: 1,
+    ///     target: 2,
     ///     path: LineString(vec![coord! { x:1.0, y:1.0 }, coord! { x:0.0, y:0.0 }]),  // Note that the direction is initially reversed
     /// };
     ///
@@ -246,7 +246,7 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
         let node2_index = self.id_to_index(node2);
         let from_node_location = {
             let from_node: &TransitNode<R> = self.graph.node_weight(node1_index).unwrap();
-            from_node.location.clone() // Clone the location to use it later
+            from_node.location
         };
 
         let edge_index = self.graph.find_edge(node1_index, node2_index).unwrap();
@@ -294,8 +294,8 @@ mod tests {
 
         let edge = TransitEdge {
             id: 1,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
         };
 
@@ -378,8 +378,8 @@ mod tests {
 
         let edge = TransitEdge {
             id: 1,
-            from: 1,
-            to: 2,
+            source: 1,
+            target: 2,
             path: LineString(vec![Coord { x: 1.0, y: 1.0 }, Coord { x: 0.0, y: 0.0 }]),
         };
 
