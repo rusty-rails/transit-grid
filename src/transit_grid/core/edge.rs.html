@@ -125,6 +125,8 @@
 <a href="#125" id="125">125</a>
 <a href="#126" id="126">126</a>
 <a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
 </pre><pre class="rust"><code><span class="kw">use </span>geo::{Coord, CoordNum, LineString};
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 
@@ -192,8 +194,10 @@
 /// This is useful in graph algorithms where you need to know the start and end point of an edge.
 ///
 </span><span class="kw">pub trait </span>PathCoordinates&lt;T: CoordNum&gt; {
-    <span class="kw">fn </span>source_coordinate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Coord&lt;T&gt;;
-    <span class="kw">fn </span>target_coordinate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Coord&lt;T&gt;;
+    <span class="doccomment">/// Returns the source coordinate of the path.
+    </span><span class="kw">fn </span>source_coordinate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Coord&lt;T&gt;;
+    <span class="doccomment">/// Returns the target coordinate of the path.
+    </span><span class="kw">fn </span>target_coordinate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Coord&lt;T&gt;;
 }
 
 <span class="kw">impl</span>&lt;T: CoordNum&gt; PathCoordinates&lt;T&gt; <span class="kw">for </span>TransitEdge&lt;T&gt; {
