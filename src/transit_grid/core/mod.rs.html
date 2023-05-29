@@ -59,88 +59,13 @@
 <a href="#59" id="59">59</a>
 <a href="#60" id="60">60</a>
 <a href="#61" id="61">61</a>
-<a href="#62" id="62">62</a>
-<a href="#63" id="63">63</a>
-<a href="#64" id="64">64</a>
-<a href="#65" id="65">65</a>
-<a href="#66" id="66">66</a>
-<a href="#67" id="67">67</a>
-<a href="#68" id="68">68</a>
-<a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
-<a href="#73" id="73">73</a>
-<a href="#74" id="74">74</a>
-<a href="#75" id="75">75</a>
-<a href="#76" id="76">76</a>
-<a href="#77" id="77">77</a>
-<a href="#78" id="78">78</a>
-<a href="#79" id="79">79</a>
-<a href="#80" id="80">80</a>
-<a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
-<a href="#83" id="83">83</a>
-<a href="#84" id="84">84</a>
-<a href="#85" id="85">85</a>
-<a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
-<a href="#90" id="90">90</a>
-<a href="#91" id="91">91</a>
-<a href="#92" id="92">92</a>
-<a href="#93" id="93">93</a>
-<a href="#94" id="94">94</a>
-<a href="#95" id="95">95</a>
-<a href="#96" id="96">96</a>
-<a href="#97" id="97">97</a>
-<a href="#98" id="98">98</a>
-<a href="#99" id="99">99</a>
-<a href="#100" id="100">100</a>
-<a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
-<a href="#105" id="105">105</a>
-<a href="#106" id="106">106</a>
-<a href="#107" id="107">107</a>
-<a href="#108" id="108">108</a>
-<a href="#109" id="109">109</a>
-<a href="#110" id="110">110</a>
-<a href="#111" id="111">111</a>
-<a href="#112" id="112">112</a>
-<a href="#113" id="113">113</a>
-<a href="#114" id="114">114</a>
-<a href="#115" id="115">115</a>
-<a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
 </pre><pre class="rust"><code><span class="doccomment">//! This module provides basic structures for representing a transit network.
 //! It provides `TransitNode` and `TransitEdge` structures, along with ID types for them.
 //! The `TransitNode` represents a node in the transit network, while the `TransitEdge` represents a connection between two nodes.
 //! The module also provides `Accessability`, an enum for representing the accessibility of nodes in the network.
 
-</span><span class="kw">use </span>geo::{CoordNum, LineString};
+</span><span class="kw">mod </span>edge;
+<span class="kw">pub use </span>edge::{EdgeId, TransitEdge};
 
 <span class="kw">mod </span>accessability;
 <span class="doccomment">/// Re-export of the `Accessability` enum from the `accessability` module.
@@ -151,9 +76,6 @@
 
 <span class="doccomment">/// Type alias for a node identifier.
 </span><span class="kw">pub type </span>NodeId = IdType;
-
-<span class="doccomment">/// Type alias for an edge identifier.
-</span><span class="kw">pub type </span>EdgeId = IdType;
 
 <span class="doccomment">/// Structure representing a node in the transit network.
 ///
@@ -183,54 +105,6 @@
     </span><span class="kw">pub </span>location: T,
 }
 
-<span class="doccomment">/// Structure representing a connection between two `TransitNode` instances.
-///
-/// Each edge has a unique identifier and a path represented as a `LineString`.
-/// The `LineString` type `T` is generic and can be any type that implements the `CoordNum` trait.
-///
-/// # Examples
-///
-/// ```
-/// use geo::{coord, LineString};
-/// use transit_grid::core::TransitEdge;
-///
-/// let edge = TransitEdge {
-///     id: 1,
-///     source: 1,
-///     target: 2,
-///     path: LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]),
-/// };
-/// assert_eq!(edge.id, 1);
-/// assert_eq!(edge.source, 1);
-/// assert_eq!(edge.target, 2);
-/// assert_eq!(edge.path, LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]));
-/// ```
-</span><span class="attr">#[derive(Debug, Clone, Eq, PartialEq)]
-</span><span class="kw">pub struct </span>TransitEdge&lt;T: CoordNum&gt; {
-    <span class="doccomment">/// A unique identifier for the edge.
-    </span><span class="kw">pub </span>id: EdgeId,
-
-    <span class="doccomment">/// The identifier of the node where the edge starts.
-    </span><span class="kw">pub </span>source: NodeId,
-
-    <span class="doccomment">/// The identifier of the node where the edge ends.
-    </span><span class="kw">pub </span>target: NodeId,
-
-    <span class="doccomment">/// The path of the edge, represented as a `LineString`.
-    </span><span class="kw">pub </span>path: LineString&lt;T&gt;,
-}
-
-<span class="kw">impl</span>&lt;T: CoordNum&gt; Default <span class="kw">for </span>TransitEdge&lt;T&gt; {
-    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            id: <span class="number">0</span>,
-            source: <span class="number">0</span>,
-            target: <span class="number">0</span>,
-            path: LineString(<span class="macro">vec!</span>[]),
-        }
-    }
-}
-
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -244,32 +118,6 @@
         };
         <span class="macro">assert_eq!</span>(node.id, <span class="number">1</span>);
         <span class="macro">assert_eq!</span>(node.location, <span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0</span>});
-    }
-
-    <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_edge() {
-        <span class="kw">let </span>edge = TransitEdge {
-            id: <span class="number">1</span>,
-            source: <span class="number">1</span>,
-            target: <span class="number">2</span>,
-            path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0</span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0</span>}]),
-        };
-        <span class="macro">assert_eq!</span>(edge.id, <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(edge.source, <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(edge.target, <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(
-            edge.path,
-            LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0</span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0</span>}])
-        );
-    }
-
-    <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_edge_default() {
-        <span class="kw">let </span>edge = TransitEdge::&lt;f64&gt;::default();
-        <span class="macro">assert_eq!</span>(edge.id, <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(edge.source, <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(edge.target, <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(edge.path, LineString::&lt;f64&gt;(<span class="macro">vec!</span>[]));
     }
 }
 </code></pre></div>
