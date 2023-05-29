@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::core::{NodeId, TransitEdge, TransitNode};
+use crate::core::{EdgeId, NodeId, TransitEdge, TransitNode};
 use geo::{Coord, CoordNum, EuclideanDistance};
 use petgraph::{
     graph::EdgeIndex,
@@ -192,11 +192,19 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///
     /// * If `node1` or `node2` are not valid node IDs in the graph.
     /// * If there is no edge between `node1` and `node2`.
-    pub fn get_transit_edge(&self, node1: NodeId, node2: NodeId) -> &TransitEdge<T> {
+    pub fn get_transit_edge(&self, node1: NodeId, node2: NodeId) -> Option<&TransitEdge<T>> {
         let node1_index = self.id_to_index(node1);
         let node2_index = self.id_to_index(node2);
         let edge_index = self.graph.find_edge(node1_index, node2_index).unwrap();
-        self.graph.edge_weight(edge_index).unwrap()
+        self.graph.edge_weight(edge_index)
+    }
+
+    /// Returns a reference to the `TransitEdge` with the specified `EdgeId`.
+    pub fn get_transit_edge_by_id(&self, edge_id: EdgeId) -> Option<&TransitEdge<T>> {
+        self.graph
+            .edge_references()
+            .find(|edge| edge.weight().id == edge_id)
+            .map(|edge| edge.weight())
     }
 
     /// Repairs a physical edge in the `PhysicalGraph` based on its nodes' locations.
@@ -228,7 +236,7 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///
     /// graph.add_transit_edge(edge.clone());
     /// graph.repair_edge(1, 2);
-    /// let edge = graph.get_transit_edge(1, 2);
+    /// let edge = graph.get_transit_edge(1, 2).unwrap();
     /// assert_eq!(
     ///    edge.path,
     ///    LineString(vec![Coord { x: 0.0, y: 0.0 }, Coord { x: 1.0, y: 1.0 }])
@@ -387,7 +395,7 @@ mod tests {
 
         graph.repair_edge(1, 2);
 
-        let edge = graph.get_transit_edge(1, 2);
+        let edge = graph.get_transit_edge(1, 2).unwrap();
 
         assert_eq!(
             edge.path,

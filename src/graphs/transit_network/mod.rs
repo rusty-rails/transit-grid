@@ -1,6 +1,6 @@
 use super::{PhysicalGraph, TopologyGraph};
 use crate::{
-    core::{Accessability, NodeId, TransitEdge, TransitNode},
+    core::{Accessability, EdgeId, NodeId, TransitEdge, TransitNode},
     operations::TransitNetworkModifier,
 };
 use geo::CoordNum;
@@ -41,6 +41,11 @@ impl<R: Copy, T: CoordNum> TransitNetwork<R, T> {
             physical_graph: PhysicalGraph::new(),
             topology_graph: TopologyGraph::new(),
         }
+    }
+
+    /// Returns a reference to the `TransitNode` with the given ID.
+    pub fn get_edge_by_id(&self, edge_id: EdgeId) -> Option<&TransitEdge<T>> {
+        self.physical_graph.get_transit_edge_by_id(edge_id)
     }
 }
 
