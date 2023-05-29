@@ -395,9 +395,17 @@
 <a href="#395" id="395">395</a>
 <a href="#396" id="396">396</a>
 <a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
 </pre><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">use </span><span class="kw">crate</span>::core::{NodeId, TransitEdge, TransitNode};
+<span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId, TransitEdge, TransitNode};
 <span class="kw">use </span>geo::{Coord, CoordNum, EuclideanDistance};
 <span class="kw">use </span>petgraph::{
     graph::EdgeIndex,
@@ -589,11 +597,19 @@
     ///
     /// * If `node1` or `node2` are not valid node IDs in the graph.
     /// * If there is no edge between `node1` and `node2`.
-    </span><span class="kw">pub fn </span>get_transit_edge(<span class="kw-2">&amp;</span><span class="self">self</span>, node1: NodeId, node2: NodeId) -&gt; <span class="kw-2">&amp;</span>TransitEdge&lt;T&gt; {
+    </span><span class="kw">pub fn </span>get_transit_edge(<span class="kw-2">&amp;</span><span class="self">self</span>, node1: NodeId, node2: NodeId) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>TransitEdge&lt;T&gt;&gt; {
         <span class="kw">let </span>node1_index = <span class="self">self</span>.id_to_index(node1);
         <span class="kw">let </span>node2_index = <span class="self">self</span>.id_to_index(node2);
         <span class="kw">let </span>edge_index = <span class="self">self</span>.graph.find_edge(node1_index, node2_index).unwrap();
-        <span class="self">self</span>.graph.edge_weight(edge_index).unwrap()
+        <span class="self">self</span>.graph.edge_weight(edge_index)
+    }
+
+    <span class="doccomment">/// Returns a reference to the `TransitEdge` with the specified `EdgeId`.
+    </span><span class="kw">pub fn </span>get_transit_edge_by_id(<span class="kw-2">&amp;</span><span class="self">self</span>, edge_id: EdgeId) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>TransitEdge&lt;T&gt;&gt; {
+        <span class="self">self</span>.graph
+            .edge_references()
+            .find(|edge| edge.weight().id == edge_id)
+            .map(|edge| edge.weight())
     }
 
     <span class="doccomment">/// Repairs a physical edge in the `PhysicalGraph` based on its nodes&#39; locations.
@@ -625,7 +641,7 @@
     ///
     /// graph.add_transit_edge(edge.clone());
     /// graph.repair_edge(1, 2);
-    /// let edge = graph.get_transit_edge(1, 2);
+    /// let edge = graph.get_transit_edge(1, 2).unwrap();
     /// assert_eq!(
     ///    edge.path,
     ///    LineString(vec![Coord { x: 0.0, y: 0.0 }, Coord { x: 1.0, y: 1.0 }])
@@ -784,7 +800,7 @@
 
         graph.repair_edge(<span class="number">1</span>, <span class="number">2</span>);
 
-        <span class="kw">let </span>edge = graph.get_transit_edge(<span class="number">1</span>, <span class="number">2</span>);
+        <span class="kw">let </span>edge = graph.get_transit_edge(<span class="number">1</span>, <span class="number">2</span>).unwrap();
 
         <span class="macro">assert_eq!</span>(
             edge.path,
