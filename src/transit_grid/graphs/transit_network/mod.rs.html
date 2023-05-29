@@ -319,6 +319,14 @@
 <a href="#319" id="319">319</a>
 <a href="#320" id="320">320</a>
 <a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, EdgeId, NodeId, TransitEdge, TransitNode},
@@ -453,6 +461,7 @@
             id: <span class="number">1</span>,
             source: <span class="number">1</span>,
             target: <span class="number">2</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
@@ -498,6 +507,7 @@
             id: <span class="number">1</span>,
             source: <span class="number">1</span>,
             target: <span class="number">2</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
@@ -505,6 +515,7 @@
             id: <span class="number">2</span>,
             source: <span class="number">2</span>,
             target: <span class="number">3</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
 
@@ -573,6 +584,7 @@
             id: <span class="number">1</span>,
             source: <span class="number">0</span>,
             target: <span class="number">1</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
@@ -580,6 +592,7 @@
             id: <span class="number">2</span>,
             source: <span class="number">1</span>,
             target: <span class="number">4</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
         };
 
@@ -587,6 +600,7 @@
             id: <span class="number">3</span>,
             source: <span class="number">1</span>,
             target: <span class="number">2</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
 
@@ -594,6 +608,7 @@
             id: <span class="number">4</span>,
             source: <span class="number">1</span>,
             target: <span class="number">3</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">3.0</span>, y: <span class="number">3.0</span>}]),
         };
 
@@ -608,6 +623,7 @@
             id: <span class="number">5</span>,
             source: <span class="number">4</span>,
             target: <span class="number">0</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}, <span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}]),
         };
 

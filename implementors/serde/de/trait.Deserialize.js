@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"transit_grid":[["impl&lt;'de, T&gt; <a class=\"trait\" href=\"https://docs.rs/serde/1.0.163/serde/de/trait.Deserialize.html\" title=\"trait serde::de::Deserialize\">Deserialize</a>&lt;'de&gt; for <a class=\"struct\" href=\"transit_grid/core/struct.TransitEdge.html\" title=\"struct transit_grid::core::TransitEdge\">TransitEdge</a>&lt;T&gt;<span class=\"where fmt-newline\">where\n    T: <a class=\"trait\" href=\"https://docs.rs/serde/1.0.163/serde/de/trait.Deserialize.html\" title=\"trait serde::de::Deserialize\">Deserialize</a>&lt;'de&gt; + CoordNum,</span>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

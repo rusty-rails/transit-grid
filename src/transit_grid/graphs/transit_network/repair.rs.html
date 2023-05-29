@@ -100,6 +100,8 @@
 <a href="#100" id="100">100</a>
 <a href="#101" id="101">101</a>
 <a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
 </pre><pre class="rust"><code><span class="kw">use </span>geo::CoordNum;
 
 <span class="kw">use crate</span>::{core::NodeId, prelude::TransitNetworkRepairer};
@@ -169,6 +171,7 @@
             id: <span class="number">1</span>,
             source: <span class="number">1</span>,
             target: <span class="number">2</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
@@ -176,6 +179,7 @@
             id: <span class="number">2</span>,
             source: <span class="number">2</span>,
             target: <span class="number">3</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
 

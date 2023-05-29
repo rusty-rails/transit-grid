@@ -396,6 +396,16 @@
 <a href="#396" id="396">396</a>
 <a href="#397" id="397">397</a>
 <a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
 </pre><pre class="rust"><code><span class="doccomment">//! Module providing traits and implementations for shortest path computations
 //! on a transit network. The two main traits defined are `ShortestPath` and `ShortestPathWithAccessability`.
 //!
@@ -642,24 +652,28 @@
             id: <span class="number">01</span>,
             source: <span class="number">0</span>,
             target: <span class="number">1</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
         <span class="kw">let </span>edge12 = TransitEdge {
             id: <span class="number">12</span>,
             source: <span class="number">1</span>,
             target: <span class="number">2</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
         <span class="kw">let </span>edge23 = TransitEdge {
             id: <span class="number">23</span>,
             source: <span class="number">2</span>,
             target: <span class="number">3</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}, <span class="macro">coord! </span>{x: <span class="number">3.0</span>, y: <span class="number">3.0</span>}]),
         };
         <span class="kw">let </span>edge34 = TransitEdge {
             id: <span class="number">34</span>,
             source: <span class="number">3</span>,
             target: <span class="number">4</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">3.0</span>, y: <span class="number">3.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
         };
 
@@ -723,36 +737,42 @@
             id: <span class="number">01</span>,
             source: <span class="number">0</span>,
             target: <span class="number">1</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
         <span class="kw">let </span>edge02 = TransitEdge {
             id: <span class="number">02</span>,
             source: <span class="number">0</span>,
             target: <span class="number">2</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
         <span class="kw">let </span>edge13 = TransitEdge {
             id: <span class="number">13</span>,
             source: <span class="number">1</span>,
             target: <span class="number">3</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">3.0</span>, y: <span class="number">3.0</span>}]),
         };
         <span class="kw">let </span>edge14 = TransitEdge {
             id: <span class="number">14</span>,
             source: <span class="number">1</span>,
             target: <span class="number">4</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
         };
         <span class="kw">let </span>edge25 = TransitEdge {
             id: <span class="number">25</span>,
             source: <span class="number">2</span>,
             target: <span class="number">5</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
         };
         <span class="kw">let </span>edge45 = TransitEdge {
             id: <span class="number">45</span>,
             source: <span class="number">5</span>,
             target: <span class="number">4</span>,
+            length: <span class="number">1.0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
         };
 
