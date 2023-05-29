@@ -64,7 +64,7 @@ impl<T: CoordNum> Default for TransitEdge<T> {
 /// `PathCoordinates` can be implemented by any type that has a source and target coordinate.
 /// This is useful in graph algorithms where you need to know the start and end point of an edge.
 ///
-trait PathCoordinates<T: CoordNum> {
+pub trait PathCoordinates<T: CoordNum> {
     fn source_coordinate(&self) -> Coord<T>;
     fn target_coordinate(&self) -> Coord<T>;
 }
