@@ -435,8 +435,8 @@
 /// let node2_id = graph.add_transit_node(node2);
 /// let edge = TransitEdge {
 ///     id: 1,
-///     from: 1,
-///     to: 2,
+///     source: 1,
+///     target: 2,
 ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
 /// };
 /// graph.add_transit_edge(edge);
@@ -559,16 +559,16 @@
     ///
     /// let edge = TransitEdge {
     ///     id: 1,
-    ///     from: 1,
-    ///     to: 2,
+    ///     source: 1,
+    ///     target: 2,
     ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
     /// };
     ///
     /// graph.add_transit_edge(edge);
     /// ```
     </span><span class="kw">pub fn </span>add_transit_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) -&gt; EdgeIndex {
-        <span class="kw">let </span>from = <span class="self">self</span>.id_to_index(edge.from);
-        <span class="kw">let </span>to = <span class="self">self</span>.id_to_index(edge.to);
+        <span class="kw">let </span>from = <span class="self">self</span>.id_to_index(edge.source);
+        <span class="kw">let </span>to = <span class="self">self</span>.id_to_index(edge.target);
         <span class="self">self</span>.graph.add_edge(from, to, edge)
     }
 
@@ -618,8 +618,8 @@
     ///
     /// let mut edge = TransitEdge {
     ///     id: 1,
-    ///     from: 1,
-    ///     to: 2,
+    ///     source: 1,
+    ///     target: 2,
     ///     path: LineString(vec![coord! { x:1.0, y:1.0 }, coord! { x:0.0, y:0.0 }]),  // Note that the direction is initially reversed
     /// };
     ///
@@ -643,8 +643,8 @@
         <span class="kw">let </span>node2_index = <span class="self">self</span>.id_to_index(node2);
         <span class="kw">let </span>from_node_location = {
             <span class="kw">let </span>from_node: <span class="kw-2">&amp;</span>TransitNode&lt;R&gt; = <span class="self">self</span>.graph.node_weight(node1_index).unwrap();
-            from_node.location.clone() <span class="comment">// Clone the location to use it later
-        </span>};
+            from_node.location
+        };
 
         <span class="kw">let </span>edge_index = <span class="self">self</span>.graph.find_edge(node1_index, node2_index).unwrap();
         <span class="kw">let </span>edge = <span class="self">self</span>.graph.edge_weight_mut(edge_index).unwrap();
@@ -691,8 +691,8 @@
 
         <span class="kw">let </span>edge = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">2</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0 </span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0 </span>}]),
         };
 
@@ -775,8 +775,8 @@
 
         <span class="kw">let </span>edge = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">2</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[Coord { x: <span class="number">1.0</span>, y: <span class="number">1.0 </span>}, Coord { x: <span class="number">0.0</span>, y: <span class="number">0.0 </span>}]),
         };
 

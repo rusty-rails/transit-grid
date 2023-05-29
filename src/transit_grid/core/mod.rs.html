@@ -196,13 +196,13 @@
 ///
 /// let edge = TransitEdge {
 ///     id: 1,
-///     from: 1,
-///     to: 2,
+///     source: 1,
+///     target: 2,
 ///     path: LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]),
 /// };
 /// assert_eq!(edge.id, 1);
-/// assert_eq!(edge.from, 1);
-/// assert_eq!(edge.to, 2);
+/// assert_eq!(edge.source, 1);
+/// assert_eq!(edge.target, 2);
 /// assert_eq!(edge.path, LineString(vec![coord! { x: 0.0, y: 0.0 }, coord! { x: 1.0, y: 1.0 }]));
 /// ```
 </span><span class="attr">#[derive(Debug, Clone, Eq, PartialEq)]
@@ -211,10 +211,10 @@
     </span><span class="kw">pub </span>id: EdgeId,
 
     <span class="doccomment">/// The identifier of the node where the edge starts.
-    </span><span class="kw">pub </span>from: NodeId,
+    </span><span class="kw">pub </span>source: NodeId,
 
     <span class="doccomment">/// The identifier of the node where the edge ends.
-    </span><span class="kw">pub </span>to: NodeId,
+    </span><span class="kw">pub </span>target: NodeId,
 
     <span class="doccomment">/// The path of the edge, represented as a `LineString`.
     </span><span class="kw">pub </span>path: LineString&lt;T&gt;,
@@ -224,8 +224,8 @@
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             id: <span class="number">0</span>,
-            from: <span class="number">0</span>,
-            to: <span class="number">0</span>,
+            source: <span class="number">0</span>,
+            target: <span class="number">0</span>,
             path: LineString(<span class="macro">vec!</span>[]),
         }
     }
@@ -250,13 +250,13 @@
     </span><span class="kw">fn </span>test_edge() {
         <span class="kw">let </span>edge = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">2</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0</span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0</span>}]),
         };
         <span class="macro">assert_eq!</span>(edge.id, <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(edge.from, <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(edge.to, <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(edge.source, <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(edge.target, <span class="number">2</span>);
         <span class="macro">assert_eq!</span>(
             edge.path,
             LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0</span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0</span>}])
@@ -267,8 +267,8 @@
     </span><span class="kw">fn </span>test_edge_default() {
         <span class="kw">let </span>edge = TransitEdge::&lt;f64&gt;::default();
         <span class="macro">assert_eq!</span>(edge.id, <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(edge.from, <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(edge.to, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(edge.source, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(edge.target, <span class="number">0</span>);
         <span class="macro">assert_eq!</span>(edge.path, LineString::&lt;f64&gt;(<span class="macro">vec!</span>[]));
     }
 }

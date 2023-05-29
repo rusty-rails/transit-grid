@@ -119,7 +119,7 @@
             </span>.physical_graph
             .graph
             .edge_weights()
-            .map(|edge| (edge.from, edge.to))
+            .map(|edge| (edge.source, edge.target))
             .collect();
 
         <span class="kw">for </span>edge <span class="kw">in </span>edges {
@@ -167,15 +167,15 @@
         <span class="comment">// Define edges
         </span><span class="kw">let </span>edge1 = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">2</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
         <span class="kw">let </span>edge2 = TransitEdge {
             id: <span class="number">2</span>,
-            from: <span class="number">2</span>,
-            to: <span class="number">3</span>,
+            source: <span class="number">2</span>,
+            target: <span class="number">3</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
 

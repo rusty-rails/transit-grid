@@ -27,8 +27,8 @@ graph.add_transit_node(node);</code></pre></div>
 <span class="kw">let </span>node2_id = graph.add_transit_node(node2);
 <span class="kw">let </span>edge = TransitEdge {
     id: <span class="number">1</span>,
-    from: <span class="number">1</span>,
-    to: <span class="number">2</span>,
+    source: <span class="number">1</span>,
+    target: <span class="number">2</span>,
     path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0 </span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0 </span>}]),
 };
 graph.add_transit_edge(edge);</code></pre></div>
@@ -101,8 +101,8 @@ graph.add_transit_node(node);</code></pre></div>
 
 <span class="kw">let </span>edge = TransitEdge {
     id: <span class="number">1</span>,
-    from: <span class="number">1</span>,
-    to: <span class="number">2</span>,
+    source: <span class="number">1</span>,
+    target: <span class="number">2</span>,
     path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0 </span>}, <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0 </span>}]),
 };
 
@@ -141,8 +141,8 @@ graph.add_transit_edge(edge);</code></pre></div>
 
 <span class="kw">let </span><span class="kw-2">mut </span>edge = TransitEdge {
     id: <span class="number">1</span>,
-    from: <span class="number">1</span>,
-    to: <span class="number">2</span>,
+    source: <span class="number">1</span>,
+    target: <span class="number">2</span>,
     path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0 </span>}, <span class="macro">coord! </span>{ x:<span class="number">0.0</span>, y:<span class="number">0.0 </span>}]),  <span class="comment">// Note that the direction is initially reversed
 </span>};
 

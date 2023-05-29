@@ -309,6 +309,11 @@
 <a href="#309" id="309">309</a>
 <a href="#310" id="310">310</a>
 <a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
 </pre><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, NodeId, TransitEdge, TransitNode},
@@ -388,13 +393,18 @@
     /// * `edge` - The `TransitEdge` to be added to the network.
     </span><span class="kw">fn </span>add_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) {
         <span class="self">self</span>.physical_graph.add_transit_edge(edge.clone());
-        <span class="self">self</span>.topology_graph.add_edge(edge.id, edge.from, edge.to);
+        <span class="self">self</span>.topology_graph
+            .add_edge(edge.id, edge.source, edge.target);
     }
 
     <span class="kw">fn </span>add_edge_with_accessibility(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;, accessability: Accessability) {
         <span class="self">self</span>.physical_graph.add_transit_edge(edge.clone());
-        <span class="self">self</span>.topology_graph
-            .add_edge_with_accessibility(edge.id, edge.from, edge.to, accessability);
+        <span class="self">self</span>.topology_graph.add_edge_with_accessibility(
+            edge.id,
+            edge.source,
+            edge.target,
+            accessability,
+        );
     }
 }
 
@@ -431,8 +441,8 @@
         <span class="comment">// Define an edge
         </span><span class="kw">let </span>edge = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">2</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
@@ -476,15 +486,15 @@
         <span class="comment">// Define edges
         </span><span class="kw">let </span>edge1 = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">2</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
         <span class="kw">let </span>edge2 = TransitEdge {
             id: <span class="number">2</span>,
-            from: <span class="number">2</span>,
-            to: <span class="number">3</span>,
+            source: <span class="number">2</span>,
+            target: <span class="number">3</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
 
@@ -551,29 +561,29 @@
         <span class="comment">// Define edges
         </span><span class="kw">let </span>edge01 = TransitEdge {
             id: <span class="number">1</span>,
-            from: <span class="number">0</span>,
-            to: <span class="number">1</span>,
+            source: <span class="number">0</span>,
+            target: <span class="number">1</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}, <span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}]),
         };
 
         <span class="kw">let </span>edge14 = TransitEdge {
             id: <span class="number">2</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">4</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">4</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}]),
         };
 
         <span class="kw">let </span>edge12 = TransitEdge {
             id: <span class="number">3</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">2</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">2</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">2.0</span>, y: <span class="number">2.0</span>}]),
         };
 
         <span class="kw">let </span>edge13 = TransitEdge {
             id: <span class="number">4</span>,
-            from: <span class="number">1</span>,
-            to: <span class="number">3</span>,
+            source: <span class="number">1</span>,
+            target: <span class="number">3</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">1.0</span>, y: <span class="number">1.0</span>}, <span class="macro">coord! </span>{x: <span class="number">3.0</span>, y: <span class="number">3.0</span>}]),
         };
 
@@ -586,8 +596,8 @@
         <span class="comment">// Add edge with accessibility
         </span><span class="kw">let </span>edge40 = TransitEdge {
             id: <span class="number">5</span>,
-            from: <span class="number">4</span>,
-            to: <span class="number">0</span>,
+            source: <span class="number">4</span>,
+            target: <span class="number">0</span>,
             path: LineString(<span class="macro">vec!</span>[<span class="macro">coord! </span>{x: <span class="number">4.0</span>, y: <span class="number">4.0</span>}, <span class="macro">coord! </span>{x: <span class="number">0.0</span>, y: <span class="number">0.0</span>}]),
         };
 
