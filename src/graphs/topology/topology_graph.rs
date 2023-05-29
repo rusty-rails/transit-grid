@@ -329,6 +329,68 @@ impl TopologyGraph {
             .is_some()
     }
 
+    /// Repairs the direction of edges in a graph if they are incorrectly directed.
+    ///
+    /// This function repairs edges between two nodes in the graph by examining their direction.
+    /// If the edges have the same direction (either both outgoing or both incoming), the direction
+    /// of the edges will be switched to ensure a consistent direction from `node1` to `node2`.
+    ///
+    /// # Examples
+    /// Correct scenarios:
+    /// a -> node1_indices.0 -> node2_indices.0 -> b
+    /// a -> node1_indices.0 -> node2_indices.1 -> b
+    /// a -> node1_indices.1 -> node2_indices.0 -> b
+    ///
+    /// Incorrect scenarios:
+    /// a -> node1_indices.0 <- node2_indices.0 -> b
+    /// a -> node1_indices.1 <- node2_indices.0 -> b
+    /// a -> node1_indices.0 <- node2_indices.1 -> b
+    ///
+    /// In the incorrect scenarios, the function will correct the edge directions as:
+    /// a -> node1_indices.0 -> node2_indices.0 -> b
+    /// a -> node1_indices.1 -> node2_indices.0 -> b
+    /// a -> node1_indices.0 -> node2_indices.1 -> b
+    ///
+    /// # Arguments
+    /// * `node1`: The first node of the edge pair.
+    /// * `node2`: The second node of the edge pair.
+    ///
+    /// # Panics
+    /// This function will panic if either of the node indices is not present in the graph.
+    ///
+    /// # Note
+    /// This function is mainly intended to be used for directed graphs. Using it for undirected graphs
+    /// may not have the intended effect.
+    ///
+    /// This function should be used when a graph's edge directions are set manually and may be incorrect,
+    /// and when it's important that the edges have a specific direction for the logic of the application.
+    pub fn repair_edge(&mut self, node1: NodeId, node2: NodeId) {
+        if let Some((edge_index1, edge_index2)) = self.find_edge_indices(node1, node2) {
+            if !self.edge_is_in_neighbors_direction(edge_index1)
+                && !self.edge_is_in_neighbors_direction(edge_index2)
+            {
+                self.reverse_edge(edge_index1);
+                self.reverse_edge(edge_index2);
+            }
+        }
+    }
+
+    /// Reverse the direction of a given edge.
+    ///
+    /// # Arguments
+    ///
+    /// * `edge_index` - The index of the edge to reverse.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if the edge does not exist in the graph.
+    pub fn reverse_edge(&mut self, edge_index: EdgeIndex) {
+        let (source, target) = self.graph.edge_endpoints(edge_index).unwrap();
+        let weight = self.graph.edge_weight(edge_index).unwrap().clone();
+        self.graph.remove_edge(edge_index);
+        self.graph.add_edge(target, source, weight);
+    }
+
     /// Returns the indices of edges between two nodes in all directions.
     ///
     /// # Arguments
@@ -369,6 +431,36 @@ impl TopologyGraph {
         } else {
             None
         }
+    }
+
+    /// Checks if an edge is in the same direction as its neighboring edges.
+    ///
+    /// # Arguments
+    ///
+    /// * `edge_index` - The `EdgeIndex` of the edge to check.
+    ///
+    /// # Returns
+    ///
+    /// * `bool` - `true` if the edge is in the same direction as its neighboring edges, `false` otherwise.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if the `EdgeIndex` does not exist in the graph.
+    pub fn edge_is_in_neighbors_direction(&self, edge_index: EdgeIndex) -> bool {
+        let (source, target) = self.graph.edge_endpoints(edge_index).unwrap();
+
+        // Check if the source's neighbors are in the same direction
+        let source_has_same_direction = self
+            .graph
+            .neighbors_directed(source, petgraph::Direction::Incoming)
+            .any(|neighbor| neighbor != target);
+
+        let target_has_same_direction = self
+            .graph
+            .neighbors_directed(target, petgraph::Direction::Outgoing)
+            .any(|neighbor| neighbor != source);
+
+        source_has_same_direction && target_has_same_direction
     }
 }
 
@@ -662,8 +754,6 @@ mod tests {
             accessability,
         );
 
-        println!("{}", Dot::new(&topo_graph.graph));
-
         assert!(
             topo_graph
                 .graph
@@ -693,5 +783,57 @@ mod tests {
         assert_eq!(topo_graph.graph.edge_count(), 0);
         assert_eq!(topo_graph.id_to_index.len(), 0);
         assert_eq!(topo_graph.index_to_id.len(), 0);
+    }
+
+    #[test]
+    fn test_reverse_edge() {
+        let mut topo_graph = TopologyGraph::default();
+        let node1 = topo_graph.add_node(1);
+        let node2 = topo_graph.add_node(2);
+        let edge_index = topo_graph.add_edge(33, 1, 2);
+
+        // Ensure that the edge is initially from node1 to node2
+        assert_eq!(
+            topo_graph.graph.edge_endpoints(edge_index.0),
+            Some((node1.0, node2.0))
+        );
+
+        topo_graph.reverse_edge(edge_index.0);
+
+        assert_eq!(
+            topo_graph.graph.edge_endpoints(edge_index.0),
+            Some((node2.0, node1.0))
+        );
+    }
+
+    #[test]
+    fn test_repair_edge() {
+        let mut topo_graph = TopologyGraph::new();
+
+        let node_id_a = 1;
+        let node_id_b = 2;
+        let node_id_c = 3;
+        let node_id_d = 4;
+
+        topo_graph.add_node(node_id_a);
+        topo_graph.add_node(node_id_b);
+        topo_graph.add_node(node_id_c);
+        topo_graph.add_node(node_id_d);
+
+        let _edge31 = topo_graph.add_edge(31, 1, 2);
+        let edge32 = topo_graph.add_edge(32, 2, 3);
+        let _edge33 = topo_graph.add_edge(33, 3, 4);
+
+        println!("{:?}", Dot::new(&topo_graph.graph));
+
+        assert_ne!(true, topo_graph.edge_is_in_neighbors_direction(edge32.0));
+        assert_ne!(true, topo_graph.edge_is_in_neighbors_direction(edge32.1));
+
+        topo_graph.repair_edge(node_id_b, node_id_c);
+
+        println!("{:?}", Dot::new(&topo_graph.graph));
+
+        assert!(topo_graph.edge_is_in_neighbors_direction(edge32.0));
+        assert!(topo_graph.edge_is_in_neighbors_direction(edge32.1));
     }
 }
