@@ -4,7 +4,7 @@
 //! The module also provides `Accessability`, an enum for representing the accessibility of nodes in the network.
 
 mod edge;
-pub use edge::{EdgeId, TransitEdge};
+pub use edge::{EdgeId, PathCoordinates, TransitEdge};
 
 mod accessability;
 /// Re-export of the `Accessability` enum from the `accessability` module.

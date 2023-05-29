@@ -65,7 +65,9 @@ impl<T: CoordNum> Default for TransitEdge<T> {
 /// This is useful in graph algorithms where you need to know the start and end point of an edge.
 ///
 pub trait PathCoordinates<T: CoordNum> {
+    /// Returns the source coordinate of the path.
     fn source_coordinate(&self) -> Coord<T>;
+    /// Returns the target coordinate of the path.
     fn target_coordinate(&self) -> Coord<T>;
 }
 
