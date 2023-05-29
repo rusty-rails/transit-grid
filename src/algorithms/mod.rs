@@ -20,6 +20,8 @@ use crate::{
     graphs::TransitNetwork,
 };
 
+pub mod edge_length;
+
 /// `ShortestPath` trait provides functionality to compute shortest path in a network.
 ///
 /// It is generic over two types `R` and `T`. `R` represents some properties of the network (like weights or capacities),
