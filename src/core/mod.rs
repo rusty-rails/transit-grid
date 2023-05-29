@@ -11,7 +11,7 @@ mod accessability;
 pub use accessability::Accessability;
 
 /// Type alias for an identifier.
-pub type IdType = u32;
+pub type IdType = u64;
 
 /// Type alias for a node identifier.
 pub type NodeId = IdType;
