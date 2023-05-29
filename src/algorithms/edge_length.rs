@@ -48,6 +48,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: line.clone(),
         };
 
@@ -61,6 +62,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: line.clone(),
         };
 
@@ -74,6 +76,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: line.clone(),
         };
 

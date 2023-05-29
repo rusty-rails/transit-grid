@@ -132,6 +132,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
@@ -177,6 +178,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
@@ -184,6 +186,7 @@ mod tests {
             id: 2,
             source: 2,
             target: 3,
+            length: 1.0,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 2.0, y: 2.0}]),
         };
 
@@ -252,6 +255,7 @@ mod tests {
             id: 1,
             source: 0,
             target: 1,
+            length: 1.0,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
@@ -259,6 +263,7 @@ mod tests {
             id: 2,
             source: 1,
             target: 4,
+            length: 1.0,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 4.0, y: 4.0}]),
         };
 
@@ -266,6 +271,7 @@ mod tests {
             id: 3,
             source: 1,
             target: 2,
+            length: 1.0,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 2.0, y: 2.0}]),
         };
 
@@ -273,6 +279,7 @@ mod tests {
             id: 4,
             source: 1,
             target: 3,
+            length: 1.0,
             path: LineString(vec![coord! {x: 1.0, y: 1.0}, coord! {x: 3.0, y: 3.0}]),
         };
 
@@ -287,6 +294,7 @@ mod tests {
             id: 5,
             source: 4,
             target: 0,
+            length: 1.0,
             path: LineString(vec![coord! {x: 4.0, y: 4.0}, coord! {x: 0.0, y: 0.0}]),
         };
 

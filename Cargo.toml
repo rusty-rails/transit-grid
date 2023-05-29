@@ -12,3 +12,4 @@ repository = "https://github.com/rusty-rails/transit-grid"
 geo = "0.25.0"
 num-traits = "0.2.15"
 petgraph = { version = "0.6.3", features = ["stable_graph"] }
+serde = { version = "1.0", features = ["derive"] }

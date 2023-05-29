@@ -67,6 +67,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]),
         };
 
@@ -74,6 +75,7 @@ mod tests {
             id: 2,
             source: 2,
             target: 3,
+            length: 1.0,
             path: LineString(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 2.0, y: 2.0}]),
         };
 

@@ -40,6 +40,7 @@ use petgraph::{
 ///     id: 1,
 ///     source: 1,
 ///     target: 2,
+///     length: 1.0,
 ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
 /// };
 /// graph.add_transit_edge(edge);
@@ -164,6 +165,7 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///     id: 1,
     ///     source: 1,
     ///     target: 2,
+    ///     length: 1.0,
     ///     path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
     /// };
     ///
@@ -231,6 +233,7 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     ///     id: 1,
     ///     source: 1,
     ///     target: 2,
+    ///     length: 1.0,
     ///     path: LineString(vec![coord! { x:1.0, y:1.0 }, coord! { x:0.0, y:0.0 }]),  // Note that the direction is initially reversed
     /// };
     ///
@@ -304,6 +307,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: LineString(vec![coord! { x:0.0, y:0.0 }, coord! { x:1.0, y:1.0 }]),
         };
 
@@ -388,6 +392,7 @@ mod tests {
             id: 1,
             source: 1,
             target: 2,
+            length: 1.0,
             path: LineString(vec![Coord { x: 1.0, y: 1.0 }, Coord { x: 0.0, y: 0.0 }]),
         };
 
