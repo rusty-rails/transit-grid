@@ -203,8 +203,11 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
         let node1_index = self.id_to_index(node1);
         let node2_index = self.id_to_index(node2);
         if let (Some(node1_index), Some(node2_index)) = (node1_index, node2_index) {
-            let edge_index = self.graph.find_edge(*node1_index, *node2_index).unwrap();
-            self.graph.edge_weight(edge_index)
+            if let Some(edge_index) = self.graph.find_edge(*node1_index, *node2_index) {
+                self.graph.edge_weight(edge_index)
+            } else {
+                None
+            }
         } else {
             None
         }
@@ -311,8 +314,14 @@ mod tests {
             location: coord! { x:1.0, y:1.0 },
         };
 
+        let node3 = TransitNode {
+            id: 3,
+            location: coord! { x:1.0, y:1.0 },
+        };
+
         let _node1_id = graph.add_transit_node(node1);
         let _node2_id = graph.add_transit_node(node2);
+        let _node3_id = graph.add_transit_node(node3);
 
         let edge = TransitEdge {
             id: 1,
@@ -324,8 +333,11 @@ mod tests {
 
         let _ = graph.add_transit_edge(edge);
 
-        assert_eq!(graph.graph.node_count(), 2);
+        assert_eq!(graph.graph.node_count(), 3);
         assert_eq!(graph.graph.edge_count(), 1);
+
+        assert!(graph.get_transit_edge(1, 2).is_some());
+        assert!(graph.get_transit_edge(1, 3).is_none());
     }
 
     #[test]
