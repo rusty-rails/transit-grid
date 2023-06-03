@@ -409,6 +409,16 @@
 <a href="#409" id="409">409</a>
 <a href="#410" id="410">410</a>
 <a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
 <span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId, TransitEdge, TransitNode};
@@ -502,10 +512,10 @@
     /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
     /// let node_index = graph.add_transit_node(node);
     /// let node_id = graph.index_to_id(node_index);
-    /// assert_eq!(node_id, 1);
+    /// assert_eq!(node_id, Some(&amp;1));
     /// ```
-    </span><span class="kw">pub fn </span>index_to_id(<span class="kw-2">&amp;</span><span class="self">self</span>, index: NodeIndex) -&gt; NodeId {
-        <span class="self">self</span>.index_to_id[<span class="kw-2">&amp;</span>index]
+    </span><span class="kw">pub fn </span>index_to_id(<span class="kw-2">&amp;</span><span class="self">self</span>, index: NodeIndex) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>NodeId&gt; {
+        <span class="self">self</span>.index_to_id.get(<span class="kw-2">&amp;</span>index)
     }
 
     <span class="doccomment">/// Converts a `NodeId` to a `NodeIndex`.
@@ -532,10 +542,10 @@
     /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
     /// let node_index = graph.add_transit_node(node);
     /// let queried_index = graph.id_to_index(1);
-    /// assert_eq!(node_index, queried_index);
+    /// assert_eq!(Some(&amp;node_index), queried_index);
     /// ```
-    </span><span class="kw">pub fn </span>id_to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, id: NodeId) -&gt; NodeIndex {
-        <span class="self">self</span>.id_to_index[<span class="kw-2">&amp;</span>id]
+    </span><span class="kw">pub fn </span>id_to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, id: NodeId) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>NodeIndex&gt; {
+        <span class="self">self</span>.id_to_index.get(<span class="kw-2">&amp;</span>id)
     }
 
     <span class="doccomment">/// Adds a `TransitNode` to the `PhysicalGraph`.
@@ -586,7 +596,11 @@
     </span><span class="kw">pub fn </span>add_transit_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, edge: TransitEdge&lt;T&gt;) -&gt; EdgeIndex {
         <span class="kw">let </span>from = <span class="self">self</span>.id_to_index(edge.source);
         <span class="kw">let </span>to = <span class="self">self</span>.id_to_index(edge.target);
-        <span class="self">self</span>.graph.add_edge(from, to, edge)
+        <span class="kw">if let </span>(<span class="prelude-val">Some</span>(from), <span class="prelude-val">Some</span>(to)) = (from, to) {
+            <span class="self">self</span>.graph.add_edge(<span class="kw-2">*</span>from, <span class="kw-2">*</span>to, edge)
+        } <span class="kw">else </span>{
+            <span class="macro">panic!</span>(<span class="string">&quot;Invalid node ID&quot;</span>)
+        }
     }
 
     <span class="doccomment">/// Returns a reference to the `TransitEdge` connecting the two nodes specified by `node1` and `node2`.
@@ -609,8 +623,12 @@
     </span><span class="kw">pub fn </span>get_transit_edge(<span class="kw-2">&amp;</span><span class="self">self</span>, node1: NodeId, node2: NodeId) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>TransitEdge&lt;T&gt;&gt; {
         <span class="kw">let </span>node1_index = <span class="self">self</span>.id_to_index(node1);
         <span class="kw">let </span>node2_index = <span class="self">self</span>.id_to_index(node2);
-        <span class="kw">let </span>edge_index = <span class="self">self</span>.graph.find_edge(node1_index, node2_index).unwrap();
-        <span class="self">self</span>.graph.edge_weight(edge_index)
+        <span class="kw">if let </span>(<span class="prelude-val">Some</span>(node1_index), <span class="prelude-val">Some</span>(node2_index)) = (node1_index, node2_index) {
+            <span class="kw">let </span>edge_index = <span class="self">self</span>.graph.find_edge(<span class="kw-2">*</span>node1_index, <span class="kw-2">*</span>node2_index).unwrap();
+            <span class="self">self</span>.graph.edge_weight(edge_index)
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 
     <span class="doccomment">/// Returns a reference to the `TransitEdge` with the specified `EdgeId`.
@@ -667,22 +685,24 @@
     {
         <span class="kw">let </span>node1_index = <span class="self">self</span>.id_to_index(node1);
         <span class="kw">let </span>node2_index = <span class="self">self</span>.id_to_index(node2);
-        <span class="kw">let </span>from_node_location = {
-            <span class="kw">let </span>from_node: <span class="kw-2">&amp;</span>TransitNode&lt;R&gt; = <span class="self">self</span>.graph.node_weight(node1_index).unwrap();
-            from_node.location
-        };
+        <span class="kw">if let </span>(<span class="prelude-val">Some</span>(node1_index), <span class="prelude-val">Some</span>(node2_index)) = (node1_index, node2_index) {
+            <span class="kw">let </span>from_node_location = {
+                <span class="kw">let </span>from_node: <span class="kw-2">&amp;</span>TransitNode&lt;R&gt; = <span class="self">self</span>.graph.node_weight(<span class="kw-2">*</span>node1_index).unwrap();
+                from_node.location
+            };
 
-        <span class="kw">let </span>edge_index = <span class="self">self</span>.graph.find_edge(node1_index, node2_index).unwrap();
-        <span class="kw">let </span>edge = <span class="self">self</span>.graph.edge_weight_mut(edge_index).unwrap();
+            <span class="kw">let </span>edge_index = <span class="self">self</span>.graph.find_edge(<span class="kw-2">*</span>node1_index, <span class="kw-2">*</span>node2_index).unwrap();
+            <span class="kw">let </span>edge = <span class="self">self</span>.graph.edge_weight_mut(edge_index).unwrap();
 
-        <span class="kw">let </span>first_point = edge.path.<span class="number">0</span>.first().unwrap();
-        <span class="kw">let </span>last_point = edge.path.<span class="number">0</span>.last().unwrap();
+            <span class="kw">let </span>first_point = edge.path.<span class="number">0</span>.first().unwrap();
+            <span class="kw">let </span>last_point = edge.path.<span class="number">0</span>.last().unwrap();
 
-        <span class="kw">let </span>dist_to_first = from_node_location.euclidean_distance(first_point);
-        <span class="kw">let </span>dist_to_last = from_node_location.euclidean_distance(last_point);
+            <span class="kw">let </span>dist_to_first = from_node_location.euclidean_distance(first_point);
+            <span class="kw">let </span>dist_to_last = from_node_location.euclidean_distance(last_point);
 
-        <span class="kw">if </span>dist_to_first &gt; dist_to_last {
-            edge.path.<span class="number">0</span>.reverse();
+            <span class="kw">if </span>dist_to_first &gt; dist_to_last {
+                edge.path.<span class="number">0</span>.reverse();
+            }
         }
     }
 }
@@ -749,8 +769,8 @@
         <span class="kw">let </span>node1_id = graph.index_to_id(node1_index);
         <span class="kw">let </span>node2_id = graph.index_to_id(node2_index);
 
-        <span class="macro">assert_eq!</span>(node1_id, <span class="number">1</span>);
-        <span class="macro">assert_eq!</span>(node2_id, <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(node1_id, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">1</span>));
+        <span class="macro">assert_eq!</span>(node2_id, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">2</span>));
     }
 
     <span class="attr">#[test]
@@ -773,8 +793,8 @@
         <span class="kw">let </span>queried_node1_index = graph.id_to_index(<span class="number">1</span>);
         <span class="kw">let </span>queried_node2_index = graph.id_to_index(<span class="number">2</span>);
 
-        <span class="macro">assert_eq!</span>(node1_index, queried_node1_index);
-        <span class="macro">assert_eq!</span>(node2_index, queried_node2_index);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>node1_index), queried_node1_index);
+        <span class="macro">assert_eq!</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>node2_index), queried_node2_index);
     }
 
     <span class="attr">#[test]

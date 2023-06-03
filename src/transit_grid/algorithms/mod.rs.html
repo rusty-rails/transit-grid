@@ -406,6 +406,10 @@
 <a href="#406" id="406">406</a>
 <a href="#407" id="407">407</a>
 <a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Module providing traits and implementations for shortest path computations
 //! on a transit network. The two main traits defined are `ShortestPath` and `ShortestPathWithAccessability`.
 //!
@@ -540,8 +544,12 @@
         }
         <span class="kw">let </span>from = <span class="self">self</span>.physical_graph.id_to_index(from);
         <span class="kw">let </span>to = <span class="self">self</span>.physical_graph.id_to_index(to);
-        <span class="kw">let </span>edge = <span class="self">self</span>.physical_graph.graph.find_edge(from, to).unwrap();
-        edge_cost(<span class="self">self</span>.physical_graph.graph[edge].clone())
+        <span class="kw">if let </span>(<span class="prelude-val">Some</span>(from), <span class="prelude-val">Some</span>(to)) = (from, to) {
+            <span class="kw">let </span>edge = <span class="self">self</span>.physical_graph.graph.find_edge(<span class="kw-2">*</span>from, <span class="kw-2">*</span>to).unwrap();
+            edge_cost(<span class="self">self</span>.physical_graph.graph[edge].clone())
+        } <span class="kw">else </span>{
+            INFINITY
+        }
     }
 
     <span class="kw">fn </span>find_shortest_path_with_accessability&lt;F&gt;(
