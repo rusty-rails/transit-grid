@@ -9,6 +9,7 @@ pub use edge::{EdgeId, PathCoordinates, TransitEdge};
 mod accessability;
 /// Re-export of the `Accessability` enum from the `accessability` module.
 pub use accessability::Accessability;
+use serde::{Deserialize, Serialize};
 
 /// Type alias for an identifier.
 pub type IdType = u64;
@@ -35,7 +36,7 @@ pub type NodeId = IdType;
 /// assert_eq!(node.id, 1);
 /// assert_eq!(node.location, coord! { x: -0.1278, y: 51.5074 });
 /// ```
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub struct TransitNode<T> {
     /// A unique identifier for the node.
     pub id: NodeId,
