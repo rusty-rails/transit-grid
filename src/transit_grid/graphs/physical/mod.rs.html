@@ -419,6 +419,18 @@
 <a href="#419" id="419">419</a>
 <a href="#420" id="420">420</a>
 <a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
 <span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId, TransitEdge, TransitNode};
@@ -624,8 +636,11 @@
         <span class="kw">let </span>node1_index = <span class="self">self</span>.id_to_index(node1);
         <span class="kw">let </span>node2_index = <span class="self">self</span>.id_to_index(node2);
         <span class="kw">if let </span>(<span class="prelude-val">Some</span>(node1_index), <span class="prelude-val">Some</span>(node2_index)) = (node1_index, node2_index) {
-            <span class="kw">let </span>edge_index = <span class="self">self</span>.graph.find_edge(<span class="kw-2">*</span>node1_index, <span class="kw-2">*</span>node2_index).unwrap();
-            <span class="self">self</span>.graph.edge_weight(edge_index)
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(edge_index) = <span class="self">self</span>.graph.find_edge(<span class="kw-2">*</span>node1_index, <span class="kw-2">*</span>node2_index) {
+                <span class="self">self</span>.graph.edge_weight(edge_index)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>}
         } <span class="kw">else </span>{
             <span class="prelude-val">None
         </span>}
@@ -732,8 +747,14 @@
             location: <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0 </span>},
         };
 
+        <span class="kw">let </span>node3 = TransitNode {
+            id: <span class="number">3</span>,
+            location: <span class="macro">coord! </span>{ x:<span class="number">1.0</span>, y:<span class="number">1.0 </span>},
+        };
+
         <span class="kw">let </span>_node1_id = graph.add_transit_node(node1);
         <span class="kw">let </span>_node2_id = graph.add_transit_node(node2);
+        <span class="kw">let </span>_node3_id = graph.add_transit_node(node3);
 
         <span class="kw">let </span>edge = TransitEdge {
             id: <span class="number">1</span>,
@@ -745,8 +766,11 @@
 
         <span class="kw">let _ </span>= graph.add_transit_edge(edge);
 
-        <span class="macro">assert_eq!</span>(graph.graph.node_count(), <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(graph.graph.node_count(), <span class="number">3</span>);
         <span class="macro">assert_eq!</span>(graph.graph.edge_count(), <span class="number">1</span>);
+
+        <span class="macro">assert!</span>(graph.get_transit_edge(<span class="number">1</span>, <span class="number">2</span>).is_some());
+        <span class="macro">assert!</span>(graph.get_transit_edge(<span class="number">1</span>, <span class="number">3</span>).is_none());
     }
 
     <span class="attr">#[test]
