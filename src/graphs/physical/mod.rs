@@ -91,10 +91,10 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
     /// let node_index = graph.add_transit_node(node);
     /// let node_id = graph.index_to_id(node_index);
-    /// assert_eq!(node_id, 1);
+    /// assert_eq!(node_id, Some(&1));
     /// ```
-    pub fn index_to_id(&self, index: NodeIndex) -> NodeId {
-        self.index_to_id[&index]
+    pub fn index_to_id(&self, index: NodeIndex) -> Option<&NodeId> {
+        self.index_to_id.get(&index)
     }
 
     /// Converts a `NodeId` to a `NodeIndex`.
@@ -121,10 +121,10 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     /// let node = TransitNode { id: 1, location: coord! { x:0.0, y:0.0 } };
     /// let node_index = graph.add_transit_node(node);
     /// let queried_index = graph.id_to_index(1);
-    /// assert_eq!(node_index, queried_index);
+    /// assert_eq!(Some(&node_index), queried_index);
     /// ```
-    pub fn id_to_index(&self, id: NodeId) -> NodeIndex {
-        self.id_to_index[&id]
+    pub fn id_to_index(&self, id: NodeId) -> Option<&NodeIndex> {
+        self.id_to_index.get(&id)
     }
 
     /// Adds a `TransitNode` to the `PhysicalGraph`.
@@ -175,7 +175,11 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     pub fn add_transit_edge(&mut self, edge: TransitEdge<T>) -> EdgeIndex {
         let from = self.id_to_index(edge.source);
         let to = self.id_to_index(edge.target);
-        self.graph.add_edge(from, to, edge)
+        if let (Some(from), Some(to)) = (from, to) {
+            self.graph.add_edge(*from, *to, edge)
+        } else {
+            panic!("Invalid node ID")
+        }
     }
 
     /// Returns a reference to the `TransitEdge` connecting the two nodes specified by `node1` and `node2`.
@@ -198,8 +202,12 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     pub fn get_transit_edge(&self, node1: NodeId, node2: NodeId) -> Option<&TransitEdge<T>> {
         let node1_index = self.id_to_index(node1);
         let node2_index = self.id_to_index(node2);
-        let edge_index = self.graph.find_edge(node1_index, node2_index).unwrap();
-        self.graph.edge_weight(edge_index)
+        if let (Some(node1_index), Some(node2_index)) = (node1_index, node2_index) {
+            let edge_index = self.graph.find_edge(*node1_index, *node2_index).unwrap();
+            self.graph.edge_weight(edge_index)
+        } else {
+            None
+        }
     }
 
     /// Returns a reference to the `TransitEdge` with the specified `EdgeId`.
@@ -256,22 +264,24 @@ impl<R: Copy, T: CoordNum> PhysicalGraph<R, T> {
     {
         let node1_index = self.id_to_index(node1);
         let node2_index = self.id_to_index(node2);
-        let from_node_location = {
-            let from_node: &TransitNode<R> = self.graph.node_weight(node1_index).unwrap();
-            from_node.location
-        };
+        if let (Some(node1_index), Some(node2_index)) = (node1_index, node2_index) {
+            let from_node_location = {
+                let from_node: &TransitNode<R> = self.graph.node_weight(*node1_index).unwrap();
+                from_node.location
+            };
 
-        let edge_index = self.graph.find_edge(node1_index, node2_index).unwrap();
-        let edge = self.graph.edge_weight_mut(edge_index).unwrap();
+            let edge_index = self.graph.find_edge(*node1_index, *node2_index).unwrap();
+            let edge = self.graph.edge_weight_mut(edge_index).unwrap();
 
-        let first_point = edge.path.0.first().unwrap();
-        let last_point = edge.path.0.last().unwrap();
+            let first_point = edge.path.0.first().unwrap();
+            let last_point = edge.path.0.last().unwrap();
 
-        let dist_to_first = from_node_location.euclidean_distance(first_point);
-        let dist_to_last = from_node_location.euclidean_distance(last_point);
+            let dist_to_first = from_node_location.euclidean_distance(first_point);
+            let dist_to_last = from_node_location.euclidean_distance(last_point);
 
-        if dist_to_first > dist_to_last {
-            edge.path.0.reverse();
+            if dist_to_first > dist_to_last {
+                edge.path.0.reverse();
+            }
         }
     }
 }
@@ -338,8 +348,8 @@ mod tests {
         let node1_id = graph.index_to_id(node1_index);
         let node2_id = graph.index_to_id(node2_index);
 
-        assert_eq!(node1_id, 1);
-        assert_eq!(node2_id, 2);
+        assert_eq!(node1_id, Some(&1));
+        assert_eq!(node2_id, Some(&2));
     }
 
     #[test]
@@ -362,8 +372,8 @@ mod tests {
         let queried_node1_index = graph.id_to_index(1);
         let queried_node2_index = graph.id_to_index(2);
 
-        assert_eq!(node1_index, queried_node1_index);
-        assert_eq!(node2_index, queried_node2_index);
+        assert_eq!(Some(&node1_index), queried_node1_index);
+        assert_eq!(Some(&node2_index), queried_node2_index);
     }
 
     #[test]

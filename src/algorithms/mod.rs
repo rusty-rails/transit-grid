@@ -132,8 +132,12 @@ impl<R: Copy, T: CoordNum> ShortestPathWithAccessability<R, T> for TransitNetwor
         }
         let from = self.physical_graph.id_to_index(from);
         let to = self.physical_graph.id_to_index(to);
-        let edge = self.physical_graph.graph.find_edge(from, to).unwrap();
-        edge_cost(self.physical_graph.graph[edge].clone())
+        if let (Some(from), Some(to)) = (from, to) {
+            let edge = self.physical_graph.graph.find_edge(*from, *to).unwrap();
+            edge_cost(self.physical_graph.graph[edge].clone())
+        } else {
+            INFINITY
+        }
     }
 
     fn find_shortest_path_with_accessability<F>(
