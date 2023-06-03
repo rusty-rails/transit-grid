@@ -14,6 +14,7 @@ use super::{TopoEdge, TopoNode};
 ///
 /// Topological graph is directed and each node in the topological graph maps to a node in the physical graph.
 /// This is particularly useful for scenarios such as rail switches where the directionality of edges matters.
+#[derive(Debug, Clone)]
 pub struct TopologyGraph {
     /// the inner graph
     pub graph: StableDiGraph<TopoNode, TopoEdge, u32>,

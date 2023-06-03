@@ -45,6 +45,7 @@ use petgraph::{
 /// };
 /// graph.add_transit_edge(edge);
 /// ```
+#[derive(Debug, Clone)]
 pub struct PhysicalGraph<R, T: CoordNum> {
     /// Underlying undirected graph.
     pub graph: UnGraph<TransitNode<R>, TransitEdge<T>, u32>,

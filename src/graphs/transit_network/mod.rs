@@ -23,11 +23,19 @@ pub mod repair;
 ///
 /// * `physical_graph: PhysicalGraph<R, T>` - The physical graph representing the transit network.
 /// * `topology_graph: TopologyGraph` - The topological graph representing the transit network.
+#[derive(Debug, Clone)]
 pub struct TransitNetwork<R: Copy, T: CoordNum> {
     /// The physical graph representing the transit network.
     pub physical_graph: PhysicalGraph<R, T>,
     /// The topological graph representing the transit network.
     pub topology_graph: TopologyGraph,
+}
+
+impl<R: Copy, T: CoordNum> PartialEq for TransitNetwork<R, T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.physical_graph.graph.node_count() == other.physical_graph.graph.node_count()
+            && self.topology_graph.graph.edge_count() == other.topology_graph.graph.edge_count()
+    }
 }
 
 impl<R: Copy, T: CoordNum> TransitNetwork<R, T> {
