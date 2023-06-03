@@ -1,0 +1,15 @@
+[package]
+name = "visualize"
+version = "0.0.1"
+authors = ["Christian M<chriamue@gmail.com>"]
+license = "MIT"
+edition = "2021"
+
+[dependencies]
+transit-grid = { path="../.." }
+egui_graphs = { git = "https://github.com/blitzarx1/egui_graphs" }
+egui = "0.22"
+eframe = "0.22"
+geo = "0.25.0"
+petgraph = "0.6"
+rand = "0.8"
