@@ -327,6 +327,14 @@
 <a href="#327" id="327">327</a>
 <a href="#328" id="328">328</a>
 <a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
 </pre></div><pre class="rust"><code><span class="kw">use super</span>::{PhysicalGraph, TopologyGraph};
 <span class="kw">use crate</span>::{
     core::{Accessability, EdgeId, NodeId, TransitEdge, TransitNode},
@@ -352,11 +360,19 @@
 ///
 /// * `physical_graph: PhysicalGraph&lt;R, T&gt;` - The physical graph representing the transit network.
 /// * `topology_graph: TopologyGraph` - The topological graph representing the transit network.
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>TransitNetwork&lt;R: Copy, T: CoordNum&gt; {
     <span class="doccomment">/// The physical graph representing the transit network.
     </span><span class="kw">pub </span>physical_graph: PhysicalGraph&lt;R, T&gt;,
     <span class="doccomment">/// The topological graph representing the transit network.
     </span><span class="kw">pub </span>topology_graph: TopologyGraph,
+}
+
+<span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; PartialEq <span class="kw">for </span>TransitNetwork&lt;R, T&gt; {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="self">self</span>.physical_graph.graph.node_count() == other.physical_graph.graph.node_count()
+            &amp;&amp; <span class="self">self</span>.topology_graph.graph.edge_count() == other.topology_graph.graph.edge_count()
+    }
 }
 
 <span class="kw">impl</span>&lt;R: Copy, T: CoordNum&gt; TransitNetwork&lt;R, T&gt; {

@@ -837,6 +837,7 @@
 <a href="#837" id="837">837</a>
 <a href="#838" id="838">838</a>
 <a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::{HashMap, HashSet};
 
 <span class="kw">use </span>petgraph::{
@@ -853,6 +854,7 @@
 ///
 /// Topological graph is directed and each node in the topological graph maps to a node in the physical graph.
 /// This is particularly useful for scenarios such as rail switches where the directionality of edges matters.
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>TopologyGraph {
     <span class="doccomment">/// the inner graph
     </span><span class="kw">pub </span>graph: StableDiGraph&lt;TopoNode, TopoEdge, u32&gt;,

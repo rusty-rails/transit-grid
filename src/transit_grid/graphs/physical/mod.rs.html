@@ -408,6 +408,7 @@
 <a href="#408" id="408">408</a>
 <a href="#409" id="409">409</a>
 <a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::collections::HashMap;
 
 <span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId, TransitEdge, TransitNode};
@@ -455,6 +456,7 @@
 /// };
 /// graph.add_transit_edge(edge);
 /// ```
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>PhysicalGraph&lt;R, T: CoordNum&gt; {
     <span class="doccomment">/// Underlying undirected graph.
     </span><span class="kw">pub </span>graph: UnGraph&lt;TransitNode&lt;R&gt;, TransitEdge&lt;T&gt;, u32&gt;,
