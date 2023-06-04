@@ -74,16 +74,22 @@
 <a href="#74" id="74">74</a>
 <a href="#75" id="75">75</a>
 <a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! This module contains the `TopologyGraph` and the structures `TopoNode` and `TopoEdge` to represent the nodes and edges.
 //!
 //! `TopologyGraph` provides a way of maintaining the topology of a graph and mapping between `NodeId`s and `EdgeId`s
 //! (custom identifiers) and `NodeIndex` and `EdgeIndex` (indices in the petgraph).
 //!
 //! `TopoNode` and `TopoEdge` are used to represent nodes and edges within the `TopologyGraph`.
-</span><span class="kw">mod </span>topology_graph;
+</span><span class="kw">mod </span>repair;
+<span class="kw">mod </span>topology_graph;
 
 <span class="kw">use </span>petgraph::stable_graph::{EdgeIndex, NodeIndex};
 <span class="kw">use </span>std::fmt;
+
+<span class="kw">pub use </span>repair::TopologyGraphRepairer;
 <span class="kw">pub use </span>topology_graph::TopologyGraph;
 
 <span class="kw">use </span><span class="kw">crate</span>::core::{EdgeId, NodeId};
