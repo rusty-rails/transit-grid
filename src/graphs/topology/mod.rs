@@ -4,10 +4,13 @@
 //! (custom identifiers) and `NodeIndex` and `EdgeIndex` (indices in the petgraph).
 //!
 //! `TopoNode` and `TopoEdge` are used to represent nodes and edges within the `TopologyGraph`.
+mod repair;
 mod topology_graph;
 
 use petgraph::stable_graph::{EdgeIndex, NodeIndex};
 use std::fmt;
+
+pub use repair::TopologyGraphRepairer;
 pub use topology_graph::TopologyGraph;
 
 use crate::core::{EdgeId, NodeId};
