@@ -10,10 +10,35 @@ use crate::core::{Accessability, EdgeId, NodeId};
 
 use super::{TopoEdge, TopoNode};
 
-/// Represents the topological graph of the transit network.
+/// Represents the topological graph of a transit network as a skew-symmetric graph.
 ///
-/// Topological graph is directed and each node in the topological graph maps to a node in the physical graph.
-/// This is particularly useful for scenarios such as rail switches where the directionality of edges matters.
+/// A `TopologyGraph` is a directed graph where each node in the topological graph
+/// maps to a node in the physical graph. This is particularly useful for scenarios
+/// such as rail switches where the directionality of edges matters.
+///
+/// # Skew-Symmetric Model
+///
+/// The `TopologyGraph` struct uses a skew-symmetric model based on the definition by Goldberg & Karzanov (1996).
+/// In this model, let `G = (V, E)` be the directed graph with a function `σ` mapping vertices of `G` to other vertices,
+/// satisfying the following properties:
+///
+/// 1. For every vertex `v`, `σ(v)` ≠ `v`.
+/// 2. For every vertex `v`, `σ(σ(v))` = `v`.
+/// 3. For every edge `(u, v)`, `(σ(v), σ(u))` must also be an edge.
+///
+/// In the context of `TopologyGraph`,
+/// * For each node `v` in `V`, there are two nodes in `V_t`, denoted as `v_entry` and `v_exit`.
+/// * For each edge `(u, v)` in `E`, there are two directed edges in `E_t`: one from `u_exit` to `v_entry` and one from `v_exit` to `u_entry`.
+///
+/// Mathematically,
+/// * `V_t = {v_entry, v_exit | v ∈ V}`
+/// * `E_t = {(u_exit, v_entry), (v_exit, u_entry) | (u, v) ∈ E}`
+///
+///  # Bigroup Algebraic Structure (Additional Information)
+///
+/// According to Dr. R. Muthuraj and P. M. Sitharselvam, M. S. Muthuraman (2010), a set `G` with two binary operations `+` and `*`
+/// is called a bigroup if there exist two proper subsets `G1` and `G2` of `G` such that `G = G1 ∪ G2`.
+///
 #[derive(Debug, Clone)]
 pub struct TopologyGraph {
     /// the inner graph
