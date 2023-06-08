@@ -196,6 +196,7 @@ fn generate_graph() -> StableGraph<Node<TopoNode>, Edge<()>> {
     network.add_edge(edge1);
     network.add_edge(edge2);
     network.repair();
+    network.repair();
 
     let mut graph = convert_graph(&network.topology_graph.graph);
     spring_embedder(&mut graph, 100);
