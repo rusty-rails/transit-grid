@@ -860,8 +860,8 @@
     /// # Panics
     ///
     /// This function will panic if the `NodeIndex` does not exist in the graph.
-    </span><span class="kw">pub fn </span>index_to_id(<span class="kw-2">&amp;</span><span class="self">self</span>, index: NodeIndex) -&gt; NodeId {
-        <span class="self">self</span>.index_to_id[<span class="kw-2">&amp;</span>index]
+    </span><span class="kw">pub fn </span>index_to_id(<span class="kw-2">&amp;</span><span class="self">self</span>, index: NodeIndex) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>NodeId&gt; {
+        <span class="self">self</span>.index_to_id.get(<span class="kw-2">&amp;</span>index)
     }
 
     <span class="doccomment">/// Returns the `NodeIndex` corresponding to a given `NodeId`.
@@ -880,8 +880,8 @@
     /// # Panics
     ///
     /// This function will panic if the `NodeId` does not exist in the graph.
-    </span><span class="kw">pub fn </span>id_to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, id: NodeId) -&gt; (NodeIndex, NodeIndex) {
-        <span class="self">self</span>.id_to_index[<span class="kw-2">&amp;</span>id]
+    </span><span class="kw">pub fn </span>id_to_index(<span class="kw-2">&amp;</span><span class="self">self</span>, id: NodeId) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(NodeIndex, NodeIndex)&gt; {
+        <span class="self">self</span>.id_to_index.get(<span class="kw-2">&amp;</span>id)
     }
 
     <span class="doccomment">/// Adds a Node with a `NodeId` to the topological graph. This internally adds two `TopoNode`s to the graph.
@@ -1178,17 +1178,17 @@
         node1_id: NodeId,
         node2_id: NodeId,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;(EdgeIndex, EdgeIndex)&gt; {
-        <span class="kw">let </span>(node1_index1, node1_index2) = <span class="self">self</span>.id_to_index(node1_id);
-        <span class="kw">let </span>(node2_index1, node2_index2) = <span class="self">self</span>.id_to_index(node2_id);
+        <span class="kw">let </span>(node1_index1, node1_index2) = <span class="self">self</span>.id_to_index(node1_id).unwrap();
+        <span class="kw">let </span>(node2_index1, node2_index2) = <span class="self">self</span>.id_to_index(node2_id).unwrap();
 
         <span class="kw">let </span><span class="kw-2">mut </span>edges = Vec::new();
 
         <span class="kw">for </span><span class="kw-2">&amp;</span>source_index <span class="kw">in </span><span class="kw-2">&amp;</span>[node1_index1, node1_index2] {
             <span class="kw">for </span><span class="kw-2">&amp;</span>target_index <span class="kw">in </span><span class="kw-2">&amp;</span>[node2_index1, node2_index2] {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(edge) = <span class="self">self</span>.graph.find_edge(source_index, target_index) {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(edge) = <span class="self">self</span>.graph.find_edge(<span class="kw-2">*</span>source_index, <span class="kw-2">*</span>target_index) {
                     edges.push(edge);
                 }
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(edge) = <span class="self">self</span>.graph.find_edge(target_index, source_index) {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(edge) = <span class="self">self</span>.graph.find_edge(<span class="kw-2">*</span>target_index, <span class="kw-2">*</span>source_index) {
                     edges.push(edge);
                 }
             }

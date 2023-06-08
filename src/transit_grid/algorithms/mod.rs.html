@@ -562,8 +562,8 @@
     <span class="kw">where
         </span>F: FnMut(TransitEdge&lt;T&gt;) -&gt; f64,
     {
-        <span class="kw">let </span>start = <span class="self">self</span>.topology_graph.id_to_index(from);
-        <span class="kw">let </span>goal = <span class="self">self</span>.topology_graph.id_to_index(to);
+        <span class="kw">let </span>start = <span class="self">self</span>.topology_graph.id_to_index(from).unwrap();
+        <span class="kw">let </span>goal = <span class="self">self</span>.topology_graph.id_to_index(to).unwrap();
 
         <span class="kw">let </span>path1 = astar(
             <span class="kw-2">&amp;</span><span class="self">self</span>.topology_graph.graph,
@@ -571,8 +571,8 @@
             |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
             |edge| {
                 <span class="self">self</span>.calc_edge_cost(
-                    <span class="self">self</span>.topology_graph.index_to_id(edge.source()),
-                    <span class="self">self</span>.topology_graph.index_to_id(edge.target()),
+                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.source()).unwrap(),
+                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.target()).unwrap(),
                     <span class="kw-2">&amp;</span>accessability,
                     <span class="kw-2">&amp;mut </span>edge_cost,
                 )
@@ -585,8 +585,8 @@
             |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
             |edge| {
                 <span class="self">self</span>.calc_edge_cost(
-                    <span class="self">self</span>.topology_graph.index_to_id(edge.source()),
-                    <span class="self">self</span>.topology_graph.index_to_id(edge.target()),
+                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.source()).unwrap(),
+                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.target()).unwrap(),
                     <span class="kw-2">&amp;</span>accessability,
                     <span class="kw-2">&amp;mut </span>edge_cost,
                 )
@@ -602,7 +602,7 @@
         best.map(|(cost, path)| {
             <span class="kw">let </span>path = path
                 .into_iter()
-                .map(|index| <span class="self">self</span>.topology_graph.index_to_id(index))
+                .map(|index| <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(index).unwrap())
                 .collect();
 
             (cost, path)
