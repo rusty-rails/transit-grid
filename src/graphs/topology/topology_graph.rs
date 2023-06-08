@@ -72,8 +72,8 @@ impl TopologyGraph {
     /// # Panics
     ///
     /// This function will panic if the `NodeIndex` does not exist in the graph.
-    pub fn index_to_id(&self, index: NodeIndex) -> NodeId {
-        self.index_to_id[&index]
+    pub fn index_to_id(&self, index: NodeIndex) -> Option<&NodeId> {
+        self.index_to_id.get(&index)
     }
 
     /// Returns the `NodeIndex` corresponding to a given `NodeId`.
@@ -92,8 +92,8 @@ impl TopologyGraph {
     /// # Panics
     ///
     /// This function will panic if the `NodeId` does not exist in the graph.
-    pub fn id_to_index(&self, id: NodeId) -> (NodeIndex, NodeIndex) {
-        self.id_to_index[&id]
+    pub fn id_to_index(&self, id: NodeId) -> Option<&(NodeIndex, NodeIndex)> {
+        self.id_to_index.get(&id)
     }
 
     /// Adds a Node with a `NodeId` to the topological graph. This internally adds two `TopoNode`s to the graph.
@@ -390,17 +390,17 @@ impl TopologyGraph {
         node1_id: NodeId,
         node2_id: NodeId,
     ) -> Option<(EdgeIndex, EdgeIndex)> {
-        let (node1_index1, node1_index2) = self.id_to_index(node1_id);
-        let (node2_index1, node2_index2) = self.id_to_index(node2_id);
+        let (node1_index1, node1_index2) = self.id_to_index(node1_id).unwrap();
+        let (node2_index1, node2_index2) = self.id_to_index(node2_id).unwrap();
 
         let mut edges = Vec::new();
 
         for &source_index in &[node1_index1, node1_index2] {
             for &target_index in &[node2_index1, node2_index2] {
-                if let Some(edge) = self.graph.find_edge(source_index, target_index) {
+                if let Some(edge) = self.graph.find_edge(*source_index, *target_index) {
                     edges.push(edge);
                 }
-                if let Some(edge) = self.graph.find_edge(target_index, source_index) {
+                if let Some(edge) = self.graph.find_edge(*target_index, *source_index) {
                     edges.push(edge);
                 }
             }

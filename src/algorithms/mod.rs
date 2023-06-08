@@ -150,8 +150,8 @@ impl<R: Copy, T: CoordNum> ShortestPathWithAccessability<R, T> for TransitNetwor
     where
         F: FnMut(TransitEdge<T>) -> f64,
     {
-        let start = self.topology_graph.id_to_index(from);
-        let goal = self.topology_graph.id_to_index(to);
+        let start = self.topology_graph.id_to_index(from).unwrap();
+        let goal = self.topology_graph.id_to_index(to).unwrap();
 
         let path1 = astar(
             &self.topology_graph.graph,
@@ -159,8 +159,8 @@ impl<R: Copy, T: CoordNum> ShortestPathWithAccessability<R, T> for TransitNetwor
             |finish| finish == goal.0 || finish == goal.1,
             |edge| {
                 self.calc_edge_cost(
-                    self.topology_graph.index_to_id(edge.source()),
-                    self.topology_graph.index_to_id(edge.target()),
+                    *self.topology_graph.index_to_id(edge.source()).unwrap(),
+                    *self.topology_graph.index_to_id(edge.target()).unwrap(),
                     &accessability,
                     &mut edge_cost,
                 )
@@ -173,8 +173,8 @@ impl<R: Copy, T: CoordNum> ShortestPathWithAccessability<R, T> for TransitNetwor
             |finish| finish == goal.0 || finish == goal.1,
             |edge| {
                 self.calc_edge_cost(
-                    self.topology_graph.index_to_id(edge.source()),
-                    self.topology_graph.index_to_id(edge.target()),
+                    *self.topology_graph.index_to_id(edge.source()).unwrap(),
+                    *self.topology_graph.index_to_id(edge.target()).unwrap(),
                     &accessability,
                     &mut edge_cost,
                 )
@@ -190,7 +190,7 @@ impl<R: Copy, T: CoordNum> ShortestPathWithAccessability<R, T> for TransitNetwor
         best.map(|(cost, path)| {
             let path = path
                 .into_iter()
-                .map(|index| self.topology_graph.index_to_id(index))
+                .map(|index| *self.topology_graph.index_to_id(index).unwrap())
                 .collect();
 
             (cost, path)
