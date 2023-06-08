@@ -38,7 +38,7 @@ impl GraphVisualizeApp {
             let g_n = self.g.node_weight_mut(*g_n_idx).unwrap();
 
             if g_n.selected {
-                self.selected_nodes.push(*g_n);
+                self.selected_nodes.push(g_n.clone());
             }
         });
     }
@@ -70,6 +70,54 @@ impl App for GraphVisualizeApp {
     }
 }
 
+const SPRING_CONSTANT: f32 = 0.01;
+const REPULSION_CONSTANT: f32 = 500.0;
+
+fn spring_embedder(graph: &mut StableGraph<Node<TopoNode>, Edge<()>>, iterations: usize) {
+    for _ in 0..iterations {
+        let mut displacement: HashMap<NodeIndex, Vec2> = HashMap::new();
+
+        for node1 in graph.node_indices() {
+            displacement.insert(node1, Vec2::default());
+
+            for node2 in graph.node_indices() {
+                if node1 != node2 {
+                    let delta = graph[node1].location - graph[node2].location;
+                    let delta_length = delta.length();
+                    let force = REPULSION_CONSTANT / delta_length.powi(2);
+                    let displacement1 = displacement.get(&node1).unwrap().clone();
+                    displacement.insert(node1, displacement1 + delta.normalized() * force);
+                }
+            }
+        }
+
+        for edge in graph.edge_indices() {
+            let source = graph.edge_endpoints(edge).unwrap().0;
+            let target = graph.edge_endpoints(edge).unwrap().1;
+            let delta = graph[source].location - graph[target].location;
+            let delta_length = delta.length();
+            let force = SPRING_CONSTANT * (delta_length - 1.0);
+            let displacement_source = displacement.get(&source).unwrap().clone();
+            let displacement_target = displacement.get(&target).unwrap().clone();
+            displacement.insert(source, displacement_source - delta.normalized() * force);
+            displacement.insert(target, displacement_target + delta.normalized() * force);
+        }
+
+        let displacements_to_apply: Vec<(NodeIndex, Vec2)> = graph
+            .node_indices()
+            .map(|node| {
+                let disp = displacement.get(&node).unwrap();
+                let disp_length = disp.length();
+                (node, *disp / disp_length * disp_length.min(0.1))
+            })
+            .collect();
+
+        for (node, displacement) in displacements_to_apply {
+            graph[node].location += displacement;
+        }
+    }
+}
+
 pub fn convert_graph(
     old_graph: &StableDiGraph<TopoNode, TopoEdge, u32>,
 ) -> StableGraph<Node<TopoNode>, Edge<()>> {
@@ -84,6 +132,7 @@ pub fn convert_graph(
             let new_node = Node {
                 data: Some(*old_node),
                 location: Vec2::new(rng.gen_range(0.0..SIDE_SIZE), rng.gen_range(0.0..SIDE_SIZE)),
+                label: Some(format!("{} ({})", old_node.id.index(), old_node.node_id)),
                 ..Default::default()
             };
             let new_node_index = new_graph.add_node(new_node);
@@ -148,7 +197,9 @@ fn generate_graph() -> StableGraph<Node<TopoNode>, Edge<()>> {
     network.add_edge(edge2);
     network.repair();
 
-    convert_graph(&network.topology_graph.graph)
+    let mut graph = convert_graph(&network.topology_graph.graph);
+    spring_embedder(&mut graph, 100);
+    graph
 }
 
 fn main() {
