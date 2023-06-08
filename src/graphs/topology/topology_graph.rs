@@ -355,52 +355,6 @@ impl TopologyGraph {
             .is_some()
     }
 
-    /// Repairs the direction of edges in a graph if they are incorrectly directed.
-    ///
-    /// This function repairs edges between two nodes in the graph by examining their direction.
-    /// If the edges have the same direction (either both outgoing or both incoming), the direction
-    /// of the edges will be switched to ensure a consistent direction from `node1` to `node2`.
-    ///
-    /// # Examples
-    /// Correct scenarios:
-    /// a -> node1_indices.0 -> node2_indices.0 -> b
-    /// a -> node1_indices.0 -> node2_indices.1 -> b
-    /// a -> node1_indices.1 -> node2_indices.0 -> b
-    ///
-    /// Incorrect scenarios:
-    /// a -> node1_indices.0 <- node2_indices.0 -> b
-    /// a -> node1_indices.1 <- node2_indices.0 -> b
-    /// a -> node1_indices.0 <- node2_indices.1 -> b
-    ///
-    /// In the incorrect scenarios, the function will correct the edge directions as:
-    /// a -> node1_indices.0 -> node2_indices.0 -> b
-    /// a -> node1_indices.1 -> node2_indices.0 -> b
-    /// a -> node1_indices.0 -> node2_indices.1 -> b
-    ///
-    /// # Arguments
-    /// * `node1`: The first node of the edge pair.
-    /// * `node2`: The second node of the edge pair.
-    ///
-    /// # Panics
-    /// This function will panic if either of the node indices is not present in the graph.
-    ///
-    /// # Note
-    /// This function is mainly intended to be used for directed graphs. Using it for undirected graphs
-    /// may not have the intended effect.
-    ///
-    /// This function should be used when a graph's edge directions are set manually and may be incorrect,
-    /// and when it's important that the edges have a specific direction for the logic of the application.
-    pub fn repair_edge(&mut self, node1: NodeId, node2: NodeId) {
-        if let Some((edge_index1, edge_index2)) = self.find_edge_indices(node1, node2) {
-            if !self.edge_is_in_neighbors_direction(edge_index1)
-                && !self.edge_is_in_neighbors_direction(edge_index2)
-            {
-                self.reverse_edge(edge_index1);
-                self.reverse_edge(edge_index2);
-            }
-        }
-    }
-
     /// Reverse the direction of a given edge.
     ///
     /// # Arguments
@@ -830,36 +784,5 @@ mod tests {
             topo_graph.graph.edge_endpoints(edge_index.0),
             Some((node2.0, node1.0))
         );
-    }
-
-    #[test]
-    fn test_repair_edge() {
-        let mut topo_graph = TopologyGraph::new();
-
-        let node_id_a = 1;
-        let node_id_b = 2;
-        let node_id_c = 3;
-        let node_id_d = 4;
-
-        topo_graph.add_node(node_id_a);
-        topo_graph.add_node(node_id_b);
-        topo_graph.add_node(node_id_c);
-        topo_graph.add_node(node_id_d);
-
-        let _edge31 = topo_graph.add_edge(31, 1, 2);
-        let edge32 = topo_graph.add_edge(32, 2, 3);
-        let _edge33 = topo_graph.add_edge(33, 3, 4);
-
-        println!("{:?}", Dot::new(&topo_graph.graph));
-
-        assert_ne!(true, topo_graph.edge_is_in_neighbors_direction(edge32.0));
-        assert_ne!(true, topo_graph.edge_is_in_neighbors_direction(edge32.1));
-
-        topo_graph.repair_edge(node_id_b, node_id_c);
-
-        println!("{:?}", Dot::new(&topo_graph.graph));
-
-        assert!(topo_graph.edge_is_in_neighbors_direction(edge32.0));
-        assert!(topo_graph.edge_is_in_neighbors_direction(edge32.1));
     }
 }

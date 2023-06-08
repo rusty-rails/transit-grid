@@ -1,6 +1,9 @@
 use geo::CoordNum;
 
-use crate::{core::NodeId, prelude::TransitNetworkRepairer};
+use crate::{
+    core::NodeId,
+    prelude::{TopologyGraphRepairer, TransitNetworkRepairer},
+};
 
 use super::TransitNetwork;
 
