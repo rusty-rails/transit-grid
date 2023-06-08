@@ -93,6 +93,67 @@
 <a href="#93" id="93">93</a>
 <a href="#94" id="94">94</a>
 <a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::core::NodeId;
 
 <span class="kw">use </span><span class="kw">super</span>::TopologyGraph;
@@ -130,21 +191,31 @@
         }
     }
 
-    <span class="kw">fn </span>cross_link_dual_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _node1: NodeId, _node2: NodeId) {
-        <span class="macro">unimplemented!</span>(<span class="string">&quot;Cross-linking dual edges is not yet implemented&quot;</span>)
+    <span class="kw">fn </span>cross_link_dual_edge(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node1: NodeId, node2: NodeId) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(edges) = <span class="self">self</span>.find_edge_indices(node1, node2) {
+            <span class="kw">let </span>(source1, target1) = <span class="self">self</span>.graph.edge_endpoints(edges.<span class="number">0</span>).unwrap();
+            <span class="kw">let </span>(source2, target2) = <span class="self">self</span>.graph.edge_endpoints(edges.<span class="number">1</span>).unwrap();
+
+            <span class="kw">let </span>weight1 = <span class="self">self</span>.graph.edge_weight(edges.<span class="number">0</span>).unwrap().clone();
+            <span class="kw">let </span>weight2 = <span class="self">self</span>.graph.edge_weight(edges.<span class="number">1</span>).unwrap().clone();
+
+            <span class="self">self</span>.graph.remove_edge(edges.<span class="number">0</span>);
+            <span class="self">self</span>.graph.remove_edge(edges.<span class="number">1</span>);
+
+            <span class="self">self</span>.graph.add_edge(source1, source2, weight1);
+            <span class="self">self</span>.graph.add_edge(target1, target2, weight2);
+        }
     }
 }
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::prelude::TopoEdge;
     <span class="kw">use </span>petgraph::stable_graph::EdgeIndex;
 
-    <span class="kw">use </span><span class="kw">crate</span>::prelude::TopoEdge;
-
-    <span class="kw">use super</span>::<span class="kw-2">*</span>;
-
     <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_topology_graph() {
+    </span><span class="kw">fn </span>test_reverse_dual_edge() {
         <span class="kw">let </span><span class="kw-2">mut </span>topo_graph = TopologyGraph::new();
 
         <span class="kw">let </span>node_id1 = <span class="number">1</span>;
@@ -186,6 +257,57 @@
 
         <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_2), <span class="bool-val">true</span>);
         <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_2), <span class="bool-val">false</span>);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_cross_link_dual_edge() {
+        <span class="kw">let </span><span class="kw-2">mut </span>topo_graph = TopologyGraph::new();
+
+        <span class="kw">let </span>node_id1 = <span class="number">1</span>;
+        <span class="kw">let </span>node_id2 = <span class="number">2</span>;
+
+        <span class="kw">let </span>(added_node_id1_1, added_node_id1_2) = topo_graph.add_node(node_id1);
+        <span class="kw">let </span>(added_node_id2_1, added_node_id2_2) = topo_graph.add_node(node_id2);
+
+        <span class="macro">assert_eq!</span>(topo_graph.graph.node_count(), <span class="number">4</span>);
+
+        <span class="kw">let </span>edge_id1 = <span class="number">1</span>;
+
+        topo_graph.add_edge(edge_id1, node_id1, node_id2);
+
+        <span class="macro">assert_eq!</span>(topo_graph.graph.edge_count(), <span class="number">2</span>);
+
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_1), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_1), <span class="bool-val">true</span>);
+
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_2), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_2), <span class="bool-val">false</span>);
+
+        <span class="macro">assert!</span>(topo_graph
+            .graph
+            .find_edge(added_node_id1_1, added_node_id2_1)
+            .is_some());
+
+        topo_graph.cross_link_dual_edge(node_id1, node_id2);
+
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_1), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_1), <span class="bool-val">false</span>);
+
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id1_2), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq!</span>(topo_graph.has_incoming(added_node_id2_2), <span class="bool-val">true</span>);
+
+        <span class="macro">assert!</span>(topo_graph
+            .graph
+            .find_edge(added_node_id1_1, added_node_id2_1)
+            .is_none());
+        <span class="macro">assert!</span>(topo_graph
+            .graph
+            .find_edge(added_node_id2_1, added_node_id1_2)
+            .is_some());
+        <span class="macro">assert!</span>(topo_graph
+            .graph
+            .find_edge(added_node_id1_1, added_node_id2_2)
+            .is_some());
     }
 }
 </code></pre></div></section></main></body></html>
