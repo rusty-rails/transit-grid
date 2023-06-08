@@ -150,51 +150,56 @@ impl<R: Copy, T: CoordNum> ShortestPathWithAccessability<R, T> for TransitNetwor
     where
         F: FnMut(TransitEdge<T>) -> f64,
     {
-        let start = self.topology_graph.id_to_index(from).unwrap();
-        let goal = self.topology_graph.id_to_index(to).unwrap();
+        let start = self.topology_graph.id_to_index(from);
+        let goal = self.topology_graph.id_to_index(to);
+        if let (Some(start), Some(goal)) = (start, goal) {
+            let path1 = astar(
+                &self.topology_graph.graph,
+                start.0,
+                |finish| finish == goal.0 || finish == goal.1,
+                |edge| {
+                    self.calc_edge_cost(
+                        *self.topology_graph.index_to_id(edge.source()).unwrap(),
+                        *self.topology_graph.index_to_id(edge.target()).unwrap(),
+                        &accessability,
+                        &mut edge_cost,
+                    )
+                },
+                |_| 0.,
+            );
+            let path2 = astar(
+                &self.topology_graph.graph,
+                start.1,
+                |finish| finish == goal.0 || finish == goal.1,
+                |edge| {
+                    self.calc_edge_cost(
+                        *self.topology_graph.index_to_id(edge.source()).unwrap(),
+                        *self.topology_graph.index_to_id(edge.target()).unwrap(),
+                        &accessability,
+                        &mut edge_cost,
+                    )
+                },
+                |_| 1.,
+            );
 
-        let path1 = astar(
-            &self.topology_graph.graph,
-            start.0,
-            |finish| finish == goal.0 || finish == goal.1,
-            |edge| {
-                self.calc_edge_cost(
-                    *self.topology_graph.index_to_id(edge.source()).unwrap(),
-                    *self.topology_graph.index_to_id(edge.target()).unwrap(),
-                    &accessability,
-                    &mut edge_cost,
-                )
-            },
-            |_| 0.,
-        );
-        let path2 = astar(
-            &self.topology_graph.graph,
-            start.1,
-            |finish| finish == goal.0 || finish == goal.1,
-            |edge| {
-                self.calc_edge_cost(
-                    *self.topology_graph.index_to_id(edge.source()).unwrap(),
-                    *self.topology_graph.index_to_id(edge.target()).unwrap(),
-                    &accessability,
-                    &mut edge_cost,
-                )
-            },
-            |_| 1.,
-        );
-
-        let best = path1
-            .into_iter()
-            .chain(path2)
-            .min_by(|(cost1, _), (cost2, _)| cost1.partial_cmp(cost2).unwrap_or(Ordering::Equal));
-
-        best.map(|(cost, path)| {
-            let path = path
+            let best = path1
                 .into_iter()
-                .map(|index| *self.topology_graph.index_to_id(index).unwrap())
-                .collect();
+                .chain(path2)
+                .min_by(|(cost1, _), (cost2, _)| {
+                    cost1.partial_cmp(cost2).unwrap_or(Ordering::Equal)
+                });
 
-            (cost, path)
-        })
+            best.map(|(cost, path)| {
+                let path = path
+                    .into_iter()
+                    .map(|index| *self.topology_graph.index_to_id(index).unwrap())
+                    .collect();
+
+                (cost, path)
+            })
+        } else {
+            None
+        }
     }
 }
 
@@ -408,5 +413,14 @@ mod tests {
             edge_cost,
         );
         assert_eq!(result, Some((3.0, vec![0, 2, 5, 4]))); // Expected shortest path is 0 -> 1 -> 4
+        let not_exist = 99;
+        assert!(network
+            .find_shortest_path_with_accessability(
+                0,
+                not_exist,
+                Accessability::UnreachableNodes(vec![]),
+                edge_cost
+            )
+            .is_none());
     }
 }
