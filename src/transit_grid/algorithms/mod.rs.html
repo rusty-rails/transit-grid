@@ -410,6 +410,20 @@
 <a href="#410" id="410">410</a>
 <a href="#411" id="411">411</a>
 <a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Module providing traits and implementations for shortest path computations
 //! on a transit network. The two main traits defined are `ShortestPath` and `ShortestPathWithAccessability`.
 //!
@@ -562,51 +576,56 @@
     <span class="kw">where
         </span>F: FnMut(TransitEdge&lt;T&gt;) -&gt; f64,
     {
-        <span class="kw">let </span>start = <span class="self">self</span>.topology_graph.id_to_index(from).unwrap();
-        <span class="kw">let </span>goal = <span class="self">self</span>.topology_graph.id_to_index(to).unwrap();
+        <span class="kw">let </span>start = <span class="self">self</span>.topology_graph.id_to_index(from);
+        <span class="kw">let </span>goal = <span class="self">self</span>.topology_graph.id_to_index(to);
+        <span class="kw">if let </span>(<span class="prelude-val">Some</span>(start), <span class="prelude-val">Some</span>(goal)) = (start, goal) {
+            <span class="kw">let </span>path1 = astar(
+                <span class="kw-2">&amp;</span><span class="self">self</span>.topology_graph.graph,
+                start.<span class="number">0</span>,
+                |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
+                |edge| {
+                    <span class="self">self</span>.calc_edge_cost(
+                        <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.source()).unwrap(),
+                        <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.target()).unwrap(),
+                        <span class="kw-2">&amp;</span>accessability,
+                        <span class="kw-2">&amp;mut </span>edge_cost,
+                    )
+                },
+                |<span class="kw">_</span>| <span class="number">0.</span>,
+            );
+            <span class="kw">let </span>path2 = astar(
+                <span class="kw-2">&amp;</span><span class="self">self</span>.topology_graph.graph,
+                start.<span class="number">1</span>,
+                |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
+                |edge| {
+                    <span class="self">self</span>.calc_edge_cost(
+                        <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.source()).unwrap(),
+                        <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.target()).unwrap(),
+                        <span class="kw-2">&amp;</span>accessability,
+                        <span class="kw-2">&amp;mut </span>edge_cost,
+                    )
+                },
+                |<span class="kw">_</span>| <span class="number">1.</span>,
+            );
 
-        <span class="kw">let </span>path1 = astar(
-            <span class="kw-2">&amp;</span><span class="self">self</span>.topology_graph.graph,
-            start.<span class="number">0</span>,
-            |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
-            |edge| {
-                <span class="self">self</span>.calc_edge_cost(
-                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.source()).unwrap(),
-                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.target()).unwrap(),
-                    <span class="kw-2">&amp;</span>accessability,
-                    <span class="kw-2">&amp;mut </span>edge_cost,
-                )
-            },
-            |<span class="kw">_</span>| <span class="number">0.</span>,
-        );
-        <span class="kw">let </span>path2 = astar(
-            <span class="kw-2">&amp;</span><span class="self">self</span>.topology_graph.graph,
-            start.<span class="number">1</span>,
-            |finish| finish == goal.<span class="number">0 </span>|| finish == goal.<span class="number">1</span>,
-            |edge| {
-                <span class="self">self</span>.calc_edge_cost(
-                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.source()).unwrap(),
-                    <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(edge.target()).unwrap(),
-                    <span class="kw-2">&amp;</span>accessability,
-                    <span class="kw-2">&amp;mut </span>edge_cost,
-                )
-            },
-            |<span class="kw">_</span>| <span class="number">1.</span>,
-        );
-
-        <span class="kw">let </span>best = path1
-            .into_iter()
-            .chain(path2)
-            .min_by(|(cost1, <span class="kw">_</span>), (cost2, <span class="kw">_</span>)| cost1.partial_cmp(cost2).unwrap_or(Ordering::Equal));
-
-        best.map(|(cost, path)| {
-            <span class="kw">let </span>path = path
+            <span class="kw">let </span>best = path1
                 .into_iter()
-                .map(|index| <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(index).unwrap())
-                .collect();
+                .chain(path2)
+                .min_by(|(cost1, <span class="kw">_</span>), (cost2, <span class="kw">_</span>)| {
+                    cost1.partial_cmp(cost2).unwrap_or(Ordering::Equal)
+                });
 
-            (cost, path)
-        })
+            best.map(|(cost, path)| {
+                <span class="kw">let </span>path = path
+                    .into_iter()
+                    .map(|index| <span class="kw-2">*</span><span class="self">self</span>.topology_graph.index_to_id(index).unwrap())
+                    .collect();
+
+                (cost, path)
+            })
+        } <span class="kw">else </span>{
+            <span class="prelude-val">None
+        </span>}
     }
 }
 
@@ -820,6 +839,15 @@
             </span>edge_cost,
         );
         <span class="macro">assert_eq!</span>(result, <span class="prelude-val">Some</span>((<span class="number">3.0</span>, <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">4</span>]))); <span class="comment">// Expected shortest path is 0 -&gt; 1 -&gt; 4
-    </span>}
+        </span><span class="kw">let </span>not_exist = <span class="number">99</span>;
+        <span class="macro">assert!</span>(network
+            .find_shortest_path_with_accessability(
+                <span class="number">0</span>,
+                not_exist,
+                Accessability::UnreachableNodes(<span class="macro">vec!</span>[]),
+                edge_cost
+            )
+            .is_none());
+    }
 }
 </code></pre></div></section></main></body></html>
