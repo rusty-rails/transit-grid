@@ -14,7 +14,18 @@
 <p><strong>PhysicalGraph</strong>: This is an undirected graph where each node represents a transit node (a point in the transit network where a vehicle can stop) and each edge represents a transit edge (a path between two transit nodes). The PhysicalGraph uses the UnGraph structure from the petgraph crate to internally represent this data. The PhysicalGraph maintains mappings between NodeId’s and NodeIndexes (from petgraph), allowing for efficient conversion between the two.</p>
 </li>
 <li>
-<p><strong>TopologyGraph</strong>: The design of the TopologyGraph is still under discussion and will be updated in future iterations.</p>
+<p><strong>TopologyGraph</strong>: Represents the topological graph of a transit network as a skew-symmetric graph. In this model, let <code>G = (V, E)</code> be the directed graph with a function <code>σ</code> mapping vertices of <code>G</code> to other vertices, satisfying the following properties:</p>
+<ol>
+<li>For every vertex <code>v</code>, <code>σ(v)</code> ≠ <code>v</code>.</li>
+<li>For every vertex <code>v</code>, <code>σ(σ(v))</code> = <code>v</code>.</li>
+<li>For every edge <code>(u, v)</code>, <code>(σ(v), σ(u))</code> must also be an edge.</li>
+</ol>
+<p>In the context of the <code>TopologyGraph</code>, for each node <code>v</code> in <code>V</code>, there are two nodes in <code>V_t</code>, denoted as <code>v_entry</code> and <code>v_exit</code>. For each edge <code>(u, v)</code> in <code>E</code>, there are two directed edges in <code>E_t</code>: one from <code>u_exit</code> to <code>v_entry</code> and one from <code>v_exit</code> to <code>u_entry</code>. The mathematical representation of this is:</p>
+<ul>
+<li><code>V_t = {v_entry, v_exit | v ∈ V}</code></li>
+<li><code>E_t = {(u_exit, v_entry), (v_exit, u_entry) | (u, v) ∈ E}</code></li>
+</ul>
+<p>This skew-symmetric model is based on the definition by Goldberg &amp; Karzanov (1996). It is particularly useful for scenarios such as rail switches where the directionality of edges matters. The TopologyGraph uses the StableDiGraph structure from the petgraph crate for internal representation and maintains mappings between custom NodeId’s/EdgeId’s and petgraph’s NodeIndexes/EdgeIndexes.</p>
 </li>
 </ul>
 <h3 id="future-work"><a href="#future-work">Future Work</a></h3>
