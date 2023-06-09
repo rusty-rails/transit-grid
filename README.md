@@ -15,7 +15,17 @@ TransitGrid is built around two core data structures: the PhysicalGraph and the 
 
 - **PhysicalGraph**: This is an undirected graph where each node represents a transit node (a point in the transit network where a vehicle can stop) and each edge represents a transit edge (a path between two transit nodes). The PhysicalGraph uses the UnGraph structure from the petgraph crate to internally represent this data. The PhysicalGraph maintains mappings between NodeId's and NodeIndexes (from petgraph), allowing for efficient conversion between the two.
 
-- **TopologyGraph**: The design of the TopologyGraph is still under discussion and will be updated in future iterations.
+
+- **TopologyGraph**: Represents the topological graph of a transit network as a skew-symmetric graph. In this model, let `G = (V, E)` be the directed graph with a function `σ` mapping vertices of `G` to other vertices, satisfying the following properties:
+  1. For every vertex `v`, `σ(v)` ≠ `v`.
+  2. For every vertex `v`, `σ(σ(v))` = `v`.
+  3. For every edge `(u, v)`, `(σ(v), σ(u))` must also be an edge.
+  
+  In the context of the `TopologyGraph`, for each node `v` in `V`, there are two nodes in `V_t`, denoted as `v_entry` and `v_exit`. For each edge `(u, v)` in `E`, there are two directed edges in `E_t`: one from `u_exit` to `v_entry` and one from `v_exit` to `u_entry`. The mathematical representation of this is:
+  * `V_t = {v_entry, v_exit | v ∈ V}`
+  * `E_t = {(u_exit, v_entry), (v_exit, u_entry) | (u, v) ∈ E}`
+  
+  This skew-symmetric model is based on the definition by Goldberg & Karzanov (1996). It is particularly useful for scenarios such as rail switches where the directionality of edges matters. The TopologyGraph uses the StableDiGraph structure from the petgraph crate for internal representation and maintains mappings between custom NodeId's/EdgeId's and petgraph's NodeIndexes/EdgeIndexes.
 
 ## Future Work
 TransitGrid will include several major components:
